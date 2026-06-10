@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CP Study Guide — Competitive Programming</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOP NAV
+═══════════════════════════════════════════════════════════ -->
+<nav class="top-nav">
+  <!-- Brand -->
+  <a class="nav-brand" href="#">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="8" fill="#2563eb"/>
+      <text x="5" y="20" font-family="monospace" font-size="14" font-weight="800" fill="white">&lt;/&gt;</text>
+    </svg>
+    CP Study Guide
+  </a>
+
+  <!-- Center nav links -->
+  <div class="nav-links">
+    <button class="nav-link active" data-section="overview">Overview</button>
+    <button class="nav-link" data-section="algorithms">Algorithms</button>
+    <button class="nav-link" data-section="roadmap">Roadmap</button>
+    <button class="nav-link" data-section="tools">Tools</button>
+  </div>
+
+  <!-- Right side: search + theme toggle -->
+  <div class="nav-right">
+    <!-- Search bar -->
+    <div class="nav-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search algorithms… (⌘K)"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="nav-search-clear" id="search-clear" aria-label="Clear search" title="Clear">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Dark / Light toggle -->
+    <button class="icon-btn" id="theme-toggle" title="Toggle light/dark mode">
+      <span id="theme-icon">
+        <!-- injected by script.js -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LAYOUT
+═══════════════════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- ── Sidebar ────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+
+      <!-- Header -->
+      <div class="sidebar-header">
+        <span class="sidebar-title">Navigation</span>
+        <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               style="transition:transform 200ms ease">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="sidebar-progress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-label" id="progress-label">0% Complete</div>
+      </div>
+
+      <!-- Nav items (built by script.js) -->
+      <div id="sidebar-nav"></div>
+
+    </div>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────────── -->
+  <main class="main" id="main">
+
+    <!-- Search overlay -->
+    <div class="search-overlay" id="search-overlay">
+      <div class="search-panel" id="search-results"></div>
+    </div>
+
+    <!-- ══ OVERVIEW SECTION ══ -->
+    <section class="page-section active" data-section="overview">
+
+      <!-- Hero -->
+      <div class="hero">
+        <h1 class="hero-title">Competitive Programming<br>Study Guide</h1>
+        <p class="hero-subtitle">
+          A structured guide to the most essential algorithms, data structures,
+          and techniques used in competitive programming competitions.
+        </p>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Core Algorithms</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-number">9</div>
+          <div class="stat-label">Topic Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Practice Problems</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🚀</div>
+          <div class="stat-number">2025</div>
+          <div class="stat-label">State of the Art</div>
+        </div>
+      </div>
+
+      <!-- Quick Navigation -->
+      <h2 class="section-title">Quick Navigation</h2>
+      <div class="quick-nav-grid">
+        <div class="quick-card" data-goto="overview" id="overview-assessment">
+          <div class="quick-card-icon">📊</div>
+          <div class="quick-card-title">Assess Your Level</div>
+          <div class="quick-card-desc">Determine your current competitive programming skills</div>
+        </div>
+        <div class="quick-card" data-goto="algorithms">
+          <div class="quick-card-icon">🔍</div>
+          <div class="quick-card-title">Explore Algorithms</div>
+          <div class="quick-card-desc">Browse all algorithm categories and topics</div>
+        </div>
+        <div class="quick-card" data-goto="roadmap">
+          <div class="quick-card-icon">🗺️</div>
+          <div class="quick-card-title">Learning Roadmap</div>
+          <div class="quick-card-desc">Get a structured, phased learning plan</div>
+        </div>
+        <div class="quick-card" data-goto="tools">
+          <div class="quick-card-icon">🛠️</div>
+          <div class="quick-card-title">Tools & Resources</div>
+          <div class="quick-card-desc">Find judges, editors, and cheatsheets</div>
+        </div>
+      </div>
+
+      <!-- Introduction -->
+      <div style="margin-top:40px" id="overview-introduction">
+        <h2 class="section-title" style="text-align:left;margin-bottom:16px">Introduction</h2>
+        <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;line-height:1.8;color:var(--text-secondary);font-size:13.5px;transition:background var(--transition),border-color var(--transition)">
+          <p style="margin-bottom:12px">
+            Competitive programming (CP) is the practice of solving well-defined algorithmic problems within strict
+            time and memory limits. Mastering CP requires a deep understanding of algorithms, data structures, and
+            mathematical reasoning.
+          </p>
+          <p style="margin-bottom:12px">
+            This guide covers the essential topics you need to go from beginner to competitive in platforms like
+            <strong>Codeforces</strong>, <strong>LeetCode</strong>, <strong>AtCoder</strong>, and <strong>ICPC</strong>.
+          </p>
+          <p>
+            Each topic includes a clear description, complexity analysis, C++ implementations, best practices, and
+            curated practice problems.
+          </p>
+        </div>
+      </div>
+
+      <!-- Learning Path overview -->
+      <div style="margin-top:32px" id="overview-learning-path">
+        <h2 class="section-title" style="text-align:left;margin-bottom:16px">Learning Path</h2>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 20px;transition:background var(--transition),border-color var(--transition)">
+            <div style="width:32px;height:32px;border-radius:50%;background:#d1fae5;color:#065f46;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">1</div>
+            <div>
+              <div style="font-weight:700;color:var(--text-primary);font-size:13.5px">Fundamentals (2–4 weeks)</div>
+              <div style="font-size:12px;color:var(--text-secondary)">Complexity, arrays, prefix sums, STL, sorting</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 20px;transition:background var(--transition),border-color var(--transition)">
+            <div style="width:32px;height:32px;border-radius:50%;background:#fef3c7;color:#92400e;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">2</div>
+            <div>
+              <div style="font-weight:700;color:var(--text-primary);font-size:13.5px">Core Algorithms (4–6 weeks)</div>
+              <div style="font-size:12px;color:var(--text-secondary)">Two pointers, sliding window, binary search, BFS/DFS</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 20px;transition:background var(--transition),border-color var(--transition)">
+            <div style="width:32px;height:32px;border-radius:50%;background:#fee2e2;color:#991b1b;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">3</div>
+            <div>
+              <div style="font-weight:700;color:var(--text-primary);font-size:13.5px">Advanced Topics (8+ weeks)</div>
+              <div style="font-size:12px;color:var(--text-secondary)">DP, graph theory, segment trees, math</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══ ALGORITHMS SECTION ══ -->
+    <section class="page-section" data-section="algorithms">
+      <div style="margin-bottom:24px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-primary);margin-bottom:6px">Algorithm Library</h2>
+        <p style="font-size:13.5px;color:var(--text-secondary)">
+          Click any card to see the full explanation, C++ code, and practice problems.
+        </p>
+      </div>
+      <div class="algo-grid" id="algo-grid"></div>
+    </section>
+
+    <!-- ══ ROADMAP SECTION ══ -->
+    <section class="page-section" data-section="roadmap">
+      <div style="margin-bottom:28px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-primary);margin-bottom:6px">Learning Roadmap</h2>
+        <p style="font-size:13.5px;color:var(--text-secondary)">
+          A phased plan to go from beginner to competitive programmer.
+        </p>
+      </div>
+
+      <div class="roadmap-phases">
+
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <div class="phase-number">1</div>
+            <div class="phase-info">
+              <div class="phase-title">Foundations</div>
+              <div class="phase-duration">Weeks 1–4 · Codeforces Div. 4 / LeetCode Easy</div>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Complexity Analysis (Big-O)</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Arrays & Prefix Sums</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Strings & Hashing</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>STL Essentials (vector, map, set)</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Sorting Algorithms</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Basic Math & Number Theory</div>
+          </div>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <div class="phase-number">2</div>
+            <div class="phase-info">
+              <div class="phase-title">Core Algorithms</div>
+              <div class="phase-duration">Weeks 5–10 · Codeforces Div. 3 / LeetCode Medium</div>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Two Pointers</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Sliding Window</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Binary Search on Answer</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>BFS / DFS</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Union-Find (DSU)</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Greedy Techniques</div>
+          </div>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <div class="phase-number">3</div>
+            <div class="phase-info">
+              <div class="phase-title">Dynamic Programming</div>
+              <div class="phase-duration">Weeks 11–16 · Codeforces Div. 2 / LeetCode Hard</div>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-topic"><span class="phase-topic-dot"></span>1D DP (Coin Change, LIS)</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>2D DP (LCS, Grid DP)</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Knapsack Variants</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Interval DP</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Bitmask DP</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>DP on Trees</div>
+          </div>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <div class="phase-number">4</div>
+            <div class="phase-info">
+              <div class="phase-title">Graph Theory</div>
+              <div class="phase-duration">Weeks 17–22 · Codeforces Div. 2–1</div>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Dijkstra's Algorithm</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Bellman-Ford / SPFA</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Floyd-Warshall</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Minimum Spanning Tree</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Topological Sort</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Strongly Connected Components</div>
+          </div>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <div class="phase-number">5</div>
+            <div class="phase-info">
+              <div class="phase-title">Advanced Data Structures & Math</div>
+              <div class="phase-duration">Weeks 23+ · Codeforces Div. 1 / ICPC level</div>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Segment Tree + Lazy Prop</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Fenwick Tree (BIT)</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Trie</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Modular Arithmetic</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>Combinatorics</div>
+            <div class="phase-topic"><span class="phase-topic-dot"></span>FFT / NTT</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ TOOLS SECTION ══ -->
+    <section class="page-section" data-section="tools">
+      <div style="margin-bottom:28px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-primary);margin-bottom:6px">Tools & Resources</h2>
+        <p style="font-size:13.5px;color:var(--text-secondary)">
+          Everything you need to practice, compete, and improve.
+        </p>
+      </div>
+
+      <div style="margin-bottom:32px">
+        <h3 style="font-size:14px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Online Judges</h3>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon">⚔️</div>
+            <div class="tool-card-title">Codeforces</div>
+            <div class="tool-card-desc">The premier competitive programming platform with regular rated contests (Div. 1–4) and a huge problem archive.</div>
+            <a class="tool-card-link" href="https://codeforces.com" target="_blank">Visit →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">💡</div>
+            <div class="tool-card-title">LeetCode</div>
+            <div class="tool-card-desc">Industry-focused problems categorized by topic and difficulty. Great for interview prep and structured practice.</div>
+            <a class="tool-card-link" href="https://leetcode.com" target="_blank">Visit →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">🎌</div>
+            <div class="tool-card-title">AtCoder</div>
+            <div class="tool-card-desc">Japanese platform with high-quality problems and weekly contests. Known for clean problem statements.</div>
+            <a class="tool-card-link" href="https://atcoder.jp" target="_blank">Visit →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">🌍</div>
+            <div class="tool-card-title">CSES Problem Set</div>
+            <div class="tool-card-desc">A curated set of ~300 classic CP problems organized by topic. Ideal for systematic learning.</div>
+            <a class="tool-card-link" href="https://cses.fi/problemset" target="_blank">Visit →</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:32px">
+        <h3 style="font-size:14px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Learning Resources</h3>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon">📖</div>
+            <div class="tool-card-title">CP-Algorithms</div>
+            <div class="tool-card-desc">Comprehensive algorithm reference with proofs, complexities, and implementations in C++.</div>
+            <a class="tool-card-link" href="https://cp-algorithms.com" target="_blank">Visit →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">📚</div>
+            <div class="tool-card-title">USACO Guide</div>
+            <div class="tool-card-desc">Structured curriculum from Bronze to Platinum level, used by top competitive programmers.</div>
+            <a class="tool-card-link" href="https://usaco.guide" target="_blank">Visit →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">🎥</div>
+            <div class="tool-card-title">Errichto (YouTube)</div>
+            <div class="tool-card-desc">Educational CP videos covering problem-solving strategies, algorithm explanations, and contest upsolving.</div>
+            <a class="tool-card-link" href="https://youtube.com/@Errichto" target="_blank">Visit →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">📝</div>
+            <div class="tool-card-title">Competitive Programmer's Handbook</div>
+            <div class="tool-card-desc">Free book by Antti Laaksonen — a complete guide to algorithms used in competitive programming.</div>
+            <a class="tool-card-link" href="https://cses.fi/book/book.pdf" target="_blank">Download PDF →</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size:14px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Development Tools</h3>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon">💻</div>
+            <div class="tool-card-title">VS Code + Competitive Companion</div>
+            <div class="tool-card-desc">Set up a local CP environment with auto-fetching of test cases from Codeforces/LeetCode.</div>
+            <a class="tool-card-link" href="https://github.com/jmerle/competitive-companion" target="_blank">GitHub →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">🔧</div>
+            <div class="tool-card-title">GDB + AddressSanitizer</div>
+            <div class="tool-card-desc">Essential debugging tools for C++. ASan catches memory errors; GDB for step-by-step debugging.</div>
+            <a class="tool-card-link" href="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html" target="_blank">Docs →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">🖊️</div>
+            <div class="tool-card-title">C++ STL Cheatsheet</div>
+            <div class="tool-card-desc">Quick reference for vector, map, set, priority_queue, and algorithm functions used in CP.</div>
+            <a class="tool-card-link" href="https://hackingcpp.com/cpp/cheat_sheets.html" target="_blank">View →</a>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon">📈</div>
+            <div class="tool-card-title">Codeforces Rating Tracker</div>
+            <div class="tool-card-desc">Track your rating progress, problem statistics, and performance across contests over time.</div>
+            <a class="tool-card-link" href="https://cftracker.netlify.app" target="_blank">Visit →</a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- Scripts -->
+<script src="algorithms-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
