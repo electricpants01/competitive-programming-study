@@ -6,6 +6,7 @@ Rules specific to this project that override or extend the general rules.
 
 This is a competitive programming learning platform built with Astro (static site generator).
 The site is fully internationalized (EN / ES) and uses a custom i18n system built in TypeScript.
+It is deployed to GitHub Pages at `https://electricpants01.github.io/competitive-programming-study/`.
 
 ## Tech Stack Conventions
 
@@ -20,22 +21,29 @@ The site is fully internationalized (EN / ES) and uses a custom i18n system buil
 ```
 src/
   i18n/
-    types.ts          ← Explicit Translations interface (single source of truth)
+    types.ts          ← Explicit Translations interface + Slide/SlideItem/SlideStat types
     en.ts             ← English strings implementing Translations
     es.ts             ← Spanish strings implementing Translations
-    utils.ts          ← getLang(), useTranslations(), getLocalizedUrl()
+    utils.ts          ← getLang(), useTranslations(), getLocalizedUrl(), stripBase(), isActiveLang()
   pages/
-    index.astro       ← Redirect / → /en/guide
+    index.astro       ← Redirect / → /[base]/en/slides  (uses BASE_URL)
     [lang]/
       guide/
         index.astro   ← Main guide page (EN + ES via getStaticPaths)
+      slides/
+        index.astro   ← Slide presentation page (EN + ES via getStaticPaths)
   components/         ← Reusable .astro components (create here when needed)
   content/            ← Markdown learning content (problems, tutorials)
 
 public/
   algorithms-data.js  ← Algorithm data (plain JS, loaded is:inline)
-  guide-script.js     ← Client-side interactivity (plain JS, loaded is:inline)
+  guide-script.js     ← Client-side interactivity for guide (plain JS, loaded is:inline)
+  slides-script.js    ← Client-side slide navigation (plain JS, loaded is:inline)
   favicon.ico / .svg
+
+.github/
+  workflows/
+    deploy.yml        ← GitHub Actions: build + deploy to GitHub Pages on push to main
 
 scripts/
   sync-ai-configs.sh  ← Generates AI tool configs from AI/ sources
@@ -48,10 +56,26 @@ AI/
 Makefile              ← Run `make sync-ai` to regenerate AI tool configs
 ```
 
+## GitHub Pages Deployment
+
+The site is deployed with a `base` path. **`astro.config.mjs` must always have:**
+
+```js
+export default defineConfig({
+  site: 'https://electricpants01.github.io',
+  base: '/competitive-programming-study',
+  // ...
+});
+```
+
+- `import.meta.env.BASE_URL` resolves to `/competitive-programming-study/` (with trailing slash)
+- All internal links, script `src` attributes, and redirects must be prefixed with `BASE_URL`
+- See `AI/skills/github-pages-deployment.md` for full details
+
 ## i18n Conventions
 
 - Locale routing: `src/pages/[lang]/` — supported langs are `en` and `es`
-- Default locale is `en`; root `/` redirects to `/en/guide`
+- Default locale is `en`; root `/` redirects to `/[base]/en/slides`
 - Always define a `Translations` interface in `src/i18n/types.ts` — **never** use `as const` on
   translation objects; literal types from `typeof en` will make all other locales fail to compile
 - Each locale file (`en.ts`, `es.ts`) implements `Translations` explicitly
@@ -74,15 +98,41 @@ Makefile              ← Run `make sync-ai` to regenerate AI tool configs
 
 ## Astro Script Rules
 
-- Scripts referencing files in `public/` must use `is:inline`:
+- Scripts referencing files in `public/` must use `is:inline` **and** include the `BASE_URL` prefix:
   ```astro
   <!-- ✅ Correct -->
-  <script is:inline src="/algorithms-data.js"></script>
+  <script is:inline src={`${base}algorithms-data.js`}></script>
+  <script is:inline src={`${base}guide-script.js`}></script>
+  <script is:inline src={`${base}slides-script.js`}></script>
 
-  <!-- ❌ Will fail at build time -->
+  <!-- ❌ Will fail at build time (missing is:inline) -->
   <script src="/algorithms-data.js"></script>
+
+  <!-- ❌ Works in dev but broken on GitHub Pages (missing base prefix) -->
+  <script is:inline src="/algorithms-data.js"></script>
+  ```
+  Where `base` is computed as:
+  ```astro
+  const base = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
   ```
 - Use `<script is:inline define:vars={{ ... }}>` to pass Astro/server-side data to the client.
+
+## Redirect Rule — Always Include BASE_URL
+
+`Astro.redirect()` does **not** automatically prepend the `base` path. Always do it manually:
+
+```astro
+---
+// ✅ Correct — works in dev and production
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+return Astro.redirect(`${base}/en/slides`, 302);
+
+// ❌ Wrong — works in dev (no base) but 404 on GitHub Pages
+return Astro.redirect('/en/slides', 302);
+---
+```
 
 ## File Organization
 

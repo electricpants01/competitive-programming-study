@@ -7,10 +7,10 @@ Astro's built-in i18n — the custom system gives us full type-safety and explic
 
 ```
 src/i18n/
-  types.ts   ← Translations interface (the contract every locale must satisfy)
+  types.ts   ← Translations interface + Slide/SlideItem/SlideStat types
   en.ts      ← English strings
   es.ts      ← Spanish strings
-  utils.ts   ← Runtime helpers
+  utils.ts   ← Runtime helpers (getLang, useTranslations, getLocalizedUrl, stripBase, isActiveLang)
 ```
 
 ## The Golden Rule: Always Use an Explicit Interface
@@ -43,12 +43,66 @@ import type { Translations } from './types';
 export const es: Translations = { nav: { brand: 'Guía CP' } };
 ```
 
+## Slide Types (in types.ts)
+
+The slides presentation page uses three helper types defined in `types.ts`:
+
+```ts
+/** A single item within a slide (icon + title + optional desc/tag) */
+export interface SlideItem {
+  icon: string;
+  title: string;
+  desc?: string;
+  tag?: string;
+}
+
+/** A stat shown on the title slide */
+export interface SlideStat {
+  number: string;
+  label: string;
+}
+
+/** A single slide in the presentation */
+export interface Slide {
+  type: 'title' | 'definition' | 'grid' | 'list' | 'timeline' | 'cta';
+  title: string;
+  subtitle?: string;
+  quote?: string;
+  body?: string;
+  stats?: SlideStat[];
+  items?: SlideItem[];
+  cta?: string;
+  ctaHref?: string;  // ← relative to ${base}${lang}/ — do NOT use '../'
+}
+```
+
+These are then used in `Translations`:
+
+```ts
+export interface Translations {
+  // … other keys …
+  slides: {
+    brand: string;
+    prev: string;
+    next: string;
+    fullscreenEnter: string;
+    fullscreenExit: string;
+    slideOf: string;
+    guideLink: string;
+    items: Slide[];
+  };
+}
+```
+
 ## utils.ts — Runtime Helpers
 
 ```ts
 export type Lang = 'en' | 'es';
 export const SUPPORTED_LANGS: Lang[] = ['en', 'es'];
 export const DEFAULT_LANG: Lang = 'en';
+
+/** Strip the Astro base path from a URL pathname (handles dev and production). */
+function stripBase(pathname: string): string { … }
 
 /** Extract the locale from an Astro URL object. */
 export function getLang(url: URL): Lang { … }
@@ -58,13 +112,20 @@ export function useTranslations(lang: Lang): Translations { … }
 
 /** Convert the current URL to the equivalent URL in another locale. */
 export function getLocalizedUrl(url: URL, targetLang: Lang): string { … }
+
+/** Returns true if the given lang is the currently active one. */
+export function isActiveLang(url: URL, lang: Lang): boolean { … }
 ```
+
+> `stripBase()` is internal — it strips `BASE_URL` from pathname before `getLang()` and
+> `getLocalizedUrl()` process the lang segment. Without it, the base path segment would be
+> incorrectly treated as the locale when `base` is set in `astro.config.mjs`.
 
 ## Astro Page Pattern
 
 ```astro
 ---
-import { getLang, useTranslations, getLocalizedUrl, SUPPORTED_LANGS } from '../../../i18n/utils';
+import { useTranslations, getLocalizedUrl, SUPPORTED_LANGS } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/utils';
 
 export function getStaticPaths() {
@@ -75,6 +136,11 @@ const { lang } = Astro.params as { lang: Lang };
 const t = useTranslations(lang);
 const enUrl = getLocalizedUrl(Astro.url, 'en');
 const esUrl = getLocalizedUrl(Astro.url, 'es');
+
+// Always compute base for links and script src attributes:
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 ```
 
@@ -89,7 +155,7 @@ Use `define:vars` to inject the translations object into `window` so plain JS sc
 </script>
 ```
 
-Then in `guide-script.js`:
+Then in `guide-script.js` or `slides-script.js`:
 
 ```js
 const t = window.__CP_T__;
