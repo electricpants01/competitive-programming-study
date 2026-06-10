@@ -1,0 +1,502 @@
+---
+import { useTranslations, getLocalizedUrl, SUPPORTED_LANGS } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/utils';
+
+export function getStaticPaths() {
+  return SUPPORTED_LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const s = t.slides;
+
+const enUrl = getLocalizedUrl(Astro.url, 'en');
+const esUrl = getLocalizedUrl(Astro.url, 'es');
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{lang === 'es' ? 'Programación Competitiva — Presentación' : 'Competitive Programming — Slides'}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="alternate" hreflang="en" href={new URL(enUrl, Astro.url).href} />
+  <link rel="alternate" hreflang="es" href={new URL(esUrl, Astro.url).href} />
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0f1e;
+      color: #f1f5f9;
+    }
+
+    /* ── Nav ── */
+    .nav-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 52px;
+      background: rgba(10,15,30,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 16px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 700;
+      color: #60a5fa; white-space: nowrap; flex-shrink: 0;
+      text-decoration: none;
+    }
+    .nav-brand-link {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,.5);
+      text-decoration: none; padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      transition: color .15s, border-color .15s;
+    }
+    .nav-brand-link:hover { color: #60a5fa; border-color: rgba(96,165,250,.4); }
+    .nav-spacer { flex: 1; }
+    .nav-controls {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .lang-switcher {
+      display: flex; align-items: center;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 18px; overflow: hidden;
+    }
+    .lang-btn {
+      padding: 4px 12px;
+      font-size: 11px; font-weight: 700; letter-spacing: .05em;
+      text-decoration: none; color: rgba(255,255,255,.5);
+      transition: background .15s, color .15s;
+    }
+    .lang-btn:hover { color: #fff; background: rgba(255,255,255,.1); }
+    .lang-btn.active { background: #2563eb; color: #fff; }
+    .lang-divider { width: 1px; height: 14px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+    .slide-counter {
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,.6);
+      min-width: 60px; text-align: center;
+    }
+    .nav-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.7); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .nav-btn:hover:not(:disabled) { background: rgba(255,255,255,.15); color: #fff; }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+
+    /* ── Progress bar ── */
+    .progress-bar {
+      position: fixed; top: 52px; left: 0; right: 0; z-index: 99;
+      height: 3px; background: rgba(255,255,255,.08);
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, #2563eb, #7c3aed);
+      transition: width .4s ease;
+    }
+
+    /* ── Slides container ── */
+    .slides-container {
+      position: fixed; top: 55px; left: 0; right: 0; bottom: 0;
+      overflow: hidden;
+    }
+
+    /* ── Individual slide ── */
+    .slide {
+      position: absolute; inset: 0;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 64px;
+      opacity: 0; transform: translateX(40px);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1; transform: translateX(0);
+    }
+
+    /* ── Slide backgrounds (one per slide index) ── */
+    .slide:nth-child(1)  { background: radial-gradient(ellipse at 30% 50%, #1e3a8a 0%, #0a0f1e 70%); }
+    .slide:nth-child(2)  { background: radial-gradient(ellipse at 70% 40%, #1e1b4b 0%, #0a0f1e 70%); }
+    .slide:nth-child(3)  { background: radial-gradient(ellipse at 20% 60%, #0c2340 0%, #0a0f1e 70%); }
+    .slide:nth-child(4)  { background: radial-gradient(ellipse at 80% 30%, #14234a 0%, #0a0f1e 70%); }
+    .slide:nth-child(5)  { background: radial-gradient(ellipse at 40% 70%, #1a1040 0%, #0a0f1e 70%); }
+    .slide:nth-child(6)  { background: radial-gradient(ellipse at 60% 20%, #0f2340 0%, #0a0f1e 70%); }
+    .slide:nth-child(7)  { background: radial-gradient(ellipse at 25% 45%, #17243e 0%, #0a0f1e 70%); }
+    .slide:nth-child(8)  { background: radial-gradient(ellipse at 75% 55%, #1a1535 0%, #0a0f1e 70%); }
+    .slide:nth-child(9)  { background: radial-gradient(ellipse at 50% 50%, #111c3a 0%, #0a0f1e 70%); }
+
+    /* ── Slide content wrapper ── */
+    .slide-content {
+      width: 100%; max-width: 960px; text-align: left;
+    }
+
+    /* ── Slide headings ── */
+    .slide-heading {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 800; color: #f1f5f9;
+      margin-bottom: 8px; line-height: 1.2;
+    }
+    .slide-subheading {
+      font-size: clamp(13px, 1.4vw, 16px);
+      color: rgba(255,255,255,.55); margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════
+       TITLE slide
+    ══════════════════════════════════ */
+    .title-slide { text-align: center; }
+    .title-slide h1 {
+      font-size: clamp(36px, 5vw, 68px);
+      font-weight: 900; line-height: 1.1;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 20px;
+    }
+    .title-slide .subtitle {
+      font-size: clamp(15px, 1.8vw, 20px);
+      color: rgba(255,255,255,.65); max-width: 640px;
+      margin: 0 auto 48px; line-height: 1.6;
+    }
+    .title-stats {
+      display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900; color: #60a5fa; display: block;
+    }
+    .stat-label {
+      font-size: 13px; color: rgba(255,255,255,.5); font-weight: 500;
+    }
+
+    /* ══════════════════════════════════
+       DEFINITION slide
+    ══════════════════════════════════ */
+    .definition-box {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-left: 4px solid #60a5fa;
+      border-radius: 12px; padding: 20px 24px;
+      margin-bottom: 28px;
+      font-size: clamp(14px, 1.5vw, 17px);
+      color: rgba(255,255,255,.8); line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* ══════════════════════════════════
+       GRID (2-3 col cards)
+    ══════════════════════════════════ */
+    .slide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .grid-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 12px; padding: 18px 20px;
+      transition: background .2s, border-color .2s;
+      position: relative;
+    }
+    .grid-card:hover { background: rgba(255,255,255,.09); border-color: rgba(96,165,250,.3); }
+    .card-icon { font-size: 24px; margin-bottom: 10px; display: block; }
+    .card-title { font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+    .card-desc { font-size: 12.5px; color: rgba(255,255,255,.5); line-height: 1.6; }
+    .card-tag {
+      position: absolute; top: 12px; right: 12px;
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+      padding: 2px 8px; border-radius: 10px;
+      background: rgba(96,165,250,.15); color: #60a5fa;
+      border: 1px solid rgba(96,165,250,.25);
+    }
+
+    /* ══════════════════════════════════
+       LIST slide
+    ══════════════════════════════════ */
+    .slide-list { display: flex; flex-direction: column; gap: 14px; }
+    .list-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px; padding: 14px 18px;
+    }
+    .list-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+    .list-item-body {}
+    .list-item-title { font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 3px; }
+    .list-item-desc { font-size: 12.5px; color: rgba(255,255,255,.5); line-height: 1.5; }
+
+    /* ══════════════════════════════════
+       TIMELINE slide
+    ══════════════════════════════════ */
+    .slide-timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .slide-timeline::before {
+      content: '';
+      position: absolute; left: 20px; top: 24px; bottom: 24px;
+      width: 2px; background: rgba(96,165,250,.2);
+    }
+    .timeline-item {
+      display: flex; align-items: flex-start; gap: 20px;
+      padding: 12px 0; position: relative;
+    }
+    .timeline-num {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: #fff;
+      position: relative; z-index: 1;
+    }
+    .timeline-body { padding-top: 8px; }
+    .timeline-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+    .timeline-desc { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.5; }
+
+    /* ══════════════════════════════════
+       CTA slide
+    ══════════════════════════════════ */
+    .cta-slide { text-align: center; }
+    .cta-slide h2 {
+      font-size: clamp(28px, 4vw, 52px); font-weight: 900;
+      background: linear-gradient(135deg, #60a5fa, #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 16px;
+    }
+    .cta-subtitle {
+      font-size: clamp(14px, 1.5vw, 17px);
+      color: rgba(255,255,255,.6); max-width: 560px;
+      margin: 0 auto 40px; line-height: 1.6;
+    }
+    .cta-cards {
+      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .cta-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px; padding: 20px 24px;
+      text-align: center; width: 200px;
+    }
+    .cta-card-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+    .cta-card-title { font-size: 13px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+    .cta-card-desc { font-size: 11.5px; color: rgba(255,255,255,.45); line-height: 1.5; }
+    .cta-btn {
+      display: inline-block;
+      padding: 14px 36px; border-radius: 30px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff; font-size: 15px; font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(37,99,235,.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,99,235,.5); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .slide { padding: 32px 24px; }
+      .title-stats { gap: 24px; }
+      .slide-grid { grid-template-columns: 1fr 1fr; }
+      .cta-cards { flex-direction: column; align-items: center; }
+    }
+    @media (max-width: 480px) {
+      .slide-grid { grid-template-columns: 1fr; }
+      .nav-btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV BAR ═══ -->
+<nav class="nav-bar">
+  <span class="nav-brand">🏆 {s.brand}</span>
+  <a class="nav-brand-link" href={`${base}${lang}/guide`}>
+    📖 {s.guideLink}
+  </a>
+
+  <div class="nav-spacer"></div>
+
+  <div class="nav-controls">
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      <a class:list={['lang-btn', { active: lang === 'en' }]} href={enUrl} hreflang="en">EN</a>
+      <span class="lang-divider" aria-hidden="true"></span>
+      <a class:list={['lang-btn', { active: lang === 'es' }]} href={esUrl} hreflang="es">ES</a>
+    </div>
+
+    <!-- Slide controls -->
+    <button class="nav-btn" id="prevBtn" title={s.prev} disabled>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    <span class="slide-counter">
+      <span id="currentSlide">1</span>&nbsp;{s.slideOf}&nbsp;<span id="totalSlides">{s.items.length}</span>
+    </span>
+
+    <button class="nav-btn" id="nextBtn" title={s.next}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <button class="nav-btn" id="fullscreenBtn" title={s.fullscreenEnter}>
+      <span id="fsIcon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m10 0h3a2 2 0 0 0 2-2v-3"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ PROGRESS BAR ═══ -->
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<!-- ═══ SLIDES ═══ -->
+<div class="slides-container" id="presentationContainer">
+  {s.items.map((slide, i) => (
+    <div class:list={['slide', { active: i === 0 }]}>
+
+      {/* ── TITLE ── */}
+      {slide.type === 'title' && (
+        <div class="slide-content title-slide">
+          <h1>{slide.title}</h1>
+          {slide.subtitle && <p class="subtitle">{slide.subtitle}</p>}
+          {slide.stats && (
+            <div class="title-stats">
+              {slide.stats.map(st => (
+                <div class="stat-item">
+                  <span class="stat-number">{st.number}</span>
+                  <span class="stat-label">{st.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── DEFINITION ── */}
+      {slide.type === 'definition' && (
+        <div class="slide-content">
+          <h2 class="slide-heading">{slide.title}</h2>
+          {slide.quote && <div class="definition-box">{slide.quote}</div>}
+          {slide.items && (
+            <div class="slide-grid">
+              {slide.items.map(item => (
+                <div class="grid-card">
+                  <span class="card-icon">{item.icon}</span>
+                  <div class="card-title">{item.title}</div>
+                  {item.desc && <div class="card-desc">{item.desc}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── GRID ── */}
+      {slide.type === 'grid' && (
+        <div class="slide-content">
+          <h2 class="slide-heading">{slide.title}</h2>
+          {slide.subtitle && <p class="slide-subheading">{slide.subtitle}</p>}
+          {slide.items && (
+            <div class="slide-grid">
+              {slide.items.map(item => (
+                <div class="grid-card">
+                  {item.tag && <span class="card-tag">{item.tag}</span>}
+                  <span class="card-icon">{item.icon}</span>
+                  <div class="card-title">{item.title}</div>
+                  {item.desc && <div class="card-desc">{item.desc}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── LIST ── */}
+      {slide.type === 'list' && (
+        <div class="slide-content">
+          <h2 class="slide-heading">{slide.title}</h2>
+          {slide.subtitle && <p class="slide-subheading">{slide.subtitle}</p>}
+          {slide.items && (
+            <div class="slide-list">
+              {slide.items.map(item => (
+                <div class="list-item">
+                  <span class="list-icon">{item.icon}</span>
+                  <div class="list-item-body">
+                    <div class="list-item-title">{item.title}</div>
+                    {item.desc && <div class="list-item-desc">{item.desc}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TIMELINE ── */}
+      {slide.type === 'timeline' && (
+        <div class="slide-content">
+          <h2 class="slide-heading">{slide.title}</h2>
+          {slide.subtitle && <p class="slide-subheading">{slide.subtitle}</p>}
+          {slide.items && (
+            <div class="slide-timeline">
+              {slide.items.map(item => (
+                <div class="timeline-item">
+                  <div class="timeline-num">{item.icon}</div>
+                  <div class="timeline-body">
+                    <div class="timeline-title">{item.title}</div>
+                    {item.desc && <div class="timeline-desc">{item.desc}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── CTA ── */}
+      {slide.type === 'cta' && (
+        <div class="slide-content cta-slide">
+          <h2>{slide.title}</h2>
+          {slide.subtitle && <p class="cta-subtitle">{slide.subtitle}</p>}
+          {slide.items && (
+            <div class="cta-cards">
+              {slide.items.map(item => (
+                <div class="cta-card">
+                  <span class="cta-card-icon">{item.icon}</span>
+                  <div class="cta-card-title">{item.title}</div>
+                  {item.desc && <div class="cta-card-desc">{item.desc}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+          {slide.cta && (
+            <a class="cta-btn" href={`${base}${lang}/${slide.ctaHref ?? 'guide'}`}>{slide.cta}</a>
+          )}
+        </div>
+      )}
+
+    </div>
+  ))}
+</div>
+
+<script is:inline src={`${base}slides-script.js`}></script>
+</body>
+</html>

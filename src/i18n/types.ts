@@ -1,3 +1,30 @@
+/** Shape of a single slide item (icon + title + optional desc/tag) */
+export interface SlideItem {
+  icon: string;
+  title: string;
+  desc?: string;
+  tag?: string;
+}
+
+/** Shape of a stat shown on the title slide */
+export interface SlideStat {
+  number: string;
+  label: string;
+}
+
+/** A single slide in the presentation */
+export interface Slide {
+  type: 'title' | 'definition' | 'grid' | 'list' | 'timeline' | 'cta';
+  title: string;
+  subtitle?: string;
+  quote?: string;
+  body?: string;
+  stats?: SlideStat[];
+  items?: SlideItem[];
+  cta?: string;
+  ctaHref?: string;
+}
+
 /** Shape of a learning-path step */
 export interface LearningPathStep {
   step: number;
@@ -105,5 +132,16 @@ export interface Translations {
     viewLabel: string;
     docsLabel: string;
     items: Record<string, { title: string; desc: string }>;
+  };
+
+  slides: {
+    brand: string;
+    prev: string;
+    next: string;
+    fullscreenEnter: string;
+    fullscreenExit: string;
+    slideOf: string;
+    guideLink: string;
+    items: Slide[];
   };
 }
