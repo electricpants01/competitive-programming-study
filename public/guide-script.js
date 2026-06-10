@@ -31,9 +31,9 @@
   const progressFill = document.getElementById("progress-fill");
   const progressLabel = document.getElementById("progress-label");
   const algoGrid = document.getElementById("algo-grid");
-  const modalBackdrop = document.getElementById("modal-backdrop");
-  const modalContent = document.getElementById("modal-content");
   const sidebarNav = document.getElementById("sidebar-nav");
+  const detailPanel = document.getElementById("detail-panel");
+  const detailBackBtn = document.getElementById("detail-back");
 
   // ── Theme ────────────────────────────────────────────────────
   function applyTheme(theme) {
@@ -123,9 +123,9 @@
     updateActiveSidebarItem(id);
 
     if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
-      setActiveSection("algorithms");
-      openModal(id);
+      showDetailPanel(id);
     } else {
+      setActiveSection("overview");
       const anchor = document.getElementById("overview-" + id);
       if (anchor) anchor.scrollIntoView({ behavior: "smooth" });
     }
@@ -136,7 +136,6 @@
     const total = sidebarSectionDefs.reduce((acc, s) => acc + s.items.length, 0);
     const pct = Math.round((state.visitedItems.length / total) * 100);
     progressFill.style.width = pct + "%";
-    // Use translated progress label (which may be a function)
     if (typeof t.sidebar.progress === 'function') {
       progressLabel.textContent = t.sidebar.progress(pct);
     } else {
@@ -162,6 +161,11 @@
   document.querySelectorAll("[data-goto]").forEach((el) => {
     el.addEventListener("click", () => setActiveSection(el.dataset.goto));
   });
+
+  // ── Back button from detail view ──────────────────────────────
+  if (detailBackBtn) {
+    detailBackBtn.addEventListener("click", () => setActiveSection("algorithms"));
+  }
 
   // ── Build algorithm grid ──────────────────────────────────────
   function diffBadgeClass(d) {
@@ -192,13 +196,13 @@
             <span class="algo-meta-item">⚡ ${algo.importance}</span>
           </div>
         </div>`;
-      card.addEventListener("click", () => openModal(id));
+      card.addEventListener("click", () => showDetailPanel(id));
       algoGrid.appendChild(card);
     });
   }
 
-  // ── Modal ─────────────────────────────────────────────────────
-  function openModal(id) {
+  // ── Inline detail panel ───────────────────────────────────────
+  function showDetailPanel(id) {
     const algo = (typeof algorithmsData !== 'undefined') ? algorithmsData[id] : null;
     if (!algo) return;
 
@@ -225,41 +229,37 @@
     const constraintsHTML = (algo.typicalConstraints || []).map(c => `<span class="tag">${c}</span>`).join("");
     const problemsHTML = (algo.problems || []).map(p => `<span class="problem-chip">${p}</span>`).join("");
 
-    modalContent.innerHTML = `
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">${algo.title}</div>
-          <div class="algo-badges">
-            <span class="badge badge-category">${algo.category}</span>
-            <span class="badge ${diffBadgeClass(algo.difficulty)}">${algo.difficulty}</span>
-            <span class="badge" style="background:var(--bg-body);border:1px solid var(--border);color:var(--text-secondary)">⏱ ${algo.timeToLearn}</span>
+    detailPanel.innerHTML = `
+      <div class="detail-card">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title">${algo.title}</div>
+            <div class="algo-badges">
+              <span class="badge badge-category">${algo.category}</span>
+              <span class="badge ${diffBadgeClass(algo.difficulty)}">${algo.difficulty}</span>
+              <span class="badge" style="background:var(--bg-body);border:1px solid var(--border);color:var(--text-secondary)">⏱ ${algo.timeToLearn}</span>
+            </div>
           </div>
         </div>
-        <button class="modal-close" id="modal-close" aria-label="${t.modal.close}">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-section">
-          <div class="modal-section-title">${t.modal.description}</div>
-          <div class="modal-desc">${algo.description}</div>
+        <div class="modal-body">
+          <div class="modal-section">
+            <div class="modal-section-title">${t.modal.description}</div>
+            <div class="modal-desc">${algo.description}</div>
+          </div>
+          ${keyTechHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.keyTechniques}</div><div class="tag-list">${keyTechHTML}</div></div>` : ""}
+          ${constraintsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.constraints}</div><div class="tag-list">${constraintsHTML}</div></div>` : ""}
+          ${benefitsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.whyLearn}</div><ul class="bullet-list">${benefitsHTML}</ul></div>` : ""}
+          ${examplesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.codeExamples}</div>${examplesHTML}</div>` : ""}
+          ${practicesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.bestPractices}</div><ul class="bullet-list">${practicesHTML}</ul></div>` : ""}
+          ${problemsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.practiceProblems}</div><div class="problems-list">${problemsHTML}</div></div>` : ""}
         </div>
-        ${keyTechHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.keyTechniques}</div><div class="tag-list">${keyTechHTML}</div></div>` : ""}
-        ${constraintsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.constraints}</div><div class="tag-list">${constraintsHTML}</div></div>` : ""}
-        ${benefitsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.whyLearn}</div><ul class="bullet-list">${benefitsHTML}</ul></div>` : ""}
-        ${examplesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.codeExamples}</div>${examplesHTML}</div>` : ""}
-        ${practicesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.bestPractices}</div><ul class="bullet-list">${practicesHTML}</ul></div>` : ""}
-        ${problemsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.practiceProblems}</div><div class="problems-list">${problemsHTML}</div></div>` : ""}
       </div>`;
 
-    modalBackdrop.classList.add("visible");
-    document.body.style.overflow = "hidden";
+    setActiveSection("detail");
+    detailPanel.scrollTop = 0;
+    mainEl.scrollTo({ top: 0, behavior: "smooth" });
 
-    document.getElementById("modal-close").addEventListener("click", closeModal);
-
-    modalContent.querySelectorAll(".code-copy-btn").forEach((btn, i) => {
+    detailPanel.querySelectorAll(".code-copy-btn").forEach((btn, i) => {
       btn.addEventListener("click", () => {
         const snippet = algo.examples[i].codeSnippet;
         navigator.clipboard.writeText(snippet).then(() => {
@@ -270,21 +270,6 @@
       });
     });
   }
-
-  function closeModal() {
-    modalBackdrop.classList.remove("visible");
-    document.body.style.overflow = "";
-  }
-
-  modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeModal(); });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      if (modalBackdrop.classList.contains("visible")) closeModal();
-      else if (searchOverlay.classList.contains("visible")) closeSearch();
-    }
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); searchInput.focus(); }
-  });
 
   // ── Search ────────────────────────────────────────────────────
   function buildSearchIndex() {
@@ -355,6 +340,11 @@
 
   searchClearBtn.addEventListener("click", closeSearch);
   searchOverlay.addEventListener("click", (e) => { if (e.target === searchOverlay) closeSearch(); });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && searchOverlay.classList.contains("visible")) closeSearch();
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); searchInput.focus(); }
+  });
 
   // ── Util ──────────────────────────────────────────────────────
   function esc(str) {

@@ -425,6 +425,22 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     .tool-card-link:hover { text-decoration: underline; }
     .tools-section-label { font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; margin-top: 32px; }
     .tools-section-label:first-child { margin-top: 0; }
+    /* ── Detail panel ── */
+    .detail-back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; margin-bottom: 24px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 20px; cursor: pointer;
+      font-size: 13px; font-weight: 500; color: var(--text-secondary);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .detail-back-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .detail-card {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-sm); max-width: 760px;
+      transition: background var(--transition), border-color var(--transition);
+    }
     /* ── Responsive ── */
     @media (max-width: 1024px) { .stats-grid, .quick-nav-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 768px) {
@@ -623,6 +639,17 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </div>
     </section>
 
+    <!-- ══ DETAIL ══ -->
+    <section class="page-section" data-section="detail">
+      <button class="detail-back-btn" id="detail-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        {lang === 'es' ? 'Volver a Algoritmos' : 'Back to Algorithms'}
+      </button>
+      <div id="detail-panel"></div>
+    </section>
+
     <!-- ══ TOOLS ══ -->
     <section class="page-section" data-section="tools">
       <div style="margin-bottom:28px">
@@ -656,11 +683,6 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     </section>
 
   </main>
-</div>
-
-<!-- Modal -->
-<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
-  <div class="modal" id="modal-content"></div>
 </div>
 
 <script is:inline src={`${base}algorithms-data.js`}></script>
