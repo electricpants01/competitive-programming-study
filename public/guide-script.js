@@ -8,6 +8,61 @@
   const t = window.__CP_T__;
   const lang = window.__CP_LANG__ || 'en';
 
+  // ── Visualizer links per algorithm ────────────────────────────
+  const visualizersMap = {
+    'arrays-strings': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/array' },
+    ],
+    'binary-search': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/binarysearch' },
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/brute-force/binary-search' },
+      { name: 'See Algorithms', url: 'https://see-algorithms.com/search/BinarySearch' },
+      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/search/binary' },
+    ],
+    'sorting': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/sorting' },
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/divide-and-conquer/merge-sort' },
+      { name: 'See Algorithms', url: 'https://see-algorithms.com/sorting/MergeSort' },
+      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/sorting/mergesort' },
+    ],
+    'bfs': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/dfsbfs' },
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/graph/breadth-first-search' },
+      { name: 'See Algorithms', url: 'https://see-algorithms.com/graph/BFS' },
+      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/graph/bfs' },
+    ],
+    'dfs': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/dfsbfs' },
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/graph/depth-first-search' },
+      { name: 'See Algorithms', url: 'https://see-algorithms.com/graph/DFS' },
+      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/graph/dfs' },
+    ],
+    'dijkstra': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/sssp' },
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/greedy/dijkstras-shortest-path' },
+      { name: 'See Algorithms', url: 'https://see-algorithms.com/graph/Dijkstra' },
+      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/graph/dijkstra' },
+    ],
+    'union-find': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/ufds' },
+    ],
+    'dp-1d': [
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/dynamic-programming/longest-increasing-subsequence' },
+    ],
+    'dp-2d': [
+      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/dynamic-programming/longest-common-subsequence' },
+    ],
+    'segment-tree': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/segmenttree' },
+    ],
+    'fenwick-tree': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/bit' },
+    ],
+    'trie': [
+      { name: 'VisuAlgo', url: 'https://visualgo.net/en/trie' },
+    ],
+  };
+
   // ── State ───────────────────────────────────────────────────
   const state = {
     theme: localStorage.getItem("cp-theme") || "light",
@@ -229,6 +284,12 @@
     const constraintsHTML = (algo.typicalConstraints || []).map(c => `<span class="tag">${c}</span>`).join("");
     const problemsHTML = (algo.problems || []).map(p => `<span class="problem-chip">${p}</span>`).join("");
 
+    const vizLinks = visualizersMap[id] || [];
+    const visualizersHTML = vizLinks.map(v =>
+      `<a class="viz-link" href="${v.url}" target="_blank" rel="noopener noreferrer">${esc(v.name)} ↗</a>`
+    ).join("");
+    const vizLabel = lang === 'es' ? '🎬 Visualízalo' : '🎬 Visualize It';
+
     detailPanel.innerHTML = `
       <div class="detail-card">
         <div class="modal-header">
@@ -252,6 +313,7 @@
           ${benefitsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.whyLearn}</div><ul class="bullet-list">${benefitsHTML}</ul></div>` : ""}
           ${examplesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.codeExamples}</div>${examplesHTML}</div>` : ""}
           ${practicesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.bestPractices}</div><ul class="bullet-list">${practicesHTML}</ul></div>` : ""}
+          ${visualizersHTML ? `<div class="modal-section"><div class="modal-section-title">${vizLabel}</div><div class="visualizer-links">${visualizersHTML}</div></div>` : ""}
           ${problemsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.practiceProblems}</div><div class="problems-list">${problemsHTML}</div></div>` : ""}
         </div>
       </div>`;
