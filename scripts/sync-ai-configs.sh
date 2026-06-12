@@ -6,7 +6,8 @@
 # files for each supported AI tool.
 #
 # Supported targets:
-#   - Cline / Claude  →  .claude/CLAUDE.md
+#   - Cline           →  .clinerules  (auto-loaded every session)
+#   - Claude          →  .claude/CLAUDE.md
 #   - Gemini CLI      →  .gemini/GEMINI.md
 #   - GitHub Copilot  →  .github/copilot-instructions.md
 #   - Cursor          →  .cursorrules
@@ -85,8 +86,11 @@ write_config() {
 echo "🔄 Syncing AI configs from AI/ ..."
 echo ""
 
-# Cline / Claude
-write_config "$ROOT_DIR/.claude/CLAUDE.md" "Cline/Claude"
+# Cline (.clinerules — loaded automatically at the start of every Cline session)
+write_config "$ROOT_DIR/.clinerules" "Cline"
+
+# Claude (legacy path kept for compatibility)
+write_config "$ROOT_DIR/.claude/CLAUDE.md" "Claude"
 
 # Gemini CLI
 write_config "$ROOT_DIR/.gemini/GEMINI.md" "Gemini CLI"

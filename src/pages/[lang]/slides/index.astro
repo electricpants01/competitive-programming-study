@@ -112,18 +112,15 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       overflow: hidden;
     }
 
-    /* ── Individual slide ── */
+    /* ── Individual slide — transitions managed by JS ── */
     .slide {
       position: absolute; inset: 0;
       display: none; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 48px 64px;
-      opacity: 0; transform: translateX(40px);
-      transition: opacity .35s ease, transform .35s ease;
     }
     .slide.active {
       display: flex;
-      opacity: 1; transform: translateX(0);
     }
 
     /* ── Slide backgrounds (one per slide index) ── */
@@ -140,6 +137,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     /* ── Slide content wrapper ── */
     .slide-content {
       width: 100%; max-width: 960px; text-align: left;
+      margin: 0 auto;
     }
 
     /* ── Slide headings ── */
@@ -310,10 +308,59 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       .slide-grid { grid-template-columns: 1fr 1fr; }
       .cta-cards { flex-direction: column; align-items: center; }
     }
+    @media (max-width: 768px) {
+      .slide-dots { bottom: 10px; gap: 7px; }
+    }
     @media (max-width: 480px) {
       .slide-grid { grid-template-columns: 1fr; }
       .nav-btn span { display: none; }
+      .nav-brand-link .link-label { display: none; }
     }
+
+    /* ── Staggered child entrance animation ── */
+    @keyframes itemFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .item-animated {
+      animation: itemFadeUp .4s ease both;
+    }
+
+    /* ── Dot navigation ── */
+    .slide-dots {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      z-index: 100;
+      display: flex; align-items: center; gap: 9px;
+    }
+    .slide-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      border: none; cursor: pointer; padding: 0;
+      transition: background .2s, transform .2s, width .2s;
+      flex-shrink: 0;
+    }
+    .slide-dot:hover { background: rgba(255,255,255,.55); }
+    .slide-dot.active {
+      background: #60a5fa;
+      width: 22px; border-radius: 4px;
+      transform: none;
+    }
+
+    /* ── Keyboard hint toast ── */
+    .keyboard-hint {
+      position: fixed; bottom: 52px; left: 50%; transform: translateX(-50%);
+      z-index: 200;
+      background: rgba(15,23,42,.9);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-size: 12px; font-weight: 500; color: rgba(255,255,255,.65);
+      pointer-events: none;
+      opacity: 0; transition: opacity .4s ease;
+      white-space: nowrap;
+    }
+    .keyboard-hint.visible { opacity: 1; }
   </style>
 </head>
 <body>
@@ -322,7 +369,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 <nav class="nav-bar">
   <span class="nav-brand">🏆 {s.brand}</span>
   <a class="nav-brand-link" href={`${base}${lang}/guide`}>
-    📖 {s.guideLink}
+    📖 <span class="link-label">{s.guideLink}</span>
   </a>
 
   <div class="nav-spacer"></div>
@@ -496,6 +543,12 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     </div>
   ))}
 </div>
+
+<!-- ═══ DOT NAVIGATION ═══ -->
+<div class="slide-dots" id="slideDots"></div>
+
+<!-- ═══ KEYBOARD HINT TOAST ═══ -->
+<div class="keyboard-hint" id="keyboardHint">← → arrow keys to navigate · swipe on mobile</div>
 
 <script is:inline src={`${base}slides-script.js`}></script>
 </body>
