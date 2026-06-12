@@ -51,20 +51,20 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     :root {
       --color-primary:       #2563eb;
       --color-primary-dark:  #1d4ed8;
-      --color-primary-light: #eff6ff;
-      --bg-body:     #f3f4f6;
+      --color-primary-light: #ebf1ff;
+      --bg-body:     #eae9df;
       --bg-surface:  #ffffff;
-      --bg-sidebar:  #ffffff;
+      --bg-sidebar:  #f5f4ed;
       --bg-nav:      #ffffff;
-      --bg-code:     #f8fafc;
-      --bg-hover:    #f1f5f9;
-      --bg-active:   #eff6ff;
-      --text-primary:   #111827;
-      --text-secondary: #6b7280;
-      --text-muted:     #9ca3af;
-      --border:       #e5e7eb;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
-      --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+      --bg-code:     #f0efe6;
+      --bg-hover:    #dddcd2;
+      --bg-active:   #e4ecff;
+      --text-primary:   #1a1915;
+      --text-secondary: #64625a;
+      --text-muted:     #8f8d85;
+      --border:       #d4d3c9;
+      --shadow-sm: 0 1px 4px rgba(60,58,42,.10);
+      --shadow-md: 0 4px 16px rgba(60,58,42,.13);
       --sidebar-width: 240px;
       --nav-height:    56px;
       --radius-sm: 6px;
@@ -102,6 +102,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       height: var(--nav-height);
       background: var(--bg-nav);
       border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 6px rgba(60,58,42,.08);
       display: flex; align-items: center;
       padding: 0 20px; gap: 16px;
       z-index: 100;
@@ -276,6 +277,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       border-radius: var(--radius-lg); padding: 28px 20px; text-align: center;
       box-shadow: var(--shadow-sm);
       transition: box-shadow var(--transition), transform var(--transition), background var(--transition), border-color var(--transition);
+      transition: box-shadow var(--transition), transform var(--transition), background var(--transition), border-color var(--transition);
     }
     .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
     .stat-icon { width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 22px; }
@@ -321,10 +323,11 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     .algo-card {
       background: var(--bg-surface); border: 1px solid var(--border);
       border-radius: var(--radius-lg); overflow: hidden; cursor: pointer;
+      box-shadow: var(--shadow-sm);
       transition: box-shadow var(--transition), transform var(--transition), background var(--transition), border-color var(--transition);
     }
-    .algo-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .algo-card-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--border); }
+    .algo-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); border-color: var(--color-primary); }
+    .algo-card-header { padding: 18px 22px 14px; border-bottom: 1px solid var(--border); }
     .algo-card-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
     .algo-badges { display: flex; gap: 6px; flex-wrap: wrap; }
     .badge { padding: 2px 8px; border-radius: 10px; font-size: 10.5px; font-weight: 600; }
@@ -335,9 +338,9 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     [data-theme="dark"] .badge-beginner { background: #064e3b; color: #6ee7b7; }
     [data-theme="dark"] .badge-intermediate { background: #451a03; color: #fcd34d; }
     [data-theme="dark"] .badge-advanced { background: #450a0a; color: #fca5a5; }
-    .algo-card-body { padding: 14px 20px; }
+    .algo-card-body { padding: 16px 22px; }
     .algo-card-desc {
-      font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;
+      font-size: 13px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 12px;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
     .algo-card-meta { display: flex; gap: 12px; }
@@ -366,7 +369,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     }
     .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
     .modal-body { padding: 24px 28px; }
-    .modal-section { margin-bottom: 24px; }
+    .modal-section { margin-bottom: 28px; }
     .modal-section:last-child { margin-bottom: 0; }
     .modal-section-title {
       font-size: 12px; font-weight: 700; text-transform: uppercase;
@@ -375,7 +378,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     .modal-desc { font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; }
     .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
     .tag {
-      padding: 4px 10px; background: var(--bg-body); border: 1px solid var(--border);
+      padding: 4px 10px; background: var(--bg-surface); border: 1px solid var(--border);
       border-radius: var(--radius-sm); font-size: 12px; color: var(--text-secondary);
     }
     .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
@@ -411,6 +414,20 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       transition: background var(--transition);
     }
     .problem-chip:hover { background: var(--color-primary); color: #fff; }
+    /* Visualizer links */
+    .visualizer-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .viz-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px;
+      background: var(--bg-body);
+      border: 1px solid var(--color-primary);
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .viz-link:hover { background: var(--color-primary); color: #fff; }
     /* ── Roadmap ── */
     .roadmap-phases { display: flex; flex-direction: column; gap: 24px; }
     .roadmap-phase { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: background var(--transition), border-color var(--transition); }
@@ -445,7 +462,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     .detail-card {
       background: var(--bg-surface); border: 1px solid var(--border);
       border-radius: var(--radius-lg); overflow: hidden;
-      box-shadow: var(--shadow-sm); max-width: 760px; margin: 0 auto;
+      box-shadow: var(--shadow-md); max-width: 760px; margin: 0 auto;
       transition: background var(--transition), border-color var(--transition);
     }
     /* ── Responsive ── */
