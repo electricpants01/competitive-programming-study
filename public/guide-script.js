@@ -246,6 +246,7 @@
             <div class="modal-section-title">${t.modal.description}</div>
             <div class="modal-desc">${algo.description}</div>
           </div>
+          ${algo.asciiArt ? `<div class="modal-section"><div class="modal-section-title">Visual Diagram</div><pre class="ascii-art">${esc(algo.asciiArt)}</pre></div>` : ""}
           ${keyTechHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.keyTechniques}</div><div class="tag-list">${keyTechHTML}</div></div>` : ""}
           ${constraintsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.constraints}</div><div class="tag-list">${constraintsHTML}</div></div>` : ""}
           ${benefitsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.whyLearn}</div><ul class="bullet-list">${benefitsHTML}</ul></div>` : ""}

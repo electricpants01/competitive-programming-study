@@ -396,6 +396,13 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
       font-size: 12px; line-height: 1.7; color: var(--text-primary); white-space: pre;
     }
+    .ascii-art {
+      padding: 16px; overflow-x: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px; line-height: 1.6; color: var(--color-primary);
+      background: var(--bg-body); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); white-space: pre; margin: 0;
+    }
     .problems-list { display: flex; flex-wrap: wrap; gap: 8px; }
     .problem-chip {
       padding: 5px 12px; background: var(--color-primary-light);
