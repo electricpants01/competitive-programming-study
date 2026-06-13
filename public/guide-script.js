@@ -8,16 +8,9 @@
   const t = window.__CP_T__;
   const lang = window.__CP_LANG__ || 'en';
 
-  // ── Visualizer links per algorithm ────────────────────────────
   const visualizersMap = {
     'arrays-strings': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/array' },
-    ],
-    'binary-search': [
-      { name: 'VisuAlgo', url: 'https://visualgo.net/en/binarysearch' },
-      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/brute-force/binary-search' },
-      { name: 'See Algorithms', url: 'https://see-algorithms.com/search/BinarySearch' },
-      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/search/binary' },
     ],
     'sorting': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/sorting' },
@@ -27,21 +20,15 @@
     ],
     'bfs': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/dfsbfs' },
-      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/graph/breadth-first-search' },
       { name: 'See Algorithms', url: 'https://see-algorithms.com/graph/BFS' },
-      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/graph/bfs' },
     ],
     'dfs': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/dfsbfs' },
-      { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/graph/depth-first-search' },
       { name: 'See Algorithms', url: 'https://see-algorithms.com/graph/DFS' },
-      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/graph/dfs' },
     ],
     'dijkstra': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/sssp' },
       { name: 'Algorithm Visualizer', url: 'https://algorithm-visualizer.org/greedy/dijkstras-shortest-path' },
-      { name: 'See Algorithms', url: 'https://see-algorithms.com/graph/Dijkstra' },
-      { name: 'DSA Visualizer', url: 'https://www.dsavisualizer.in/visualizer/graph/dijkstra' },
     ],
     'union-find': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/ufds' },
@@ -56,10 +43,10 @@
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/segmenttree' },
     ],
     'fenwick-tree': [
-      { name: 'VisuAlgo', url: 'https://visualgo.net/en/bit' },
+      { name: 'YouTube — William Fiset', url: 'https://www.youtube.com/watch?v=RgITNht_f4Q' },
     ],
     'trie': [
-      { name: 'VisuAlgo', url: 'https://visualgo.net/en/trie' },
+      { name: 'YouTube — NeetCode', url: 'https://www.youtube.com/watch?v=oobqoCJlHA0' },
     ],
   };
 
@@ -285,9 +272,12 @@
     const problemsHTML = (algo.problems || []).map(p => `<span class="problem-chip">${p}</span>`).join("");
 
     const vizLinks = visualizersMap[id] || [];
-    const visualizersHTML = vizLinks.map(v =>
-      `<a class="viz-link" href="${v.url}" target="_blank" rel="noopener noreferrer">${esc(v.name)} ↗</a>`
-    ).join("");
+    const ytQuery = encodeURIComponent(algo.title + ' algorithm visualization');
+    const ytSearchHref = `https://www.youtube.com/results?search_query=${ytQuery}`;
+    const visualizersHTML = [
+      ...vizLinks.map(v => `<a class="viz-link" href="${v.url}" target="_blank" rel="noopener noreferrer">${esc(v.name)} ↗</a>`),
+      `<a class="viz-link" href="${ytSearchHref}" target="_blank" rel="noopener noreferrer">YouTube Search ↗</a>`,
+    ].join("");
     const vizLabel = lang === 'es' ? '🎬 Visualízalo' : '🎬 Visualize It';
 
     detailPanel.innerHTML = `
