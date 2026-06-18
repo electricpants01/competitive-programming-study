@@ -270,6 +270,16 @@ export const en: Translations = {
     },
   },
 
+  quiz: {
+    tab: 'Quiz',
+    learnTab: 'Learn',
+    submitBtn: 'Submit Answers',
+    tryAgainBtn: 'Try Again',
+    score: (correct, total) => `You got ${correct} out of ${total} correct!`,
+    noQuiz: 'No quiz available for this topic yet.',
+    selectAll: 'Please answer all questions before submitting.',
+  },
+
   slides: {
     brand: 'CP Slides',
     prev: 'Previous',

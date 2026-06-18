@@ -63,6 +63,13 @@ while (lo <= hi) {
       "Vigilar constantes ocultas — 2×10⁸ puede dar TLE en límites ajustados",
     ],
     problems: ["Leetcode 1 (variantes de Two Sum)", "Codeforces 4A", "USACO 2016 Jan (Div 2)"],
+    quiz: [
+      { q: "¿Qué describe la notación Big-O?", options: ["Tiempo exacto en segundos", "Cota superior del crecimiento del tiempo", "Rendimiento en el caso promedio", "Solo el uso de memoria"], answer: 1 },
+      { q: "¿Cuál es la complejidad temporal de la búsqueda binaria?", options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"], answer: 1 },
+      { q: "Para n = 10⁶, ¿qué complejidad daría TLE en 1 segundo (límite 10⁸ ops/seg)?", options: ["O(n log n)", "O(n)", "O(n²)", "O(log n)"], answer: 2 },
+      { q: "¿Qué complejidad es mejor para n = 10⁸?", options: ["O(n log n)", "O(n²)", "O(n)", "O(1)"], answer: 3 },
+      { q: "¿Cuál es la complejidad temporal de dos bucles anidados que corren n veces cada uno?", options: ["O(n)", "O(2n)", "O(n²)", "O(n log n)"], answer: 2 },
+    ],
   },
 
   "arrays-strings": {
@@ -119,6 +126,13 @@ auto rangeSum = [&](int l, int r) {
       "Los arrays de diferencia son ideales para actualizaciones de suma/resta en rango",
     ],
     problems: ["Leetcode 303 (Range Sum Query)", "Codeforces 816C", "Leetcode 1480"],
+    quiz: [
+      { q: "¿Cuál es la complejidad de una consulta de rango con suma prefija tras preprocesamiento O(n)?", options: ["O(n)", "O(log n)", "O(1)", "O(n²)"], answer: 2 },
+      { q: "Dado prefijo = [0, 3, 4, 8, 9, 14], ¿cuál es la suma del rango [1..3]?", options: ["4", "6", "8", "5"], answer: 1 },
+      { q: "¿Qué permite hacer eficientemente un array de diferencia?", options: ["Consultas puntuales en O(1)", "Actualizaciones de rango en O(1)", "Ordenar en O(n)", "Buscar en O(log n)"], answer: 1 },
+      { q: "Para construir una suma prefija 1D de tamaño n, ¿cuál es el tiempo de preprocesamiento?", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], answer: 2 },
+      { q: "Usar arrays prefijos indexados en 1 ayuda a evitar qué tipo de errores?", options: ["Desbordamiento de pila", "Errores por uno (off-by-one)", "Errores de tipo", "Desbordamiento de entero"], answer: 1 },
+    ],
   },
 
   "stl-guide": {
@@ -195,6 +209,13 @@ int pos = lower_bound(v.begin(), v.end(), 8) - v.begin();`,
       "Preferir emplace_back sobre push_back para objetos complejos",
     ],
     problems: ["Leetcode 1 (Two Sum - usar unordered_map)", "Codeforces 4C (Registration)", "Leetcode 347 (Top K)"],
+    quiz: [
+      { q: "¿Cuál es la complejidad promedio de insertar en un unordered_map?", options: ["O(n)", "O(log n)", "O(1)", "O(n log n)"], answer: 2 },
+      { q: "¿Qué contenedor STL mantiene los elementos en orden sin duplicados?", options: ["vector", "unordered_set", "set", "deque"], answer: 2 },
+      { q: "¿Qué retorna lower_bound en un vector ordenado?", options: ["Iterador pasado el último elemento", "Iterador al primer elemento ≥ objetivo", "Iterador al último elemento < objetivo", "Índice del elemento"], answer: 1 },
+      { q: "¿Qué contenedor es un max-heap por defecto en C++ STL?", options: ["set", "deque", "priority_queue", "multiset"], answer: 2 },
+      { q: "¿Cuál es la complejidad temporal de std::sort?", options: ["O(n)", "O(n²)", "O(n log n)", "O(log n)"], answer: 2 },
+    ],
   },
 
   "two-pointers": {
@@ -255,6 +276,13 @@ pair<int,int> twoSum(vector<int>& a, int target) {
       "Verificar casos extremos: array vacío, un elemento, todos iguales",
     ],
     problems: ["Leetcode 167 (Two Sum II)", "Leetcode 15 (3Sum)", "Codeforces 6C"],
+    quiz: [
+      { q: "¿Cuál es el requisito principal de la técnica de dos punteros en direcciones opuestas?", options: ["El array debe estar desordenado", "El array debe estar ordenado", "El array no debe tener duplicados", "El array debe tener longitud par"], answer: 1 },
+      { q: "¿Cuál es la complejidad de dos punteros para two-sum en un array ordenado?", options: ["O(n²)", "O(n log n)", "O(n)", "O(log n)"], answer: 2 },
+      { q: "En la detección de ciclos de Floyd, ¿cuántos pasos avanza el puntero rápido por iteración?", options: ["1", "2", "3", "n/2"], answer: 1 },
+      { q: "¿Qué técnica elimina duplicados en sitio de un array ordenado en O(n)?", options: ["Búsqueda binaria", "Dos punteros (lento/rápido)", "Hashing", "Merge sort"], answer: 1 },
+      { q: "Los dos punteros reducen la complejidad de qué tipo de búsqueda de fuerza bruta?", options: ["O(log n) → O(1)", "O(n²) → O(n)", "O(n³) → O(n²)", "O(n log n) → O(n)"], answer: 1 },
+    ],
   },
 
   "sliding-window": {
@@ -324,6 +352,13 @@ Ventana variable (subarreglo más largo con suma ≤ k):
       "Para máximo en ventana deslizante, usar una cola monotónica (deque de índices)",
     ],
     problems: ["Leetcode 76 (Min Window Substring)", "Leetcode 239 (Sliding Window Max)", "Codeforces 701C"],
+    quiz: [
+      { q: "¿Cuál es la complejidad total de la ventana deslizante para un array de tamaño n?", options: ["O(n²)", "O(n log n)", "O(n)", "O(1)"], answer: 2 },
+      { q: "¿Qué estructura de datos permite consultas de máximo en ventana deslizante en O(n)?", options: ["Pila", "Cola monotónica", "Cola de prioridad", "Conjunto ordenado"], answer: 1 },
+      { q: "En una ventana variable, ¿cuándo se debe contraer el puntero izquierdo?", options: ["Cuando la ventana está vacía", "Cuando se viola el invariante de la ventana", "Cuando el derecho llega al final", "Cada n pasos"], answer: 1 },
+      { q: "Para la ventana mínima, ¿qué técnica rastrea frecuencias de caracteres?", options: ["Suma prefija", "Mapa de frecuencias dentro de la ventana", "Ordenamiento", "BFS"], answer: 1 },
+      { q: "En una ventana fija de tamaño k sobre un array de tamaño n, ¿cuántas ventanas hay en total?", options: ["k", "n", "n - k + 1", "n - k"], answer: 2 },
+    ],
   },
 
   "binary-search": {
@@ -387,6 +422,16 @@ int shipWithinDays(vector<int>& w, int D) {
       "Para lower_bound: usar hi = mid cuando es factible; para upper_bound: lo = mid + 1",
     ],
     problems: ["Leetcode 1011 (Ship Packages)", "Codeforces 460C", "Leetcode 875 (Koko Eating Bananas)"],
+    quiz: [
+      { q: "¿Cuál es la complejidad temporal de la búsqueda binaria?", options: ["O(n)", "O(n log n)", "O(log n)", "O(1)"], answer: 2 },
+      { q: "¿Por qué usar lo + (hi - lo) / 2 en vez de (lo + hi) / 2?", options: ["Es más rápido", "Previene desbordamiento de enteros", "Da un resultado diferente", "Maneja negativos"], answer: 1 },
+      { q: "En 'búsqueda binaria sobre la respuesta', ¿qué buscas?", options: ["Un índice en un arreglo ordenado", "Un valor que satisface una condición monótona", "El elemento mínimo", "Un valor duplicado"], answer: 1 },
+      { q: "¿Qué devuelve lower_bound si el objetivo no está en el arreglo?", options: ["Puntero nulo", "El primer elemento mayor al objetivo", "-1", "El último elemento menor al objetivo"], answer: 1 },
+      { q: "La búsqueda binaria requiere qué propiedad del espacio de búsqueda?", options: ["Todos los elementos son únicos", "El arreglo está ordenado (o el predicado es monótono)", "La longitud es potencia de 2", "Los elementos son positivos"], answer: 1 },
+      { q: "Con punteros lo y hi, ¿qué condición evita bucles infinitos en rangos de 2 elementos?", options: ["while (lo <= hi)", "while (lo < hi)", "while (lo != hi)", "while (hi - lo > 1)"], answer: 0 },
+      { q: "En búsqueda binaria sobre arreglo rotado, ¿qué condición extra debes verificar?", options: ["Si mid es igual al objetivo", "Cuál mitad del arreglo sigue ordenada", "Si lo y hi son adyacentes", "Si el pivote está en el índice 0"], answer: 1 },
+      { q: "Si lower_bound retorna end(), ¿qué significa?", options: ["El objetivo está en el último índice", "Todos los elementos son menores al objetivo", "El arreglo está vacío", "El objetivo está en la posición 0"], answer: 1 },
+    ],
   },
 
   "sorting": {
@@ -456,6 +501,13 @@ long long mergeCount(vector<int>& a, int l, int r) {
       "Counting sort cuando valores ≤ 10⁶ y se necesita O(n)",
     ],
     problems: ["Leetcode 315 (Count Smaller)", "Codeforces 340E (inversiones)", "Leetcode 179 (Largest Number)"],
+    quiz: [
+      { q: "¿Cuál es la complejidad de C++ std::sort?", options: ["O(n)", "O(n²)", "O(n log n)", "O(log n)"], answer: 2 },
+      { q: "¿Qué algoritmo de ordenamiento es el método estándar para contar inversiones?", options: ["Quick sort", "Merge sort", "Counting sort", "Heap sort"], answer: 1 },
+      { q: "¿Cuándo el counting sort es O(n) en lugar de O(n log n)?", options: ["Cuando el array está casi ordenado", "Cuando los valores están acotados por una constante pequeña k", "Cuando n es potencia de 2", "Siempre"], answer: 1 },
+      { q: "¿Qué función de C++ ordena preservando el orden relativo de elementos iguales?", options: ["std::sort", "std::partial_sort", "std::stable_sort", "std::nth_element"], answer: 2 },
+      { q: "¿Qué habilita ordenar un array que reduce directamente muchos problemas O(n²) a O(n)?", options: ["Hashing", "Dos punteros y búsqueda binaria", "DFS", "Greedy"], answer: 1 },
+    ],
   },
 
   "bfs": {
@@ -523,6 +575,13 @@ long long mergeCount(vector<int>& a, int l, int r) {
       "BFS multi-fuente: insertar todas las fuentes con dist=0 antes de empezar",
     ],
     problems: ["Leetcode 994 (Rotting Oranges)", "Codeforces 3D", "Leetcode 1091 (Shortest Path Binary Matrix)"],
+    quiz: [
+      { q: "¿Qué estructura de datos usa BFS para procesar nodos?", options: ["Pila", "Cola", "Cola de prioridad", "Deque"], answer: 1 },
+      { q: "¿Qué tipo de camino más corto garantiza BFS?", options: ["El más corto por peso", "El más corto por número de aristas (no ponderado)", "El más corto por tiempo", "El más corto por costo"], answer: 1 },
+      { q: "¿Cuándo se deben marcar los nodos como visitados en BFS?", options: ["Al sacarlos de la cola", "Al insertarlos en la cola", "Tras procesar todos los vecinos", "Nunca"], answer: 1 },
+      { q: "¿Cuál es la complejidad de BFS para un grafo con V vértices y E aristas?", options: ["O(V²)", "O(V log V)", "O(V + E)", "O(E log V)"], answer: 2 },
+      { q: "En BFS multi-fuente, ¿cómo se manejan múltiples nodos de inicio?", options: ["Ejecutar BFS desde cada fuente por separado", "Insertar todas las fuentes con distancia 0 antes de comenzar", "Ordenar las fuentes primero", "Elegir la fuente más cercana"], answer: 1 },
+    ],
   },
 
   "dfs": {
@@ -593,6 +652,16 @@ reverse(topo.begin(), topo.end());`,
       "DFS en grafo no dirigido: una arista de retroceso indica la existencia de un ciclo",
     ],
     problems: ["Leetcode 207 (Course Schedule)", "Codeforces 1385E", "Leetcode 802 (Safe States)"],
+    quiz: [
+      { q: "¿Qué estructura de datos usa implícitamente DFS mediante la recursión?", options: ["Cola", "Pila", "Montículo", "Deque"], answer: 1 },
+      { q: "En DFS de grafo dirigido, ¿qué indica una arista trasera (back edge)?", options: ["Una arista de árbol", "Un ciclo", "Una arista cruzada", "Un nodo no visitado"], answer: 1 },
+      { q: "El orden topológico es el inverso de ¿cuál recorrido DFS?", options: ["Pre-orden", "In-orden", "Post-orden", "Por niveles"], answer: 2 },
+      { q: "¿Cuándo deberías usar DFS iterativo en vez de recursivo?", options: ["Cuando el grafo es pequeño", "Cuando el grafo es profundo (para evitar stack overflow)", "Cuando las aristas tienen pesos", "Cuando el grafo es no dirigido"], answer: 1 },
+      { q: "Los tiempos de entrada/salida de DFS son útiles para qué consulta?", options: ["Camino más corto", "Consultas de ancestros en subárboles", "Árbol de expansión mínima", "Contar componentes conexas"], answer: 1 },
+      { q: "El algoritmo de Tarjan para CFC (SCC) encuentra qué usando DFS?", options: ["Caminos más cortos", "Componentes Fuertemente Conexas", "Árbol de Expansión Mínima", "Particiones bipartitas"], answer: 1 },
+      { q: "En DFS de grafo no dirigido, ¿qué distingue una arista trasera de una arista al padre?", options: ["La arista trasera va a la raíz", "La arista trasera va a un ancestro distinto del padre inmediato", "La arista trasera va a una hoja", "La arista trasera conecta distintos componentes"], answer: 1 },
+      { q: "Un puente en un grafo es una arista cuya eliminación hace qué?", options: ["Crea un ciclo", "Incrementa el número de componentes conexas", "Reduce el camino más corto", "Hace el grafo bipartito"], answer: 1 },
+    ],
   },
 
   "dijkstra": {
@@ -663,6 +732,13 @@ reverse(topo.begin(), topo.end());`,
       "Para pesos negativos → Bellman-Ford en su lugar",
     ],
     problems: ["Codeforces 20C (Camino Más Corto)", "Leetcode 743 (Network Delay)", "Codeforces 786C"],
+    quiz: [
+      { q: "¿Cuál es la complejidad de Dijkstra con un heap binario?", options: ["O(V²)", "O(E log V)", "O((V+E) log V)", "O(V log E)"], answer: 2 },
+      { q: "El algoritmo de Dijkstra NO funciona correctamente cuando?", options: ["El grafo es no dirigido", "Los pesos de aristas son negativos", "El grafo es denso", "El grafo es desconectado"], answer: 1 },
+      { q: "¿Qué es la 'eliminación perezosa' en la cola de prioridad de Dijkstra?", options: ["Eliminar todas las entradas obsoletas de forma anticipada", "Omitir entradas obsoletas cuando se sacan del heap", "Eliminar nodos visitados", "Eliminar aristas tras relajación"], answer: 1 },
+      { q: "¿Qué tipo de dato se debe usar para distancias en Dijkstra para evitar desbordamiento?", options: ["int", "short", "long long", "float"], answer: 2 },
+      { q: "En Dijkstra, ¿cuándo se omite procesar un nodo sacado de la cola?", options: ["Cuando no tiene vecinos", "Cuando su distancia almacenada es mayor que la distancia más corta actual", "Cuando es el nodo fuente", "Nunca"], answer: 1 },
+    ],
   },
 
   "union-find": {
@@ -733,6 +809,13 @@ reverse(topo.begin(), topo.end());`,
       "Usar DSU para Kruskal: ordenar aristas, unir extremos, omitir aristas del mismo componente",
     ],
     problems: ["Leetcode 547 (Number of Provinces)", "Codeforces 1455C", "Leetcode 684"],
+    quiz: [
+      { q: "¿Qué hace la 'compresión de caminos' en DSU?", options: ["Elimina caminos largos del árbol", "Hace que cada nodo apunte directamente a la raíz tras find()", "Balancea el árbol por peso", "Comprime el array de padres"], answer: 1 },
+      { q: "¿Cuál es la complejidad amortizada de find() con compresión de caminos y unión por rango?", options: ["O(log n)", "O(n)", "O(α(n)) ≈ O(1)", "O(log log n)"], answer: 2 },
+      { q: "Cuando unite(x, y) retorna false, ¿qué significa?", options: ["x e y están en diferentes componentes", "x e y ya están en el mismo componente (se formó un ciclo)", "El DSU está lleno", "x o y no está en el DSU"], answer: 1 },
+      { q: "DSU es la estructura central para qué algoritmo de árbol de expansión mínima?", options: ["Prim", "Dijkstra", "Kruskal", "Bellman-Ford"], answer: 2 },
+      { q: "En unión por rango, ¿qué ocurre cuando ambos nodos tienen el mismo rango?", options: ["Se elige el nodo menor", "El rango de la raíz resultante se incrementa", "Ningún rango cambia", "Se elige la raíz aleatoriamente"], answer: 1 },
+    ],
   },
 
   "dp-1d": {
@@ -802,6 +885,16 @@ LIS — Subsecuencia Creciente Más Larga de [3,1,8,2,5]:
       "Buscar oportunidades para reducir espacio (array rodante)",
     ],
     problems: ["Leetcode 322 (Coin Change)", "Leetcode 300 (LIS)", "Codeforces 455A"],
+    quiz: [
+      { q: "¿Cuál es la propiedad clave de los problemas aptos para programación dinámica?", options: ["Propiedad greedy", "Subproblemas superpuestos y subestructura óptima", "Divide y vencerás", "Cola monótona"], answer: 1 },
+      { q: "En LIS con O(n log n), ¿qué hace lower_bound en cada paso?", options: ["Encuentra la posición para agregar o reemplazar en el arreglo tails", "Ordena el arreglo tails", "Encuentra el elemento máximo", "Elimina un duplicado"], answer: 0 },
+      { q: "¿Cuál es la complejidad del cambio de monedas bottom-up para monto W y n monedas?", options: ["O(n)", "O(W)", "O(n × W)", "O(n log W)"], answer: 2 },
+      { q: "¿Qué enfoque de PD evita el stack overflow para entradas muy grandes?", options: ["Memoización top-down", "Tabulación bottom-up", "Backtracking recursivo", "Divide y vencerás"], answer: 1 },
+      { q: "La optimización de espacio en PD 1D reduce el espacio de O(n²) a ¿qué?", options: ["O(n log n)", "O(n)", "O(1)", "O(sqrt(n))"], answer: 1 },
+      { q: "En el problema House Robber dp[i] = max(dp[i-1], dp[i-2] + a[i]) — ¿qué representa dp[i-1]?", options: ["Robar casa i y saltar i-1", "Saltar casa i y tomar el mejor hasta i-1", "Robar ambas casas i e i-1", "El total robado hasta ahora"], answer: 1 },
+      { q: "La optimización de 'arreglo rodante' mantiene en memoria ¿cuántas filas de PD?", options: ["log n filas", "sqrt(n) filas", "Un número constante fijo de filas", "Todas las filas"], answer: 2 },
+      { q: "¿Cuál es la recurrencia de PD para el número de formas de subir escaleras con 1 o 2 pasos?", options: ["dp[i] = dp[i-1] * dp[i-2]", "dp[i] = dp[i-1] + dp[i-2]", "dp[i] = dp[i-1] + 1", "dp[i] = 2 * dp[i-1]"], answer: 1 },
+    ],
   },
 
   "dp-2d": {
@@ -865,6 +958,16 @@ Distancia de Edición "gato" → "pato":
       "Para PD de intervalos: iterar longitud primero, luego índice de inicio",
     ],
     problems: ["Leetcode 1143 (LCS)", "Leetcode 72 (Edit Distance)", "Codeforces 149D"],
+    quiz: [
+      { q: "En LCS, ¿cuál es dp[i][j] cuando a[i] == b[j]?", options: ["dp[i][j-1] + 1", "dp[i-1][j] + 1", "dp[i-1][j-1] + 1", "max(dp[i-1][j], dp[i][j-1])"], answer: 2 },
+      { q: "¿Cuál es la complejidad de la Distancia de Edición para cadenas de largo n y m?", options: ["O(n + m)", "O(n × m)", "O(n log m)", "O(n²)"], answer: 1 },
+      { q: "En PD de intervalo, ¿qué dimensión se itera primero?", options: ["Índice de inicio", "Índice de fin", "Longitud del intervalo", "Punto medio del intervalo"], answer: 2 },
+      { q: "Para PD en grilla de n×m, ¿cuál es el tamaño del espacio de estados?", options: ["O(n + m)", "O(n × m)", "O(max(n, m)²)", "O(n log m)"], answer: 1 },
+      { q: "¿Cuáles son los casos base dp[i][0] y dp[0][j] para la distancia de edición?", options: ["0 para todo i, j", "i y j respectivamente", "1 para todo i, j", "indefinido"], answer: 1 },
+      { q: "¿Cómo se reconstruye la secuencia LCS real desde la tabla de PD llenada?", options: ["Leer dp[n][m] directamente", "Rastrear desde dp[n][m] siguiendo coincidencias y direcciones máximas", "Ordenar ambas cadenas primero", "Usar una pila para invertir dp[0][0]"], answer: 1 },
+      { q: "La PD de Partición en Palíndromos tiene qué complejidad para cadena de largo n?", options: ["O(n)", "O(n²)", "O(n³)", "O(2ⁿ)"], answer: 1 },
+      { q: "La PD de multiplicación de cadenas de matrices minimiza qué?", options: ["Número de sumas de matrices", "Total de multiplicaciones escalares", "Memoria utilizada", "Profundidad de recursión"], answer: 1 },
+    ],
   },
 
   "knapsack": {
@@ -925,6 +1028,16 @@ for (int i = 0; i < n; i++)
       "Para suma de subconjunto: dp[w] = true/false en lugar de valor máximo",
     ],
     problems: ["Leetcode 416 (Partition Equal Subset)", "Codeforces 366C", "Leetcode 494 (Target Sum)"],
+    quiz: [
+      { q: "En mochila 0/1, ¿por qué iteramos la capacidad en reversa en la optimización 1D?", options: ["Por eficiencia de caché", "Para evitar usar un artículo más de una vez", "Para manejar pesos negativos", "Para habilitar paralelización"], answer: 1 },
+      { q: "En mochila sin límite, ¿por qué iteramos la capacidad hacia adelante?", options: ["Para mantener el orden", "Para permitir usar el mismo artículo múltiples veces", "Para prevenir overflow", "Por eficiencia de caché"], answer: 1 },
+      { q: "¿Cómo se convierte la suma de subconjuntos en un problema de mochila?", options: ["dp[w] = max(dp[w], dp[w-wi] + vi)", "dp[w] = dp[w] || dp[w - wi]", "dp[w] = dp[w] + dp[w - wi]", "dp[w] = min(dp[w], dp[w - wi] + 1)"], answer: 1 },
+      { q: "¿Cuál es la complejidad de la mochila 0/1 con n artículos y capacidad W?", options: ["O(n + W)", "O(n log W)", "O(n × W)", "O(2^n)"], answer: 2 },
+      { q: "El problema de partición en subconjuntos iguales se reduce a qué variante de mochila?", options: ["Mochila sin límite", "Mochila acotada", "Mochila 0/1 / suma de subconjuntos", "Mochila fraccionaria"], answer: 2 },
+      { q: "Para contar el número de formas de dar cambio (no solo mínimo de monedas), ¿qué tipo de valor usa la PD?", options: ["bool (alcanzable o no)", "long long conteo de formas", "costo mínimo", "valor máximo"], answer: 1 },
+      { q: "En mochila acotada (cada artículo tiene máximo k copias), ¿qué técnica la reduce a O(n W log k)?", options: ["Ordenación greedy", "Agrupación binaria (1, 2, 4, ... bultos)", "Divide y vencerás", "Ventana deslizante"], answer: 1 },
+      { q: "¿A qué debe inicializarse dp[0] al calcular mochila de costo mínimo?", options: ["0 (caso base: costo 0 para capacidad 0)", "INF", "1", "-1"], answer: 0 },
+    ],
   },
 
   "bitmask-dp": {
@@ -995,6 +1108,13 @@ Enumeración de subconjuntos:
       "Enumerar sub-máscaras: for (int sub=mask; sub>0; sub=(sub-1)&mask)",
     ],
     problems: ["Leetcode 847 (Shortest Path Visiting All Nodes)", "Codeforces 327E", "Leetcode 1125 (Smallest Sufficient Team)"],
+    quiz: [
+      { q: "¿Cuál es el n máximo para el que la PD con bitmask es típicamente factible?", options: ["n ≤ 10", "n ≤ 20", "n ≤ 50", "n ≤ 100"], answer: 1 },
+      { q: "¿Cómo se verifica si el bit i está activo en una máscara?", options: ["mask & i", "(mask >> i) & 1", "mask | i", "mask ^ i"], answer: 1 },
+      { q: "¿Cuántos subconjuntos totales tiene un conjunto de n elementos?", options: ["n", "n²", "2ⁿ", "n!"], answer: 2 },
+      { q: "En TSP con PD y bitmask, ¿qué representa dp[mask][i]?", options: ["Costo mínimo para comenzar en la ciudad i", "Costo mínimo para visitar todas las ciudades en mask y terminar en i", "Número de ciudades visitadas", "Si la ciudad i está en mask"], answer: 1 },
+      { q: "¿Qué operación agrega la ciudad i a una máscara existente?", options: ["mask & (1 << i)", "mask | (1 << i)", "mask ^ (1 << i)", "mask - (1 << i)"], answer: 1 },
+    ],
   },
 
   "segment-tree": {
@@ -1065,6 +1185,16 @@ Enumeración de subconjuntos:
       "Usar propagación perezosa sólo cuando sea necesario (actualizaciones de rango)",
     ],
     problems: ["Codeforces 339D", "Leetcode 315 (Count Smaller)", "Codeforces 380C"],
+    quiz: [
+      { q: "¿Cuántos nodos debes asignar para un árbol de segmentos sobre n elementos?", options: ["2n nodos", "n log n nodos", "4n nodos", "n² nodos"], answer: 2 },
+      { q: "¿Cuál es la complejidad de una consulta de rango en un árbol de segmentos?", options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"], answer: 1 },
+      { q: "¿Qué característica del árbol de segmentos permite actualizaciones de rango en O(log n)?", options: ["Compresión de rutas", "Propagación perezosa (lazy propagation)", "Unión por rango", "Nodos persistentes"], answer: 1 },
+      { q: "En un árbol de segmentos con raíz=1, ¿cuáles son los hijos del nodo i?", options: ["i+1 e i+2", "2i y 2i+1", "i/2 e i/2+1", "2i-1 y 2i"], answer: 1 },
+      { q: "¿Qué tipo de consulta NO soporta nativamente un árbol de segmentos en O(log n)?", options: ["Suma de rango", "Mínimo de rango", "MCD de rango", "Ordenación de rango"], answer: 3 },
+      { q: "Con propagación perezosa, ¿cuándo se empuja un valor lazy a los hijos?", options: ["Solo durante la construcción", "Antes de acceder o modificar un nodo hijo", "Al final de todas las consultas", "Inmediatamente cuando se asigna"], answer: 1 },
+      { q: "¿Cuál es la complejidad de construir un árbol de segmentos desde un arreglo de tamaño n?", options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"], answer: 2 },
+      { q: "Para un árbol de segmentos con asignación-de-rango + suma-de-rango, ¿qué valor extra debe almacenar cada nodo además de la suma?", options: ["El valor mínimo", "La longitud del segmento", "El XOR del rango", "El valor máximo"], answer: 1 },
+    ],
   },
 
   "fenwick-tree": {
@@ -1135,6 +1265,13 @@ Enumeración de subconjuntos:
       "Para actualización de rango + consulta de rango, usar dos BITs simultáneamente",
     ],
     problems: ["Leetcode 315 (Count Smaller — solución BIT)", "Codeforces 701E", "Leetcode 307 (Range Sum Query Mutable)"],
+    quiz: [
+      { q: "¿Qué calcula lowbit(i) = i & (-i)?", options: ["El bit más significativo activo de i", "El bit menos significativo activo de i", "El número de bits activos en i", "El complemento de i"], answer: 1 },
+      { q: "¿Por qué los arrays del Árbol de Fenwick deben estar indexados en 1?", options: ["Los arrays indexados en 0 causan desbordamiento", "lowbit(0) = 0 causa un bucle infinito en actualizaciones/consultas", "El árbol desperdicia espacio en el índice 0", "El ordenamiento requiere indexación en 1"], answer: 1 },
+      { q: "¿Cuál es la complejidad de una actualización puntual en un Árbol de Fenwick?", options: ["O(1)", "O(log n)", "O(n)", "O(log² n)"], answer: 1 },
+      { q: "Comparado con un Árbol de Segmentos, ¿cuál es la ventaja principal del Árbol de Fenwick?", options: ["Soporta actualizaciones de rango nativamente", "Código más simple y constante más rápida para sumas prefijas", "Funciona para funciones no asociativas", "Soporta consultas persistentes"], answer: 1 },
+      { q: "Para calcular la suma de rango [l, r] con un BIT, se calcula:", options: ["query(l) - query(r)", "query(r) - query(l-1)", "query(r-l)", "query(r) + query(l)"], answer: 1 },
+    ],
   },
 
   "trie": {
@@ -1221,6 +1358,13 @@ Trie XOR (trie binario para XOR máximo):
       "Rastrear el conteo de palabras que pasan por cada nodo para conteo de prefijos",
     ],
     problems: ["Leetcode 208 (Implement Trie)", "Leetcode 421 (Max XOR — trie binario)", "Codeforces 514C"],
+    quiz: [
+      { q: "¿Cuál es la complejidad de insertar un string de longitud L en un Trie?", options: ["O(log L)", "O(L log n)", "O(L)", "O(n)"], answer: 2 },
+      { q: "En un Trie XOR binario, ¿cuántos bits se procesan típicamente por entero?", options: ["8", "16", "32", "64"], answer: 2 },
+      { q: "Para maximizar XOR con un valor de consulta x, en cada bit se debe:", options: ["Ir en la misma dirección que el bit de x", "Ir en la dirección opuesta al bit de x", "Siempre ir a la izquierda", "Siempre ir a la derecha"], answer: 1 },
+      { q: "¿Qué estructura de datos preferirías para autocompletado con coincidencia de prefijos?", options: ["Mapa hash", "Array ordenado + búsqueda binaria", "Trie", "B-tree"], answer: 2 },
+      { q: "¿Qué marca el final de una palabra válida en un nodo Trie?", options: ["Un puntero hijo nulo", "Un indicador booleano 'end'", "Un nodo con carácter especial", "El índice del nodo"], answer: 1 },
+    ],
   },
 
   "modular-arithmetic": {
@@ -1301,6 +1445,15 @@ long long C(int n, int k) {
       "Usar __int128 si los productos intermedios pueden exceder long long",
     ],
     problems: ["Codeforces 509C", "Leetcode 1569", "Codeforces 543B"],
+    quiz: [
+      { q: "¿Cuál es el módulo más común en programación competitiva?", options: ["10⁶ + 3", "10⁹ + 7", "998244353", "2³¹ − 1"], answer: 1 },
+      { q: "¿Cuál es la complejidad de la exponenciación binaria rápida?", options: ["O(n)", "O(log n)", "O(sqrt(n))", "O(n log n)"], answer: 1 },
+      { q: "El Pequeño Teorema de Fermat establece que para primo p y a no divisible por p: a^(p-1) ≡ ?", options: ["0 (mod p)", "1 (mod p)", "a (mod p)", "p (mod a)"], answer: 1 },
+      { q: "Para manejar correctamente la resta mod p (a - b), calcula:", options: ["(a - b) % p", "(a - b + p) % p", "a % p - b % p", "(a % p) - (b % p) + p"], answer: 1 },
+      { q: "¿Qué teorema se usa para calcular el inverso modular cuando el módulo es primo?", options: ["Teorema Chino del Resto", "Pequeño Teorema de Fermat", "Teorema de Euler", "Teorema de Wilson"], answer: 1 },
+      { q: "Cuando el módulo p NO es primo, ¿cómo calculas el inverso modular de a?", options: ["Pequeño Teorema de Fermat", "Algoritmo de Euclides Extendido (si mcd(a,p)=1)", "a^(p-1) mod p", "No se puede calcular"], answer: 1 },
+      { q: "El Teorema Chino del Resto (TCR) se usa para resolver sistemas de qué?", options: ["Ecuaciones lineales", "Congruencias modulares simultáneas", "Ecuaciones polinomiales", "Ecuaciones matriciales"], answer: 1 },
+    ],
   },
 
   "sieve": {
@@ -1376,6 +1529,13 @@ vector<int> factorize(int n) {
       "Criba SPF: sólo actualizar spf[j] si spf[j]==j (primera vez marcado)",
     ],
     problems: ["Leetcode 204 (Count Primes)", "Codeforces 776C", "Codeforces 1217D"],
+    quiz: [
+      { q: "¿Cuál es la complejidad de la Criba de Eratóstenes para primos hasta N?", options: ["O(N)", "O(N log N)", "O(N log log N)", "O(sqrt(N))"], answer: 2 },
+      { q: "¿Por qué el bucle interno de la criba comienza en i² en lugar de 2i?", options: ["Por eficiencia de caché", "Todos los múltiplos por debajo de i² ya están marcados por primos menores", "Para evitar marcar i mismo", "Para ahorrar memoria"], answer: 1 },
+      { q: "La criba del menor factor primo (SPF) permite factorizar n en qué tiempo?", options: ["O(n)", "O(sqrt(n))", "O(log n)", "O(1)"], answer: 2 },
+      { q: "¿Qué optimización de memoria puede reducir la memoria de la criba ~8x?", options: ["Usar int en lugar de long long", "Usar bitset<N> en lugar de vector<bool>", "Usar char en lugar de bool", "Usar short en lugar de int"], answer: 1 },
+      { q: "¿Cuál es el número primo más pequeño?", options: ["1", "2", "3", "0"], answer: 1 },
+    ],
   },
 
   "combinatorics": {
@@ -1456,6 +1616,16 @@ long long distribuir(int n, int k) { return C(n + k - 1, k - 1); }`,
       "Desarreglos: D(n) = (n-1)(D(n-1)+D(n-2))",
     ],
     problems: ["Codeforces 1696D", "Leetcode 1220 (Count Vowels Permutations)", "Codeforces 559C"],
+    quiz: [
+      { q: "¿De cuántas formas puedes elegir k elementos de n (el orden no importa)?", options: ["n! / k!", "n! / (k! × (n-k)!)", "n^k", "k^n"], answer: 1 },
+      { q: "La fórmula de Estrellas y Barras para distribuir n elementos idénticos en k grupos distintos es:", options: ["C(n, k)", "C(n+k, k)", "C(n+k-1, k-1)", "n^k"], answer: 2 },
+      { q: "Inclusión-Exclusión para |A ∪ B| es igual a:", options: ["|A| + |B|", "|A| + |B| - |A ∩ B|", "|A| - |B| + |A ∩ B|", "|A| × |B|"], answer: 1 },
+      { q: "Para calcular C(n, k) mod p eficientemente cuando n es muy grande, ¿qué teorema se usa?", options: ["Pequeño Teorema de Fermat", "Teorema de Wilson", "Teorema de Lucas", "Teorema Chino del Resto"], answer: 2 },
+      { q: "¿Cuánto es C(5, 2)?", options: ["5", "10", "20", "15"], answer: 1 },
+      { q: "¿El n-ésimo número de Catalan cuenta cuál de los siguientes?", options: ["Número de primos hasta n", "Número de parentizaciones válidas de n+1 factores", "Número de formas de ordenar n elementos", "Número de subconjuntos de tamaño n"], answer: 1 },
+      { q: "¿De cuántas formas se pueden ordenar n objetos distintos en línea?", options: ["2ⁿ", "n²", "n!", "C(n, ⌊n/2⌋)"], answer: 2 },
+      { q: "El Lema de Burnside (Cauchy-Frobenius) se usa para contar objetos bajo qué condición?", options: ["Cuando los objetos tienen distintos pesos", "Cuando los objetos se consideran equivalentes bajo simetría/rotación", "Cuando el conteo supera 10⁹", "Cuando los elementos se extraen sin reemplazo"], answer: 1 },
+    ],
   },
 };
 

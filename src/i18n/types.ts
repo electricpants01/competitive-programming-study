@@ -134,6 +134,16 @@ export interface Translations {
     items: Record<string, { title: string; desc: string }>;
   };
 
+  quiz: {
+    tab: string;
+    learnTab: string;
+    submitBtn: string;
+    tryAgainBtn: string;
+    score: (correct: number, total: number) => string;
+    noQuiz: string;
+    selectAll: string;
+  };
+
   slides: {
     brand: string;
     prev: string;

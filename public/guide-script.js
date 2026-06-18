@@ -305,10 +305,12 @@
           ${practicesHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.bestPractices}</div><ul class="bullet-list">${practicesHTML}</ul></div>` : ""}
           ${visualizersHTML ? `<div class="modal-section"><div class="modal-section-title">${vizLabel}</div><div class="visualizer-links">${visualizersHTML}</div></div>` : ""}
           ${problemsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.practiceProblems}</div><div class="problems-list">${problemsHTML}</div></div>` : ""}
+          ${algo.quiz ? buildQuizHTML(algo.quiz) : ""}
         </div>
       </div>`;
 
     setActiveSection("detail");
+    attachQuizListeners(algo.quiz || []);
     detailPanel.scrollTop = 0;
     mainEl.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -321,6 +323,106 @@
           setTimeout(() => { btn.textContent = t.modal.copy; btn.classList.remove("copied"); }, 1800);
         });
       });
+    });
+  }
+
+  // ── Quiz ──────────────────────────────────────────────────────
+  function buildQuizHTML(quiz) {
+    if (!quiz || quiz.length === 0) return "";
+    const quizTitle = lang === 'es' ? '🧠 Mini Quiz' : '🧠 Mini Quiz';
+    const qHtml = quiz.map((q, qi) => {
+      const opts = q.options.map((opt, oi) => `
+        <button class="quiz-option" data-qi="${qi}" data-oi="${oi}">${esc(opt)}</button>
+      `).join("");
+      return `
+        <div class="quiz-question" data-qi="${qi}" data-answer="${q.answer}">
+          <div class="quiz-q-text">${qi + 1}. ${esc(q.q)}</div>
+          <div class="quiz-options">${opts}</div>
+          <div class="quiz-feedback" style="display:none"></div>
+        </div>`;
+    }).join("");
+    const scoreLabel = lang === 'es' ? 'Respuestas correctas: ' : 'Score: ';
+    const submitLabel = lang === 'es' ? 'Ver Resultados' : 'See Results';
+    const retryLabel = lang === 'es' ? 'Reintentar' : 'Retry';
+    return `
+      <div class="modal-section quiz-section" id="quiz-section">
+        <div class="modal-section-title">${quizTitle}</div>
+        <div class="quiz-body">
+          ${qHtml}
+          <div class="quiz-footer">
+            <button class="quiz-submit-btn" id="quiz-submit">${submitLabel}</button>
+            <button class="quiz-retry-btn" id="quiz-retry" style="display:none">${retryLabel}</button>
+            <div class="quiz-score" id="quiz-score" style="display:none">${scoreLabel}<span id="quiz-score-val"></span></div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function attachQuizListeners(quiz) {
+    if (!quiz || quiz.length === 0) return;
+    const section = document.getElementById('quiz-section');
+    if (!section) return;
+
+    const submitBtn = document.getElementById('quiz-submit');
+    const retryBtn = document.getElementById('quiz-retry');
+    const scoreEl = document.getElementById('quiz-score');
+    const scoreVal = document.getElementById('quiz-score-val');
+
+    // Option selection
+    section.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qi = btn.dataset.qi;
+        section.querySelectorAll(`.quiz-option[data-qi="${qi}"]`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // Submit
+    submitBtn.addEventListener('click', () => {
+      let correct = 0;
+      section.querySelectorAll('.quiz-question').forEach((qEl, qi) => {
+        const answer = parseInt(qEl.dataset.answer, 10);
+        const selected = qEl.querySelector('.quiz-option.selected');
+        const feedback = qEl.querySelector('.quiz-feedback');
+        qEl.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+        if (!selected) {
+          feedback.textContent = lang === 'es' ? '⚠️ Sin respuesta' : '⚠️ No answer selected';
+          feedback.className = 'quiz-feedback quiz-feedback-miss';
+        } else {
+          const oi = parseInt(selected.dataset.oi, 10);
+          if (oi === answer) {
+            correct++;
+            selected.classList.add('correct');
+            feedback.textContent = lang === 'es' ? '✅ ¡Correcto!' : '✅ Correct!';
+            feedback.className = 'quiz-feedback quiz-feedback-correct';
+          } else {
+            selected.classList.add('wrong');
+            qEl.querySelectorAll('.quiz-option').forEach(b => {
+              if (parseInt(b.dataset.oi, 10) === answer) b.classList.add('correct');
+            });
+            feedback.textContent = lang === 'es' ? '❌ Incorrecto' : '❌ Incorrect';
+            feedback.className = 'quiz-feedback quiz-feedback-wrong';
+          }
+        }
+        feedback.style.display = 'block';
+      });
+      const total = quiz.length;
+      scoreVal.textContent = `${correct} / ${total}`;
+      scoreEl.style.display = 'inline-flex';
+      submitBtn.style.display = 'none';
+      retryBtn.style.display = 'inline-block';
+    });
+
+    // Retry
+    retryBtn.addEventListener('click', () => {
+      section.querySelectorAll('.quiz-option').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('selected', 'correct', 'wrong');
+      });
+      section.querySelectorAll('.quiz-feedback').forEach(f => { f.style.display = 'none'; f.textContent = ''; });
+      scoreEl.style.display = 'none';
+      retryBtn.style.display = 'none';
+      submitBtn.style.display = 'inline-block';
     });
   }
 

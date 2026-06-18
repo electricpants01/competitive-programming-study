@@ -63,6 +63,13 @@ while (lo <= hi) {
       "Watch for hidden constants — 2×10⁸ may TLE on tight limits",
     ],
     problems: ["Leetcode 1 (Two Sum variants)", "Codeforces 4A", "USACO 2016 Jan (Div 2)"],
+    quiz: [
+      { q: "What does Big-O notation describe?", options: ["Exact runtime in seconds", "Upper bound on runtime growth", "Average-case performance", "Memory usage only"], answer: 1 },
+      { q: "What is the time complexity of binary search?", options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"], answer: 1 },
+      { q: "For n = 10⁶, which complexity would TLE at 1 second (10⁸ ops/sec limit)?", options: ["O(n log n)", "O(n)", "O(n²)", "O(log n)"], answer: 2 },
+      { q: "Which complexity is best for n = 10⁸?", options: ["O(n log n)", "O(n²)", "O(n)", "O(1)"], answer: 3 },
+      { q: "What is the time complexity of two nested loops each running n times?", options: ["O(n)", "O(2n)", "O(n²)", "O(n log n)"], answer: 2 },
+    ],
   },
 
   "arrays-strings": {
@@ -119,6 +126,13 @@ auto rangeSum = [&](int l, int r) {
       "Difference arrays are ideal for range add/subtract updates",
     ],
     problems: ["Leetcode 303 (Range Sum Query)", "Codeforces 816C", "Leetcode 1480"],
+    quiz: [
+      { q: "What is the time complexity of a prefix sum range query after O(n) preprocessing?", options: ["O(n)", "O(log n)", "O(1)", "O(n²)"], answer: 2 },
+      { q: "Given prefix = [0, 3, 4, 8, 9, 14], what is the range sum for indices [1..3]?", options: ["4", "6", "8", "5"], answer: 1 },
+      { q: "What does a difference array allow you to do efficiently?", options: ["Point queries in O(1)", "Range updates in O(1)", "Sort in O(n)", "Search in O(log n)"], answer: 1 },
+      { q: "To build a 1D prefix sum of size n, what is the preprocessing time?", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], answer: 2 },
+      { q: "Using 1-indexed prefix arrays helps avoid which type of errors?", options: ["Stack overflow", "Off-by-one errors", "Type errors", "Integer overflow"], answer: 1 },
+    ],
   },
 
   "stl-guide": {
@@ -195,6 +209,13 @@ int pos = lower_bound(v.begin(), v.end(), 8) - v.begin();`,
       "Prefer emplace_back over push_back for complex objects",
     ],
     problems: ["Leetcode 1 (Two Sum - use unordered_map)", "Codeforces 4C (Registration)", "Leetcode 347 (Top K)"],
+    quiz: [
+      { q: "What is the average time complexity of inserting into an unordered_map?", options: ["O(n)", "O(log n)", "O(1)", "O(n log n)"], answer: 2 },
+      { q: "Which STL container maintains elements in sorted order without duplicates?", options: ["vector", "unordered_set", "set", "deque"], answer: 2 },
+      { q: "What does lower_bound return on a sorted vector?", options: ["Iterator past the last element", "Iterator to first element ≥ target", "Iterator to last element < target", "Index of the element"], answer: 1 },
+      { q: "Which container is a max-heap by default in C++ STL?", options: ["set", "deque", "priority_queue", "multiset"], answer: 2 },
+      { q: "What is the time complexity of std::sort?", options: ["O(n)", "O(n²)", "O(n log n)", "O(log n)"], answer: 2 },
+    ],
   },
 
   "two-pointers": {
@@ -255,6 +276,13 @@ pair<int,int> twoSum(vector<int>& a, int target) {
       "Check for edge cases: empty array, single element, all equal",
     ],
     problems: ["Leetcode 167 (Two Sum II)", "Leetcode 15 (3Sum)", "Codeforces 6C"],
+    quiz: [
+      { q: "What is the main requirement for the opposite-direction two pointers technique?", options: ["The array must be unsorted", "The array must be sorted", "The array must have no duplicates", "The array must be of even length"], answer: 1 },
+      { q: "What is the time complexity of the two-pointer two-sum on a sorted array?", options: ["O(n²)", "O(n log n)", "O(n)", "O(log n)"], answer: 2 },
+      { q: "In Floyd's cycle detection, the fast pointer moves how many steps per iteration?", options: ["1", "2", "3", "n/2"], answer: 1 },
+      { q: "Which technique is used to remove duplicates in-place from a sorted array in O(n)?", options: ["Binary search", "Two pointers (slow/fast)", "Hashing", "Merge sort"], answer: 1 },
+      { q: "Two pointers reduce the complexity of which type of brute-force search?", options: ["O(log n) → O(1)", "O(n²) → O(n)", "O(n³) → O(n²)", "O(n log n) → O(n)"], answer: 1 },
+    ],
   },
 
   "sliding-window": {
@@ -324,6 +352,13 @@ Variable window (longest subarray sum ≤ k):
       "For sliding window maximum, use a monotonic deque (deque of indices)",
     ],
     problems: ["Leetcode 76 (Min Window Substring)", "Leetcode 239 (Sliding Window Max)", "Codeforces 701C"],
+    quiz: [
+      { q: "In the sliding window technique, what is the overall time complexity for processing an array of size n?", options: ["O(n²)", "O(n log n)", "O(n)", "O(1)"], answer: 2 },
+      { q: "Which data structure enables O(n) sliding window maximum queries?", options: ["Stack", "Monotonic deque", "Priority queue", "Sorted set"], answer: 1 },
+      { q: "In a variable sliding window, when should you shrink the left pointer?", options: ["When the window is empty", "When the window invariant is violated", "When right reaches the end", "Every n steps"], answer: 1 },
+      { q: "For finding the minimum window substring, which technique tracks character frequencies?", options: ["Prefix sum", "Hash map inside the window", "Sorting", "BFS"], answer: 1 },
+      { q: "In a fixed-size window of size k over an array of size n, how many total windows are there?", options: ["k", "n", "n - k + 1", "n - k"], answer: 2 },
+    ],
   },
 
   "binary-search": {
@@ -388,6 +423,16 @@ int shipWithinDays(vector<int>& w, int D) {
       "For lower_bound: use hi = mid when feasible; for upper_bound: lo = mid + 1",
     ],
     problems: ["Leetcode 1011 (Ship Packages)", "Codeforces 460C", "Leetcode 875 (Koko Eating Bananas)"],
+    quiz: [
+      { q: "What is the time complexity of binary search?", options: ["O(n)", "O(n log n)", "O(log n)", "O(1)"], answer: 2 },
+      { q: "Why use lo + (hi - lo) / 2 instead of (lo + hi) / 2?", options: ["It's faster", "Prevents integer overflow", "Gives a different result", "Handles negatives"], answer: 1 },
+      { q: "In 'binary search on the answer', what are you searching for?", options: ["An index in a sorted array", "A value satisfying a monotonic feasibility condition", "The minimum element", "A duplicate value"], answer: 1 },
+      { q: "What does lower_bound return if the target is not in the sorted array?", options: ["Null pointer", "The first element greater than target", "-1", "The last element less than target"], answer: 1 },
+      { q: "Binary search requires what property of the search space?", options: ["All elements are unique", "The array is sorted (or predicate is monotonic)", "Length is a power of 2", "Elements are positive"], answer: 1 },
+      { q: "When binary searching with lo and hi, which condition avoids infinite loops on 2-element ranges?", options: ["while (lo <= hi)", "while (lo < hi)", "while (lo != hi)", "while (hi - lo > 1)"], answer: 0 },
+      { q: "For a rotated sorted array binary search, what extra condition must you check at each step?", options: ["Whether mid equals the target", "Which half of the array is still sorted", "Whether lo and hi are adjacent", "Whether the pivot is at index 0"], answer: 1 },
+      { q: "If lower_bound returns end(), what does that mean?", options: ["Target was found at the last index", "All elements are less than target", "The array is empty", "Target is at position 0"], answer: 1 },
+    ],
   },
 
   "sorting": {
@@ -457,6 +502,13 @@ long long mergeCount(vector<int>& a, int l, int r) {
       "Counting sort when values ≤ 10⁶ and you need O(n)",
     ],
     problems: ["Leetcode 315 (Count Smaller)", "Codeforces 340E (inversions)", "Leetcode 179 (Largest Number)"],
+    quiz: [
+      { q: "What is the time complexity of C++ std::sort?", options: ["O(n)", "O(n²)", "O(n log n)", "O(log n)"], answer: 2 },
+      { q: "Which sorting algorithm is the standard method for counting inversions?", options: ["Quick sort", "Merge sort", "Counting sort", "Heap sort"], answer: 1 },
+      { q: "When is counting sort O(n) instead of O(n log n)?", options: ["When the array is nearly sorted", "When values are bounded by a small constant k", "When n is a power of 2", "Always"], answer: 1 },
+      { q: "Which C++ function should you use to sort while preserving the relative order of equal elements?", options: ["std::sort", "std::partial_sort", "std::stable_sort", "std::nth_element"], answer: 2 },
+      { q: "What does sorting an array enable that directly reduces many O(n²) problems to O(n)?", options: ["Hashing", "Two pointers and binary search", "DFS", "Greedy greedy"], answer: 1 },
+    ],
   },
 
   "bfs": {
@@ -524,6 +576,13 @@ long long mergeCount(vector<int>& a, int l, int r) {
       "Multi-source BFS: push all sources with dist=0 before starting",
     ],
     problems: ["Leetcode 994 (Rotting Oranges)", "Codeforces 3D (Least Cost Bracket)", "Leetcode 1091 (Shortest Path Binary Matrix)"],
+    quiz: [
+      { q: "What data structure does BFS use to process nodes?", options: ["Stack", "Queue", "Priority queue", "Deque"], answer: 1 },
+      { q: "What type of shortest path does BFS guarantee?", options: ["Shortest by weight", "Shortest by number of edges (unweighted)", "Shortest by time", "Shortest by cost"], answer: 1 },
+      { q: "When should you mark nodes as visited in BFS?", options: ["When you pop them from the queue", "When you push them onto the queue", "After processing all neighbors", "Never"], answer: 1 },
+      { q: "What is the time complexity of BFS for a graph with V vertices and E edges?", options: ["O(V²)", "O(V log V)", "O(V + E)", "O(E log V)"], answer: 2 },
+      { q: "In multi-source BFS, how do you handle multiple starting nodes?", options: ["Run BFS from each source separately", "Push all sources with distance 0 before starting", "Sort sources first", "Pick the closest source"], answer: 1 },
+    ],
   },
 
   "dfs": {
@@ -594,6 +653,16 @@ reverse(topo.begin(), topo.end());`,
       "DFS on undirected graph: a back edge means a cycle exists",
     ],
     problems: ["Leetcode 207 (Course Schedule)", "Codeforces 1385E", "Leetcode 802 (Safe States)"],
+    quiz: [
+      { q: "What data structure does DFS implicitly use via recursion?", options: ["Queue", "Stack", "Heap", "Deque"], answer: 1 },
+      { q: "In directed graph DFS, a back edge indicates what?", options: ["A tree edge", "A cycle", "A cross edge", "An unvisited node"], answer: 1 },
+      { q: "Topological order is the reverse of which DFS traversal order?", options: ["Pre-order", "In-order", "Post-order", "Level-order"], answer: 2 },
+      { q: "When should you use iterative DFS instead of recursive?", options: ["When graph is small", "When graph is deep (to avoid stack overflow)", "When edges have weights", "When graph is undirected"], answer: 1 },
+      { q: "DFS timestamps (entry/exit times) are useful for what query?", options: ["Shortest path", "Subtree ancestor queries", "Minimum spanning tree", "Counting connected components"], answer: 1 },
+      { q: "Tarjan's SCC algorithm finds what using DFS?", options: ["Shortest paths", "Strongly Connected Components", "Minimum Spanning Tree", "Bipartite partitions"], answer: 1 },
+      { q: "In undirected graph DFS, what distinguishes a back edge from a parent edge?", options: ["Back edge goes to the root", "Back edge goes to an ancestor other than the immediate parent", "Back edge goes to a leaf", "Back edge connects different components"], answer: 1 },
+      { q: "A bridge in a graph is an edge whose removal does what?", options: ["Creates a cycle", "Increases the number of connected components", "Reduces the shortest path", "Makes the graph bipartite"], answer: 1 },
+    ],
   },
 
   "dijkstra": {
@@ -664,6 +733,13 @@ reverse(topo.begin(), topo.end());`,
       "For negative weights → Bellman-Ford instead",
     ],
     problems: ["Codeforces 20C (Shortest Path)", "Leetcode 743 (Network Delay)", "Codeforces 786C"],
+    quiz: [
+      { q: "What is the time complexity of Dijkstra with a binary heap?", options: ["O(V²)", "O(E log V)", "O((V+E) log V)", "O(V log E)"], answer: 2 },
+      { q: "Dijkstra's algorithm does NOT work correctly when?", options: ["The graph is undirected", "Edge weights are negative", "The graph is dense", "The graph is disconnected"], answer: 1 },
+      { q: "What is 'lazy deletion' in Dijkstra's priority queue?", options: ["Removing all stale entries eagerly", "Skipping outdated entries when popped from the heap", "Deleting visited nodes", "Removing edges after relaxation"], answer: 1 },
+      { q: "Which data type should you use for Dijkstra distances to avoid overflow?", options: ["int", "short", "long long", "float"], answer: 2 },
+      { q: "In Dijkstra, when do you skip processing a popped node?", options: ["When it has no neighbors", "When its stored distance is greater than the current shortest distance", "When it is the source node", "Never"], answer: 1 },
+    ],
   },
 
   "union-find": {
@@ -734,6 +810,13 @@ reverse(topo.begin(), topo.end());`,
       "Use DSU for Kruskal: sort edges, unite endpoints, skip same-component edges",
     ],
     problems: ["Leetcode 547 (Number of Provinces)", "Codeforces 1455C", "Leetcode 684"],
+    quiz: [
+      { q: "What does 'path compression' do in DSU?", options: ["Removes long paths from the tree", "Makes every node point directly to the root after find()", "Balances the tree by weight", "Compresses the parent array"], answer: 1 },
+      { q: "What is the amortized complexity of find() with both path compression and union by rank?", options: ["O(log n)", "O(n)", "O(α(n)) ≈ O(1)", "O(log log n)"], answer: 2 },
+      { q: "When unite(x, y) returns false, what does it mean?", options: ["x and y are in different components", "x and y are already in the same component (cycle formed)", "The DSU is full", "x or y is not in the DSU"], answer: 1 },
+      { q: "DSU is the core data structure for which minimum spanning tree algorithm?", options: ["Prim's", "Dijkstra's", "Kruskal's", "Bellman-Ford"], answer: 2 },
+      { q: "In union by rank, what happens when both nodes have the same rank?", options: ["Choose the smaller node", "The rank of the resulting root is incremented", "Neither rank changes", "Randomly pick the root"], answer: 1 },
+    ],
   },
 
   "dp-1d": {
@@ -803,6 +886,16 @@ LIS — Longest Increasing Subsequence of [3,1,8,2,5]:
       "Look for opportunities to reduce space (rolling array)",
     ],
     problems: ["Leetcode 322 (Coin Change)", "Leetcode 300 (LIS)", "Codeforces 455A"],
+    quiz: [
+      { q: "What is the key property of problems suited to dynamic programming?", options: ["Greedy property", "Overlapping subproblems and optimal substructure", "Divide and conquer", "Monotonic queue"], answer: 1 },
+      { q: "In O(n log n) LIS, what does lower_bound do at each step?", options: ["Finds the position to append or replace in the tails array", "Sorts the tails array", "Finds the maximum element", "Removes a duplicate"], answer: 0 },
+      { q: "What is the complexity of bottom-up coin change for amount W and n coins?", options: ["O(n)", "O(W)", "O(n × W)", "O(n log W)"], answer: 2 },
+      { q: "Which DP approach avoids stack overflow for very large inputs?", options: ["Top-down memoization", "Bottom-up tabulation", "Recursive backtracking", "Divide and conquer"], answer: 1 },
+      { q: "Space optimization in 1D DP reduces space from O(n²) to what?", options: ["O(n log n)", "O(n)", "O(1)", "O(sqrt(n))"], answer: 1 },
+      { q: "In the House Robber problem dp[i] = max(dp[i-1], dp[i-2] + a[i]) — what does dp[i-1] represent?", options: ["Rob house i and skip i-1", "Skip house i and take the best up to i-1", "Rob both i and i-1", "The total stolen so far"], answer: 1 },
+      { q: "A 'rolling array' optimization keeps only how many DP rows in memory?", options: ["log n rows", "sqrt(n) rows", "A fixed constant number of rows", "All rows"], answer: 2 },
+      { q: "What is the DP recurrence for the number of ways to climb stairs with 1 or 2 steps?", options: ["dp[i] = dp[i-1] * dp[i-2]", "dp[i] = dp[i-1] + dp[i-2]", "dp[i] = dp[i-1] + 1", "dp[i] = 2 * dp[i-1]"], answer: 1 },
+    ],
   },
 
   "dp-2d": {
@@ -865,6 +958,16 @@ Edit Distance "cat" → "cut":
       "For interval DP: iterate length first, then start index",
     ],
     problems: ["Leetcode 1143 (LCS)", "Leetcode 72 (Edit Distance)", "Codeforces 149D"],
+    quiz: [
+      { q: "In LCS, what is dp[i][j] when a[i] == b[j]?", options: ["dp[i][j-1] + 1", "dp[i-1][j] + 1", "dp[i-1][j-1] + 1", "max(dp[i-1][j], dp[i][j-1])"], answer: 2 },
+      { q: "What is the complexity of computing Edit Distance for strings of length n and m?", options: ["O(n + m)", "O(n × m)", "O(n log m)", "O(n²)"], answer: 1 },
+      { q: "In interval DP, which dimension do you iterate first?", options: ["Start index", "End index", "Length of interval", "Midpoint of interval"], answer: 2 },
+      { q: "For grid DP on an n×m grid, what is the state space size?", options: ["O(n + m)", "O(n × m)", "O(max(n, m)²)", "O(n log m)"], answer: 1 },
+      { q: "What are the base cases dp[i][0] and dp[0][j] for edit distance?", options: ["0 for all i, j", "i and j respectively", "1 for all i, j", "undefined"], answer: 1 },
+      { q: "How do you reconstruct the actual LCS sequence from the filled DP table?", options: ["Read dp[n][m] directly", "Trace back from dp[n][m] following match and max-direction choices", "Sort both strings first", "Use a stack to reverse dp[0][0]"], answer: 1 },
+      { q: "The Palindrome Partitioning DP has what time complexity for a string of length n?", options: ["O(n)", "O(n²)", "O(n³)", "O(2ⁿ)"], answer: 1 },
+      { q: "Matrix chain multiplication DP minimizes what?", options: ["Number of matrix additions", "Total number of scalar multiplications", "Memory used", "Depth of recursion"], answer: 1 },
+    ],
   },
 
   "knapsack": {
@@ -925,6 +1028,16 @@ for (int i = 0; i < n; i++)
       "For subset sum: dp[w] = true/false instead of max value",
     ],
     problems: ["Leetcode 416 (Partition Equal Subset)", "Codeforces 366C", "Leetcode 494 (Target Sum)"],
+    quiz: [
+      { q: "In 0/1 knapsack, why do we iterate capacity BACKWARDS in the 1D optimization?", options: ["For cache performance", "To prevent using an item more than once", "To handle negative weights", "To enable parallelization"], answer: 1 },
+      { q: "In unbounded knapsack, why do we iterate capacity FORWARDS?", options: ["To keep order", "To allow using the same item multiple times", "To prevent overflow", "For cache efficiency"], answer: 1 },
+      { q: "How is subset sum converted to a knapsack problem?", options: ["dp[w] = max(dp[w], dp[w-wi] + vi)", "dp[w] = dp[w] || dp[w - wi]", "dp[w] = dp[w] + dp[w - wi]", "dp[w] = min(dp[w], dp[w - wi] + 1)"], answer: 1 },
+      { q: "What is the complexity of 0/1 knapsack with n items and capacity W?", options: ["O(n + W)", "O(n log W)", "O(n × W)", "O(2^n)"], answer: 2 },
+      { q: "The partition into equal subsets problem reduces to which knapsack variant?", options: ["Unbounded knapsack", "Bounded knapsack", "0/1 knapsack / subset sum", "Fractional knapsack"], answer: 2 },
+      { q: "For counting the number of ways to make change (not just minimum coins), what DP value type do you use?", options: ["bool (reachable or not)", "long long count of ways", "min cost", "max value"], answer: 1 },
+      { q: "In bounded knapsack (each item has at most k copies), what technique reduces it to O(n W log k)?", options: ["Greedy sorting", "Binary grouping (1, 2, 4, ... bundles)", "Divide and conquer", "Sliding window"], answer: 1 },
+      { q: "What should dp[0] be initialized to when computing minimum-cost knapsack?", options: ["0 (base case: cost 0 to fill capacity 0)", "INF", "1", "-1"], answer: 0 },
+    ],
   },
 
   "bitmask-dp": {
@@ -995,6 +1108,13 @@ Subset enumeration:
       "Enumerate submasks: for (int sub=mask; sub>0; sub=(sub-1)&mask)",
     ],
     problems: ["Leetcode 847 (Shortest Path Visiting All Nodes)", "Codeforces 327E", "Leetcode 1125 (Smallest Sufficient Team)"],
+    quiz: [
+      { q: "What is the maximum n for which bitmask DP is typically feasible?", options: ["n ≤ 10", "n ≤ 20", "n ≤ 50", "n ≤ 100"], answer: 1 },
+      { q: "How do you check if bit i is set in a bitmask?", options: ["mask & i", "(mask >> i) & 1", "mask | i", "mask ^ i"], answer: 1 },
+      { q: "How many total subsets does a set of n elements have?", options: ["n", "n²", "2ⁿ", "n!"], answer: 2 },
+      { q: "In TSP with bitmask DP, what does dp[mask][i] represent?", options: ["Minimum cost to start at city i", "Minimum cost to visit all cities in mask and end at city i", "Number of cities visited", "Whether city i is in mask"], answer: 1 },
+      { q: "What operation adds city i to an existing bitmask?", options: ["mask & (1 << i)", "mask | (1 << i)", "mask ^ (1 << i)", "mask - (1 << i)"], answer: 1 },
+    ],
   },
 
   "segment-tree": {
@@ -1065,6 +1185,16 @@ Subset enumeration:
       "Use lazy propagation only when needed (range updates)",
     ],
     problems: ["Codeforces 339D", "Leetcode 315 (Count Smaller)", "Codeforces 380C"],
+    quiz: [
+      { q: "How many nodes should you allocate for a segment tree over n elements?", options: ["2n nodes", "n log n nodes", "4n nodes", "n² nodes"], answer: 2 },
+      { q: "What is the complexity of a range query on a segment tree?", options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"], answer: 1 },
+      { q: "What feature of a segment tree enables O(log n) range updates?", options: ["Path compression", "Lazy propagation", "Union by rank", "Persistent nodes"], answer: 1 },
+      { q: "In a segment tree with root=1, what are the children of node i?", options: ["i+1 and i+2", "2i and 2i+1", "i/2 and i/2+1", "2i-1 and 2i"], answer: 1 },
+      { q: "Which query type does a segment tree NOT natively support in O(log n) without modification?", options: ["Range sum", "Range minimum", "Range GCD", "Range sort"], answer: 3 },
+      { q: "When using lazy propagation, when is a lazy value pushed down to children?", options: ["Only during builds", "Before accessing or modifying a child node", "At the end of all queries", "Immediately when set"], answer: 1 },
+      { q: "What is the time complexity of building a segment tree from an array of size n?", options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"], answer: 2 },
+      { q: "For a range-assign + range-sum segment tree, what extra value must each node store besides sum?", options: ["The minimum value", "The length of the segment", "The XOR of the range", "The maximum value"], answer: 1 },
+    ],
   },
 
   "fenwick-tree": {
@@ -1135,6 +1265,13 @@ Subset enumeration:
       "For range updates + range queries, use two BITs simultaneously",
     ],
     problems: ["Leetcode 315 (Count Smaller — BIT solution)", "Codeforces 701E", "Leetcode 307 (Range Sum Query Mutable)"],
+    quiz: [
+      { q: "What does lowbit(i) = i & (-i) compute?", options: ["The highest set bit of i", "The lowest set bit of i", "The number of set bits in i", "The complement of i"], answer: 1 },
+      { q: "Why must Fenwick Tree arrays be 1-indexed?", options: ["0-indexed arrays cause integer overflow", "lowbit(0) = 0 causes an infinite loop in updates/queries", "The tree wastes space at index 0", "Sorting requires 1-indexing"], answer: 1 },
+      { q: "What is the time complexity of a point update in a Fenwick Tree?", options: ["O(1)", "O(log n)", "O(n)", "O(log² n)"], answer: 1 },
+      { q: "Compared to a Segment Tree, what is a Fenwick Tree's main advantage?", options: ["Supports range updates natively", "Simpler code and faster constant factor for prefix sums", "Works for non-associative functions", "Supports persistent queries"], answer: 1 },
+      { q: "To compute a range sum [l, r] with a BIT, you compute:", options: ["query(l) - query(r)", "query(r) - query(l-1)", "query(r-l)", "query(r) + query(l)"], answer: 1 },
+    ],
   },
 
   "trie": {
@@ -1221,6 +1358,13 @@ XOR Trie (binary trie for max XOR):
       "Track count of words passing through each node for prefix counting",
     ],
     problems: ["Leetcode 208 (Implement Trie)", "Leetcode 421 (Max XOR — binary trie)", "Codeforces 514C"],
+    quiz: [
+      { q: "What is the time complexity of inserting a string of length L into a Trie?", options: ["O(log L)", "O(L log n)", "O(L)", "O(n)"], answer: 2 },
+      { q: "In a binary XOR Trie, how many bits do you typically process per integer?", options: ["8", "16", "32", "64"], answer: 2 },
+      { q: "To maximize XOR with a query value x, at each bit you should:", options: ["Go in the same direction as x's bit", "Go in the opposite direction of x's bit", "Always go left", "Always go right"], answer: 1 },
+      { q: "Which data structure would you prefer for autocomplete with prefix matching?", options: ["Hash map", "Sorted array + binary search", "Trie", "B-tree"], answer: 2 },
+      { q: "What marks the end of a valid word in a Trie node?", options: ["A null child pointer", "A boolean 'end' flag", "A special character node", "The node's index"], answer: 1 },
+    ],
   },
 
   "modular-arithmetic": {
@@ -1301,6 +1445,15 @@ long long C(int n, int k) {
       "Use __int128 if intermediate products can exceed long long",
     ],
     problems: ["Codeforces 509C", "Leetcode 1569 (Reorder Routes)", "Codeforces 543B"],
+    quiz: [
+      { q: "What is the most common modulus in competitive programming?", options: ["10⁶ + 3", "10⁹ + 7", "998244353", "2³¹ − 1"], answer: 1 },
+      { q: "What is the complexity of fast binary exponentiation?", options: ["O(n)", "O(log n)", "O(sqrt(n))", "O(n log n)"], answer: 1 },
+      { q: "Fermat's Little Theorem states that for prime p and a not divisible by p: a^(p-1) ≡ ?", options: ["0 (mod p)", "1 (mod p)", "a (mod p)", "p (mod a)"], answer: 1 },
+      { q: "To correctly handle subtraction mod p (a - b), compute:", options: ["(a - b) % p", "(a - b + p) % p", "a % p - b % p", "(a % p) - (b % p) + p"], answer: 1 },
+      { q: "Which theorem is used to compute modular inverse when the modulus is prime?", options: ["Chinese Remainder Theorem", "Fermat's Little Theorem", "Euler's Theorem", "Wilson's Theorem"], answer: 1 },
+      { q: "When the modulus p is NOT prime, how do you compute the modular inverse of a?", options: ["Fermat's Little Theorem", "Extended Euclidean Algorithm (if gcd(a,p)=1)", "a^(p-1) mod p", "It cannot be computed"], answer: 1 },
+      { q: "The Chinese Remainder Theorem (CRT) is used to solve systems of what?", options: ["Linear equations", "Simultaneous modular congruences", "Polynomial equations", "Matrix equations"], answer: 1 },
+    ],
   },
 
   "sieve": {
@@ -1376,6 +1529,13 @@ vector<int> factorize(int n) {
       "SPF sieve: only update spf[j] if spf[j]==j (first time marked)",
     ],
     problems: ["Leetcode 204 (Count Primes)", "Codeforces 776C", "Codeforces 1217D"],
+    quiz: [
+      { q: "What is the time complexity of the Sieve of Eratosthenes for primes up to N?", options: ["O(N)", "O(N log N)", "O(N log log N)", "O(sqrt(N))"], answer: 2 },
+      { q: "Why does the inner sieve loop start at i² instead of 2i?", options: ["For cache efficiency", "All multiples below i² are already marked by smaller primes", "To avoid marking i itself", "To save memory"], answer: 1 },
+      { q: "The Smallest Prime Factor (SPF) sieve allows factorization of n in what time?", options: ["O(n)", "O(sqrt(n))", "O(log n)", "O(1)"], answer: 2 },
+      { q: "What memory optimization can reduce sieve memory by ~8x?", options: ["Using int instead of long long", "Using bitset<N> instead of vector<bool>", "Using char instead of bool", "Using short instead of int"], answer: 1 },
+      { q: "What is the smallest prime number?", options: ["1", "2", "3", "0"], answer: 1 },
+    ],
   },
 
   "combinatorics": {
@@ -1456,6 +1616,16 @@ long long distribute(int n, int k) { return C(n + k - 1, k - 1); }`,
       "Derangements: D(n) = (n-1)(D(n-1)+D(n-2))",
     ],
     problems: ["Codeforces 1696D", "Leetcode 1220 (Count Vowels Permutations)", "Codeforces 559C"],
+    quiz: [
+      { q: "How many ways can you choose k items from n items (order doesn't matter)?", options: ["n! / k!", "n! / (k! × (n-k)!)", "n^k", "k^n"], answer: 1 },
+      { q: "The Stars and Bars formula for distributing n identical items into k distinct groups is:", options: ["C(n, k)", "C(n+k, k)", "C(n+k-1, k-1)", "n^k"], answer: 2 },
+      { q: "Inclusion-Exclusion for |A ∪ B| equals:", options: ["|A| + |B|", "|A| + |B| - |A ∩ B|", "|A| - |B| + |A ∩ B|", "|A| × |B|"], answer: 1 },
+      { q: "To compute C(n, k) mod p efficiently when n is very large, which theorem is used?", options: ["Fermat's Little Theorem", "Wilson's Theorem", "Lucas' Theorem", "Chinese Remainder Theorem"], answer: 2 },
+      { q: "What is C(5, 2)?", options: ["5", "10", "20", "15"], answer: 1 },
+      { q: "The nth Catalan number counts which of the following?", options: ["Number of primes up to n", "Number of valid parenthesizations of n+1 factors", "Number of ways to sort n elements", "Number of subsets of size n"], answer: 1 },
+      { q: "How many ways can n distinct objects be arranged in a line?", options: ["2ⁿ", "n²", "n!", "C(n, ⌊n/2⌋)"], answer: 2 },
+      { q: "Burnside's Lemma (Cauchy-Frobenius) is used to count objects under what condition?", options: ["When objects have different weights", "When objects are considered equivalent under symmetry/rotation", "When the count exceeds 10⁹", "When elements are drawn without replacement"], answer: 1 },
+    ],
   },
 };
 

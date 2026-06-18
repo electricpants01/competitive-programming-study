@@ -271,6 +271,16 @@ export const es: Translations = {
     },
   },
 
+  quiz: {
+    tab: 'Examen',
+    learnTab: 'Aprender',
+    submitBtn: 'Enviar Respuestas',
+    tryAgainBtn: 'Intentar de Nuevo',
+    score: (correct: number, total: number) => `¡Obtuviste ${correct} de ${total} correctas!`,
+    noQuiz: 'No hay examen disponible para este tema todavía.',
+    selectAll: 'Por favor responde todas las preguntas antes de enviar.',
+  },
+
   slides: {
     brand: 'PC Slides',
     prev: 'Anterior',
