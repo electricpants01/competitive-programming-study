@@ -49,12 +49,32 @@ for (int i = 0; i < n; i++)      // n
   for (int j = i; j < n; j++)   // ~n/2
     // O(1) body                 // total: O(n²)
 
-// Binary search → O(log n)
+  // Binary search → O(log n)
 int lo = 0, hi = n - 1;
 while (lo <= hi) {
   int mid = (lo + hi) / 2;      // splits in half each time
   // O(log n) iterations
 }`,
+      },
+      {
+        title: "Master Theorem & Amortized Analysis",
+        description: "Solve divide-and-conquer recurrences; understand amortized O(1)",
+        codeSnippet: `// Master Theorem: T(n) = a·T(n/b) + f(n), a≥1, b>1
+// Let c = log_b(a). Compare f(n) with n^c:
+//
+// Case 1: f(n) = O(n^(c-ε))   → T(n) = Θ(n^c)
+// Case 2: f(n) = Θ(n^c)       → T(n) = Θ(n^c · log n)
+// Case 3: f(n) = Ω(n^(c+ε))   → T(n) = Θ(f(n))
+//
+// Common examples:
+// T(n) = T(n/2)   + O(1)  → O(log n)    [binary search]
+// T(n) = 2T(n/2)  + O(n)  → O(n log n)  [merge sort]
+// T(n) = 2T(n/2)  + O(1)  → O(n)        [tree traversal]
+// T(n) = 4T(n/2)  + O(n²) → O(n²)       [some divide & conquer]
+//
+// Amortized Analysis — vector push_back:
+// When vector doubles: copies 1+2+4+...+n/2 = n-1 elements total
+// n push_backs → at most 2n copies → O(1) amortized per push_back`,
       },
     ],
     bestPractices: [
@@ -118,6 +138,26 @@ for (int i = 0; i < n; i++)
 auto rangeSum = [&](int l, int r) {
   return prefix[r + 1] - prefix[l];
 };`,
+      },
+      {
+        title: "2D Prefix Sum",
+        description: "Rectangle range sum queries in O(1) after O(n×m) preprocessing",
+        codeSnippet: `// Build 2D prefix sum: pre[i][j] = sum of grid[0..i-1][0..j-1]
+vector<vector<int>> build2D(vector<vector<int>>& g) {
+  int n = g.size(), m = g[0].size();
+  vector<vector<int>> pre(n+1, vector<int>(m+1, 0));
+  for (int i = 1; i <= n; i++)
+    for (int j = 1; j <= m; j++)
+      pre[i][j] = g[i-1][j-1]
+                + pre[i-1][j] + pre[i][j-1] - pre[i-1][j-1];
+  return pre;
+}
+
+// Query sum of rectangle (r1,c1) to (r2,c2) — 0-indexed inclusive
+int query2D(vector<vector<int>>& pre, int r1, int c1, int r2, int c2) {
+  return pre[r2+1][c2+1] - pre[r1][c2+1]
+       - pre[r2+1][c1]   + pre[r1][c1];
+}`,
       },
     ],
     bestPractices: [
@@ -202,6 +242,31 @@ sort(v.begin(), v.end());
 bool found = binary_search(v.begin(), v.end(), 8);
 int pos = lower_bound(v.begin(), v.end(), 8) - v.begin();`,
       },
+      {
+        title: "Bit Builtins & Useful STL Algorithms",
+        description: "GCC bit intrinsics and next_permutation for CP",
+        codeSnippet: `// GCC built-in bit functions (single CPU instruction, very fast):
+int x = 12; // binary: 1100
+__builtin_popcount(x);   // count set bits      → 2
+__builtin_clz(x);        // leading zeros (32b) → 28
+__builtin_ctz(x);        // trailing zeros      → 2
+__builtin_parity(x);     // parity (odd 1s?)    → 0
+// Use __builtin_popcountll(x) for long long
+
+// next_permutation: iterate all permutations lexicographically
+vector<int> p = {1, 2, 3};
+do {
+  // process permutation p
+} while (next_permutation(p.begin(), p.end())); // n! total, use n ≤ 10
+
+// nth_element: O(n) avg — place kth smallest at index k
+nth_element(v.begin(), v.begin() + k, v.end());
+// v[k] is now the kth smallest (0-indexed); rest unordered
+
+// __gcd and lcm
+int g = __gcd(a, b);
+int l = a / g * b; // lcm without overflow`,
+      },
     ],
     bestPractices: [
       "Use unordered_map/set for O(1) average, but beware worst-case hash collisions",
@@ -268,6 +333,28 @@ pair<int,int> twoSum(vector<int>& a, int target) {
   }
   return {-1, -1};
 }`,
+      },
+      {
+        title: "Floyd's Cycle Detection",
+        description: "Detect cycle and find its start in O(n) time, O(1) space",
+        codeSnippet: `// Phase 1: slow moves 1 step, fast moves 2 steps
+// If they meet → cycle exists
+// Phase 2: reset slow to head, advance both 1 step → meet at cycle start
+ListNode* detectCycle(ListNode* head) {
+  ListNode *slow = head, *fast = head;
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+    if (slow == fast) break;
+  }
+  if (!fast || !fast->next) return nullptr; // no cycle
+  slow = head;
+  while (slow != fast) { slow = slow->next; fast = fast->next; }
+  return slow; // cycle start node
+}
+// Why: if head→cycle_start = a, cycle_length = c,
+// at meeting point slow traveled a+x, fast traveled a+x+k*c.
+// fast = 2*slow → k*c = a+x → after resetting slow, both reach start in a steps.`,
       },
     ],
     bestPractices: [
@@ -345,6 +432,26 @@ Variable window (longest subarray sum ≤ k):
   return resLen == INT_MAX ? "" : s.substr(resL, resLen);
 }`,
       },
+      {
+        title: "Sliding Window Maximum (Monotonic Deque)",
+        description: "Find the max in every window of size k in O(n) total",
+        codeSnippet: `// Monotonic deque: front = index of max in current window
+// Invariant: deque is decreasing (indices with decreasing values)
+vector<int> maxSlidingWindow(vector<int>& a, int k) {
+  deque<int> dq; // stores indices
+  vector<int> result;
+  for (int i = 0; i < (int)a.size(); i++) {
+    // Remove index outside window
+    while (!dq.empty() && dq.front() < i - k + 1) dq.pop_front();
+    // Remove smaller elements (they can never be max)
+    while (!dq.empty() && a[dq.back()] < a[i]) dq.pop_back();
+    dq.push_back(i);
+    if (i >= k - 1) result.push_back(a[dq.front()]);
+  }
+  return result;
+}
+// Complexity: each element pushed and popped at most once → O(n)`,
+      },
     ],
     bestPractices: [
       "Expand R first, then shrink L to restore the invariant",
@@ -414,6 +521,43 @@ int shipWithinDays(vector<int>& w, int D) {
     else lo = mid + 1;
   }
   return lo;
+}`,
+      },
+      {
+        title: "Two Loop Templates & Ternary Search",
+        description: "lo<=hi for exact match; lo<hi for leftmost valid; ternary for unimodal",
+        codeSnippet: `// Template 1: lo <= hi — find exact value, return -1 if not found
+int exactSearch(vector<int>& a, int target) {
+  int lo = 0, hi = (int)a.size() - 1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] == target) return mid;
+    else if (a[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+
+// Template 2: lo < hi — find leftmost position satisfying predicate
+// Loop terminates when lo == hi, which IS the answer
+int leftmost(vector<int>& a, int target) {
+  int lo = 0, hi = a.size(); // hi can be past-the-end
+  while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] >= target) hi = mid;  // valid: could be answer, shrink right
+    else lo = mid + 1;               // invalid: definitely not answer
+  }
+  return lo; // lo == hi == first index with a[i] >= target
+}
+
+// Ternary search: find minimum of unimodal f on real interval [lo, hi]
+double ternaryMin(double lo, double hi) {
+  for (int it = 0; it < 200; it++) { // 200 iterations → ~10^-60 precision
+    double m1 = lo + (hi - lo) / 3;
+    double m2 = hi - (hi - lo) / 3;
+    if (f(m1) < f(m2)) hi = m2; else lo = m1;
+  }
+  return (lo + hi) / 2;
 }`,
       },
     ],
@@ -495,6 +639,31 @@ long long mergeCount(vector<int>& a, int l, int r) {
   return cnt;
 }`,
       },
+      {
+        title: "Sort + Greedy: Activity Selection",
+        description: "Sort by end time → greedily pick non-overlapping intervals",
+        codeSnippet: `// Activity Selection: maximum non-overlapping intervals
+// Key insight: always pick the interval that ends earliest
+int maxActivities(vector<pair<int,int>>& intervals) {
+  // Sort by end time (the greedy choice)
+  sort(intervals.begin(), intervals.end(),
+       [](auto& a, auto& b){ return a.second < b.second; });
+  int count = 0, lastEnd = INT_MIN;
+  for (auto& [start, end] : intervals) {
+    if (start >= lastEnd) { // no overlap with last chosen
+      count++;
+      lastEnd = end;
+    }
+  }
+  return count;
+}
+// General "sort + greedy" pattern appears in:
+// - Meeting rooms (sort by start time)
+// - Fractional knapsack (sort by value/weight ratio)
+// - Huffman coding (sort by frequency)
+// - Job scheduling with deadlines (sort by deadline)
+// Rule: identify the "correct" ordering criterion, then greedy scan.`,
+      },
     ],
     bestPractices: [
       "Prefer std::sort for general use — it's O(n log n) worst case (introsort)",
@@ -568,6 +737,32 @@ long long mergeCount(vector<int>& a, int l, int r) {
   }
   return dist; // dist[i] = shortest path from start to i
 }`,
+      },
+      {
+        title: "0-1 BFS",
+        description: "Shortest path with edge weights 0 or 1 — O(V+E) using deque",
+        codeSnippet: `// 0-1 BFS: use deque instead of queue
+// Free edges (w=0) → push_front (like same level)
+// Cost edges (w=1) → push_back (like next level)
+vector<int> bfs01(int src, vector<vector<pair<int,int>>>& adj, int n) {
+  vector<int> dist(n, INT_MAX);
+  deque<int> dq;
+  dist[src] = 0;
+  dq.push_back(src);
+  while (!dq.empty()) {
+    int u = dq.front(); dq.pop_front();
+    for (auto [v, w] : adj[u]) {
+      if (dist[u] + w < dist[v]) {
+        dist[v] = dist[u] + w;
+        if (w == 0) dq.push_front(v);  // free: higher priority
+        else        dq.push_back(v);   // cost: normal priority
+      }
+    }
+  }
+  return dist;
+}
+// Use case: grid where you can move normally (cost 1) or
+// with a special pass (cost 0) — e.g., Leetcode 1368`,
       },
     ],
     bestPractices: [
@@ -645,6 +840,42 @@ void dfs(int u, vector<vector<int>>& adj) {
 for (int i = 0; i < n; i++)
   if (color[i] == 0) dfs(i, adj);
 reverse(topo.begin(), topo.end());`,
+      },
+      {
+        title: "Tarjan's SCC & Bridge Detection",
+        description: "Find SCCs and bridges in O(V+E) using disc[] and low[] arrays",
+        codeSnippet: `// Tarjan's SCC: disc[u]=discovery time, low[u]=lowest disc reachable via subtree
+int timer_t = 0, numSCC = 0;
+vector<int> disc_t, low_t, comp;
+vector<bool> onStack;
+stack<int> st;
+
+void tarjan(int u, vector<vector<int>>& adj) {
+  disc_t[u] = low_t[u] = timer_t++;
+  st.push(u); onStack[u] = true;
+  for (int v : adj[u]) {
+    if (disc_t[v] == -1) { tarjan(v, adj); low_t[u] = min(low_t[u], low_t[v]); }
+    else if (onStack[v])  { low_t[u] = min(low_t[u], disc_t[v]); }
+  }
+  if (low_t[u] == disc_t[u]) { // u is root of an SCC
+    while (true) { int v = st.top(); st.pop(); onStack[v]=false; comp[v]=numSCC; if(v==u)break; }
+    numSCC++;
+  }
+}
+
+// Bridge detection (undirected graph):
+// Edge (u,v) is a bridge if low[v] > disc[u]
+void bridge(int u, int par, vector<vector<int>>& adj,
+            vector<int>& disc, vector<int>& low, vector<pair<int,int>>& bridges, int& t) {
+  disc[u] = low[u] = t++;
+  for (int v : adj[u]) {
+    if (disc[v]==-1) {
+      bridge(v, u, adj, disc, low, bridges, t);
+      low[u] = min(low[u], low[v]);
+      if (low[v] > disc[u]) bridges.push_back({u,v}); // it's a bridge!
+    } else if (v != par) low[u] = min(low[u], disc[v]);
+  }
+}`,
       },
     ],
     bestPractices: [
@@ -726,6 +957,30 @@ reverse(topo.begin(), topo.end());`,
   return dist;
 }`,
       },
+      {
+        title: "Bellman-Ford & Algorithm Comparison",
+        description: "O(V×E) shortest paths; handles negative weights and detects negative cycles",
+        codeSnippet: `struct Edge { int u, v, w; };
+
+vector<long long> bellmanFord(int src, vector<Edge>& edges, int n) {
+  vector<long long> dist(n, LLONG_MAX);
+  dist[src] = 0;
+  for (int i = 0; i < n - 1; i++) // V-1 relaxations
+    for (auto& [u, v, w] : edges)
+      if (dist[u] != LLONG_MAX && dist[u] + w < dist[v])
+        dist[v] = dist[u] + w;
+  // Detect negative cycles: if still relaxable → negative cycle
+  for (auto& [u, v, w] : edges)
+    if (dist[u] != LLONG_MAX && dist[u] + w < dist[v])
+      dist[v] = LLONG_MIN; // reachable via negative cycle
+  return dist;
+}
+
+// Algorithm Selection Guide:
+// Dijkstra       O((V+E) log V)  non-negative weights only  ← default choice
+// Bellman-Ford   O(V × E)        negative weights, cycle detection
+// Floyd-Warshall O(V³)           all-pairs shortest paths, V ≤ 400`,
+      },
     ],
     bestPractices: [
       "Use long long for distances to avoid overflow",
@@ -803,6 +1058,29 @@ reverse(topo.begin(), topo.end());`,
     bool connected(int x, int y) { return find(x) == find(y); }
 };`,
       },
+      {
+        title: "Kruskal's MST using DSU",
+        description: "Find Minimum Spanning Tree in O(E log E) — sort edges + DSU",
+        codeSnippet: `struct Edge { int u, v, w; };
+
+int kruskal(int n, vector<Edge>& edges) {
+  // Sort edges by weight ascending
+  sort(edges.begin(), edges.end(), [](auto& a, auto& b){ return a.w < b.w; });
+  DSU dsu(n);
+  int mstCost = 0, edgesUsed = 0;
+  for (auto& [u, v, w] : edges) {
+    if (dsu.unite(u, v)) {   // only add edge if it connects two components
+      mstCost += w;
+      if (++edgesUsed == n - 1) break; // MST has exactly n-1 edges
+    }
+  }
+  return edgesUsed == n - 1 ? mstCost : -1; // -1 if graph disconnected
+}
+// MST properties:
+// - Unique MST if all edge weights are distinct
+// - n-1 edges in MST for n nodes
+// - Minimum total weight connecting all nodes`,
+      },
     ],
     bestPractices: [
       "Always use both path compression AND union by rank together",
@@ -865,6 +1143,31 @@ LIS — Longest Increasing Subsequence of [3,1,8,2,5]:
     }
     return tails.size();
 }`,
+      },
+      {
+        title: "Pull vs Push DP Transitions",
+        description: "Two equivalent styles — choose whichever makes transitions clearest",
+        codeSnippet: `// PULL style: dp[i] is computed FROM its dependencies
+// "To fill state i, I look backward at states that feed into i"
+for (int i = 1; i <= amount; i++) {
+  dp[i] = INT_MAX;
+  for (int c : coins)
+    if (c <= i && dp[i-c] != INT_MAX)
+      dp[i] = min(dp[i], dp[i-c] + 1); // PULL: read dp[i-c]
+}
+
+// PUSH style: each state CONTRIBUTES to future states
+// "From state i, I update all states that i feeds into"
+for (int i = 0; i <= amount; i++) {
+  if (dp[i] == INT_MAX) continue;
+  for (int c : coins)
+    if (i + c <= amount)
+      dp[i+c] = min(dp[i+c], dp[i] + 1); // PUSH: write dp[i+c]
+}
+
+// Both produce identical results for coin change.
+// PULL: cleaner when reading transitions from problem statement.
+// PUSH: natural for graph DP (BFS-style), when state i "generates" next states.`,
       },
       {
         title: "Coin Change (Minimum Coins)",
@@ -951,6 +1254,31 @@ Edit Distance "cat" → "cut":
     return dp[n][m];
 }`,
       },
+      {
+        title: "Interval DP — Matrix Chain Multiplication",
+        description: "Minimize scalar multiplications to chain n matrices in O(n³)",
+        codeSnippet: `// dims[i] * dims[i+1] = dimensions of matrix i (n matrices total)
+// Cost to multiply matrices i..j via split at k:
+//   dp[i][j] = min over k of: dp[i][k] + dp[k+1][j] + dims[i]*dims[k+1]*dims[j+1]
+int matrixChain(vector<int>& dims) {
+  int n = dims.size() - 1; // number of matrices
+  vector<vector<int>> dp(n, vector<int>(n, 0));
+  for (int len = 2; len <= n; len++) {        // chain length
+    for (int i = 0; i <= n - len; i++) {      // start index
+      int j = i + len - 1;                   // end index
+      dp[i][j] = INT_MAX;
+      for (int k = i; k < j; k++)            // split point
+        dp[i][j] = min(dp[i][j],
+                       dp[i][k] + dp[k+1][j] + dims[i]*dims[k+1]*dims[j+1]);
+    }
+  }
+  return dp[0][n-1];
+}
+// Pattern: for any interval DP, always:
+// 1. Iterate length first (outer loop)
+// 2. Iterate start index (middle loop)
+// 3. Try all split points (inner loop)`,
+      },
     ],
     bestPractices: [
       "Draw the DP table with small examples first",
@@ -1020,6 +1348,32 @@ Space optimization (1D array, iterate w backwards):
 for (int i = 0; i < n; i++)
     for (int cap = w[i]; cap <= W; cap++)  // forward
         dp[cap] = max(dp[cap], dp[cap - w[i]] + v[i]);`,
+      },
+      {
+        title: "Bounded Knapsack with Binary Grouping",
+        description: "Split k copies into 1,2,4,...,remainder bundles → O/1 knapsack in O(nW log k)",
+        codeSnippet: `// Bounded knapsack: item i can be used cnt[i] times
+// Binary grouping: split cnt[i] into groups of 1, 2, 4, ..., remainder
+// Each group is a "virtual item" → then solve 0/1 knapsack
+int boundedKnapsack(vector<int>& w, vector<int>& v, vector<int>& cnt, int W) {
+  vector<int> nw, nv; // new item list after splitting
+  for (int i = 0; i < (int)w.size(); i++) {
+    int rem = cnt[i];
+    for (int k = 1; k <= rem; k <<= 1) { // 1, 2, 4, 8, ...
+      nw.push_back(k * w[i]); nv.push_back(k * v[i]);
+      rem -= k;
+    }
+    if (rem > 0) { nw.push_back(rem * w[i]); nv.push_back(rem * v[i]); }
+  }
+  // Standard 0/1 knapsack on expanded item list
+  vector<int> dp(W + 1, 0);
+  for (int i = 0; i < (int)nw.size(); i++)
+    for (int cap = W; cap >= nw[i]; cap--)
+      dp[cap] = max(dp[cap], dp[cap - nw[i]] + nv[i]);
+  return dp[W];
+}
+// Why binary grouping works: 1+2+4+...+2^(k-1) = 2^k - 1,
+// so any count up to cnt[i] can be represented as a subset of groups.`,
       },
     ],
     bestPractices: [
@@ -1101,6 +1455,34 @@ Subset enumeration:
     return ans;
 }`,
       },
+      {
+        title: "SOS DP + Submask Enumeration",
+        description: "Sum over Subsets DP in O(n×2ⁿ); enumerate all submasks of a mask in O(3ⁿ) total",
+        codeSnippet: `// SOS DP: f[mask] = sum of a[sub] for all sub ⊆ mask
+// Build in O(n × 2ⁿ) — for n=20: ~20 million ops
+vector<long long> sos(vector<long long>& a, int n) {
+  vector<long long> f = a;
+  for (int i = 0; i < n; i++)           // iterate each bit position
+    for (int mask = 0; mask < (1<<n); mask++)
+      if (mask >> i & 1)                // bit i is set in mask
+        f[mask] += f[mask ^ (1 << i)]; // add contribution from subset missing bit i
+  return f;
+}
+// After SOS: f[mask] = sum of a[sub] for every sub ⊆ mask.
+// Use case: "for each subset mask, sum values of all its subsets"
+
+// Submask enumeration: all non-empty submasks of mask
+// Total work across all masks = 3ⁿ (each element: in mask∩sub, in mask only, not in mask = 3 choices)
+void enumerateSubmasks(int mask) {
+  for (int sub = mask; sub > 0; sub = (sub - 1) & mask) {
+    // process submask 'sub'
+    // (sub-1)&mask removes lowest set bit of sub that is also in mask
+  }
+}
+// Classic pattern: dp over all (mask, submask) pairs
+// for (int mask = 0; mask < (1<<n); mask++)
+//   for (int sub = mask; sub > 0; sub = (sub-1)&mask) { dp[mask] = ... }`,
+      },
     ],
     bestPractices: [
       "Use (mask >> i) & 1 to check if city i is visited",
@@ -1177,6 +1559,54 @@ Subset enumeration:
              + query(2*node+1, mid+1, r, ql, qr);
     }
 };`,
+      },
+      {
+        title: "Segment Tree with Lazy Propagation (Range Add + Range Sum)",
+        description: "O(log n) range updates via deferred pushdown",
+        codeSnippet: `// Each node stores: sum of range, lazy = pending add for entire range
+struct LazySegTree {
+  int n;
+  vector<long long> tree, lazy;
+  LazySegTree(int n) : n(n), tree(4*n, 0), lazy(4*n, 0) {}
+
+  void push(int node, int l, int r) {
+    if (lazy[node]) {
+      int mid = (l + r) / 2;
+      // push to left child
+      tree[2*node]   += lazy[node] * (mid - l + 1);
+      lazy[2*node]   += lazy[node];
+      // push to right child
+      tree[2*node+1] += lazy[node] * (r - mid);
+      lazy[2*node+1] += lazy[node];
+      lazy[node] = 0; // clear
+    }
+  }
+
+  void update(int node, int l, int r, int ql, int qr, long long val) {
+    if (qr < l || r < ql) return;
+    if (ql <= l && r <= qr) {
+      tree[node] += val * (r - l + 1); // apply to whole range
+      lazy[node] += val;               // defer to children
+      return;
+    }
+    push(node, l, r);                  // push before descending
+    int mid = (l + r) / 2;
+    update(2*node, l, mid, ql, qr, val);
+    update(2*node+1, mid+1, r, ql, qr, val);
+    tree[node] = tree[2*node] + tree[2*node+1];
+  }
+
+  long long query(int node, int l, int r, int ql, int qr) {
+    if (qr < l || r < ql) return 0;
+    if (ql <= l && r <= qr) return tree[node];
+    push(node, l, r);                  // push before descending
+    int mid = (l + r) / 2;
+    return query(2*node, l, mid, ql, qr)
+         + query(2*node+1, mid+1, r, ql, qr);
+  }
+};
+// Key rule: ALWAYS call push() before accessing children.
+// Complexity: O(log n) per range update and range query.`,
       },
     ],
     bestPractices: [
@@ -1438,6 +1868,39 @@ long long C(int n, int k) {
     return fact[n] % MOD * inv_fact[k] % MOD * inv_fact[n-k] % MOD;
 }`,
       },
+      {
+        title: "Extended Euclidean + O(n) Linear Inverse Precomputation",
+        description: "Inverse when mod is NOT prime; O(n) batch inverse for 1..n",
+        codeSnippet: `// Extended Euclidean: finds x,y such that a*x + b*y = gcd(a,b)
+// Returns gcd; sets x and y
+long long extgcd(long long a, long long b, long long& x, long long& y) {
+  if (b == 0) { x = 1; y = 0; return a; }
+  long long x1, y1;
+  long long g = extgcd(b, a % b, x1, y1);
+  x = y1;
+  y = x1 - (a / b) * y1;
+  return g;
+}
+
+// Modular inverse via extgcd (works when gcd(a, mod) = 1, mod need NOT be prime)
+long long modInv(long long a, long long mod) {
+  long long x, y;
+  long long g = extgcd(a, mod, x, y);
+  if (g != 1) return -1; // no inverse exists
+  return (x % mod + mod) % mod;
+}
+
+// O(n) linear inverse precomputation for 1..n (mod must be prime)
+// Recurrence: inv[i] = -(mod/i) * inv[mod%i] (mod mod)
+vector<long long> linearInv(int n, long long mod) {
+  vector<long long> inv(n + 1);
+  inv[1] = 1;
+  for (int i = 2; i <= n; i++)
+    inv[i] = (mod - (mod / i) * inv[mod % i] % mod) % mod;
+  return inv;
+}
+// Use case: need modular inverses for all i in [1..n] — O(n) total vs O(n log mod) with power()`,
+      },
     ],
     bestPractices: [
       "Always add MOD before taking mod to handle negatives: (a - b % MOD + MOD) % MOD",
@@ -1521,6 +1984,42 @@ vector<int> factorize(int n) {
     }
     return factors;
 }`,
+      },
+      {
+        title: "Linear Sieve O(n) + Euler's Totient φ(n)",
+        description: "Each composite is marked exactly once; totient computed alongside",
+        codeSnippet: `// Linear Sieve: each number is crossed out by its SMALLEST prime factor exactly once
+// → O(n) total, vs O(n log log n) for classic sieve
+const int MAXN = 1e6 + 5;
+vector<int> primes, spf2(MAXN, 0), phi(MAXN);
+vector<bool> composite(MAXN, false);
+
+void linearSieve() {
+  phi[1] = 1;
+  for (int i = 2; i < MAXN; i++) {
+    if (!composite[i]) {           // i is prime
+      primes.push_back(i);
+      spf2[i] = i;
+      phi[i] = i - 1;             // Euler totient of prime p = p-1
+    }
+    for (int p : primes) {
+      if ((long long)i * p >= MAXN) break;
+      composite[i * p] = true;
+      spf2[i * p] = p;
+      if (i % p == 0) {
+        // p is already the smallest prime factor of i
+        // phi[i*p] = phi[i] * p  (multiplicativity)
+        phi[i * p] = phi[i] * p;
+        break;                    // crucial: stop here to ensure each number marked once
+      } else {
+        // gcd(i, p) = 1 → phi[i*p] = phi[i] * phi[p] = phi[i] * (p-1)
+        phi[i * p] = phi[i] * (p - 1);
+      }
+    }
+  }
+}
+// phi[n] = number of integers in [1,n] that are coprime to n
+// phi[p^k] = p^(k-1) * (p-1);  phi is multiplicative: gcd(a,b)=1 → phi[ab]=phi[a]*phi[b]`,
       },
     ],
     bestPractices: [
@@ -1608,6 +2107,37 @@ long long C(int n, int k) {
 
 // Stars and bars: n identical items into k distinct bins
 long long distribute(int n, int k) { return C(n + k - 1, k - 1); }`,
+      },
+      {
+        title: "Catalan Numbers + Derangements",
+        description: "Two essential counting sequences with DP recurrences",
+        codeSnippet: `// Catalan numbers: C_n = C(2n, n) / (n+1)
+// C_0=1, C_1=1, C_2=2, C_3=5, C_4=14, C_5=42, ...
+// Counts: valid parenthesizations, BST shapes, non-crossing partitions, Dyck paths
+// Recurrence: C_n = sum_{i=0}^{n-1} C_i * C_{n-1-i}
+// Closed form: C_n = C(2n, n) / (n+1) = C(2n, n) - C(2n, n+1)
+vector<long long> catalan(int n, long long mod) {
+  vector<long long> cat(n + 1, 0);
+  cat[0] = cat[1] = 1;
+  for (int i = 2; i <= n; i++)
+    for (int j = 0; j < i; j++)
+      cat[i] = (cat[i] + cat[j] % mod * cat[i-1-j]) % mod;
+  return cat;
+  // Or: cat[n] = C(2n,n) * modInv(n+1, mod) % mod  (O(1) with precomputed factorials)
+}
+
+// Derangements D(n): permutations of n elements with no fixed point
+// D(0)=1, D(1)=0, D(2)=1, D(3)=2, D(4)=9, D(5)=44
+// Recurrence: D(n) = (n-1) * (D(n-1) + D(n-2))  for n >= 2
+// Near-formula: D(n) = round(n! / e) for large n
+vector<long long> derangements(int n, long long mod) {
+  vector<long long> D(n + 1, 0);
+  D[0] = 1; if (n >= 1) D[1] = 0;
+  for (int i = 2; i <= n; i++)
+    D[i] = (long long)(i - 1) % mod * ((D[i-1] + D[i-2]) % mod) % mod;
+  return D;
+}
+// Problem type: "arrangements where element i is NOT in position i" → derangements`,
       },
     ],
     bestPractices: [

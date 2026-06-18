@@ -56,7 +56,27 @@ while (lo <= hi) {
   // O(log n) iteraciones
 }`,
       },
-    ],
+      {
+        title: "Teorema Maestro y Análisis Amortizado",
+        description: "Resuelve recurrencias divide y vencerás; comprende el O(1) amortizado",
+        codeSnippet: `// Master Theorem: T(n) = a·T(n/b) + f(n), a≥1, b>1
+// Let c = log_b(a). Compare f(n) with n^c:
+//
+// Case 1: f(n) = O(n^(c-ε))   → T(n) = Θ(n^c)
+// Case 2: f(n) = Θ(n^c)       → T(n) = Θ(n^c · log n)
+// Case 3: f(n) = Ω(n^(c+ε))   → T(n) = Θ(f(n))
+//
+// Common examples:
+// T(n) = T(n/2)   + O(1)  → O(log n)    [binary search]
+// T(n) = 2T(n/2)  + O(n)  → O(n log n)  [merge sort]
+// T(n) = 2T(n/2)  + O(1)  → O(n)        [tree traversal]
+// T(n) = 4T(n/2)  + O(n²) → O(n²)       [some divide & conquer]
+//
+// Amortized Analysis — vector push_back:
+// When vector doubles: copies 1+2+4+...+n/2 = n-1 elements total
+// n push_backs → at most 2n copies → O(1) amortized per push_back`,
+      },
+        ],
     bestPractices: [
       "Siempre calcular la complejidad antes de enviar, no después del TLE",
       "n ≤ 10⁵ permite O(n log n); n ≤ 10³ permite O(n²)",
@@ -119,7 +139,27 @@ auto rangeSum = [&](int l, int r) {
   return prefix[r + 1] - prefix[l];
 };`,
       },
-    ],
+      {
+        title: "Suma de Prefijos 2D",
+        description: "Consultas de suma de rectángulos en O(1) tras preprocesar en O(n×m)",
+        codeSnippet: `// Build 2D prefix sum: pre[i][j] = sum of grid[0..i-1][0..j-1]
+vector<vector<int>> build2D(vector<vector<int>>& g) {
+  int n = g.size(), m = g[0].size();
+  vector<vector<int>> pre(n+1, vector<int>(m+1, 0));
+  for (int i = 1; i <= n; i++)
+    for (int j = 1; j <= m; j++)
+      pre[i][j] = g[i-1][j-1]
+                + pre[i-1][j] + pre[i][j-1] - pre[i-1][j-1];
+  return pre;
+}
+
+// Query sum of rectangle (r1,c1) to (r2,c2) — 0-indexed inclusive
+int query2D(vector<vector<int>>& pre, int r1, int c1, int r2, int c2) {
+  return pre[r2+1][c2+1] - pre[r1][c2+1]
+       - pre[r2+1][c1]   + pre[r1][c1];
+}`,
+      },
+        ],
     bestPractices: [
       "Usar arrays prefijos indexados en 1 para evitar errores por uno",
       "Para cuadrículas 2D, construir una suma prefija 2D",
@@ -202,7 +242,32 @@ sort(v.begin(), v.end());
 bool found = binary_search(v.begin(), v.end(), 8);
 int pos = lower_bound(v.begin(), v.end(), 8) - v.begin();`,
       },
-    ],
+      {
+        title: "Builtins de Bits y Algoritmos STL Útiles",
+        description: "Instrucciones de bits GCC y next_permutation para CP",
+        codeSnippet: `// GCC built-in bit functions (single CPU instruction, very fast):
+int x = 12; // binary: 1100
+__builtin_popcount(x);   // count set bits      → 2
+__builtin_clz(x);        // leading zeros (32b) → 28
+__builtin_ctz(x);        // trailing zeros      → 2
+__builtin_parity(x);     // parity (odd 1s?)    → 0
+// Use __builtin_popcountll(x) for long long
+
+// next_permutation: iterate all permutations lexicographically
+vector<int> p = {1, 2, 3};
+do {
+  // process permutation p
+} while (next_permutation(p.begin(), p.end())); // n! total, use n ≤ 10
+
+// nth_element: O(n) avg — place kth smallest at index k
+nth_element(v.begin(), v.begin() + k, v.end());
+// v[k] is now the kth smallest (0-indexed); rest unordered
+
+// __gcd and lcm
+int g = __gcd(a, b);
+int l = a / g * b; // lcm without overflow`,
+      },
+        ],
     bestPractices: [
       "Usar unordered_map/set para O(1) promedio, pero cuidado con colisiones en el peor caso",
       "Llamar reserve() en contenedores no ordenados para evitar rehashing",
@@ -269,7 +334,29 @@ pair<int,int> twoSum(vector<int>& a, int target) {
   return {-1, -1};
 }`,
       },
-    ],
+      {
+        title: "Detección de Ciclos de Floyd",
+        description: "Detecta el ciclo y encuentra su inicio en O(n) tiempo, O(1) espacio",
+        codeSnippet: `// Phase 1: slow moves 1 step, fast moves 2 steps
+// If they meet → cycle exists
+// Phase 2: reset slow to head, advance both 1 step → meet at cycle start
+ListNode* detectCycle(ListNode* head) {
+  ListNode *slow = head, *fast = head;
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+    if (slow == fast) break;
+  }
+  if (!fast || !fast->next) return nullptr; // no cycle
+  slow = head;
+  while (slow != fast) { slow = slow->next; fast = fast->next; }
+  return slow; // cycle start node
+}
+// Why: if head→cycle_start = a, cycle_length = c,
+// at meeting point slow traveled a+x, fast traveled a+x+k*c.
+// fast = 2*slow → k*c = a+x → after resetting slow, both reach start in a steps.`,
+      },
+        ],
     bestPractices: [
       "Ordenar primero si el array no está ya ordenado",
       "Para listas enlazadas, usar puntero lento/rápido para detectar ciclos o encontrar el punto medio",
@@ -345,7 +432,27 @@ Ventana variable (subarreglo más largo con suma ≤ k):
   return resLen == INT_MAX ? "" : s.substr(resL, resLen);
 }`,
       },
-    ],
+      {
+        title: "Máximo de Ventana Deslizante (Deque Monótono)",
+        description: "Encuentra el máximo en cada ventana de tamaño k en O(n) total",
+        codeSnippet: `// Monotonic deque: front = index of max in current window
+// Invariant: deque is decreasing (indices with decreasing values)
+vector<int> maxSlidingWindow(vector<int>& a, int k) {
+  deque<int> dq; // stores indices
+  vector<int> result;
+  for (int i = 0; i < (int)a.size(); i++) {
+    // Remove index outside window
+    while (!dq.empty() && dq.front() < i - k + 1) dq.pop_front();
+    // Remove smaller elements (they can never be max)
+    while (!dq.empty() && a[dq.back()] < a[i]) dq.pop_back();
+    dq.push_back(i);
+    if (i >= k - 1) result.push_back(a[dq.front()]);
+  }
+  return result;
+}
+// Complexity: each element pushed and popped at most once → O(n)`,
+      },
+        ],
     bestPractices: [
       "Expandir R primero, luego contraer L para restaurar el invariante",
       "Usar un contador de condiciones 'matched' en lugar de comparar mapas completos",
@@ -415,7 +522,44 @@ int shipWithinDays(vector<int>& w, int D) {
   return lo;
 }`,
       },
-    ],
+      {
+        title: "Dos Plantillas de Ciclos y Búsqueda Ternaria",
+        description: "lo<=hi para coincidencia exacta; lo<hi para el más a la izquierda válido; ternaria para unimodal",
+        codeSnippet: `// Template 1: lo <= hi — find exact value, return -1 if not found
+int exactSearch(vector<int>& a, int target) {
+  int lo = 0, hi = (int)a.size() - 1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] == target) return mid;
+    else if (a[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+
+// Template 2: lo < hi — find leftmost position satisfying predicate
+// Loop terminates when lo == hi, which IS the answer
+int leftmost(vector<int>& a, int target) {
+  int lo = 0, hi = a.size(); // hi can be past-the-end
+  while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] >= target) hi = mid;  // valid: could be answer, shrink right
+    else lo = mid + 1;               // invalid: definitely not answer
+  }
+  return lo; // lo == hi == first index with a[i] >= target
+}
+
+// Ternary search: find minimum of unimodal f on real interval [lo, hi]
+double ternaryMin(double lo, double hi) {
+  for (int it = 0; it < 200; it++) { // 200 iterations → ~10^-60 precision
+    double m1 = lo + (hi - lo) / 3;
+    double m2 = hi - (hi - lo) / 3;
+    if (f(m1) < f(m2)) hi = m2; else lo = m1;
+  }
+  return (lo + hi) / 2;
+}`,
+      },
+        ],
     bestPractices: [
       "Usar lo + (hi - lo) / 2 para evitar desbordamiento de enteros",
       "Verificar siempre el invariante del bucle: la respuesta siempre está en [lo, hi]",
@@ -494,7 +638,32 @@ long long mergeCount(vector<int>& a, int l, int r) {
   return cnt;
 }`,
       },
-    ],
+      {
+        title: "Ordenar + Voraz: Selección de Actividades",
+        description: "Ordena por tiempo de fin → elige codiciosamente intervalos sin solapamiento",
+        codeSnippet: `// Activity Selection: maximum non-overlapping intervals
+// Key insight: always pick the interval that ends earliest
+int maxActivities(vector<pair<int,int>>& intervals) {
+  // Sort by end time (the greedy choice)
+  sort(intervals.begin(), intervals.end(),
+       [](auto& a, auto& b){ return a.second < b.second; });
+  int count = 0, lastEnd = INT_MIN;
+  for (auto& [start, end] : intervals) {
+    if (start >= lastEnd) { // no overlap with last chosen
+      count++;
+      lastEnd = end;
+    }
+  }
+  return count;
+}
+// General "sort + greedy" pattern appears in:
+// - Meeting rooms (sort by start time)
+// - Fractional knapsack (sort by value/weight ratio)
+// - Huffman coding (sort by frequency)
+// - Job scheduling with deadlines (sort by deadline)
+// Rule: identify the "correct" ordering criterion, then greedy scan.`,
+      },
+        ],
     bestPractices: [
       "Preferir std::sort en general — es O(n log n) en el peor caso (introsort)",
       "Usar stable_sort cuando los elementos iguales deben mantener su orden relativo",
@@ -568,7 +737,33 @@ long long mergeCount(vector<int>& a, int l, int r) {
   return dist; // dist[i] = camino más corto de start a i
 }`,
       },
-    ],
+      {
+        title: "BFS 0-1",
+        description: "Camino más corto con pesos de arista 0 o 1 — O(V+E) usando deque",
+        codeSnippet: `// 0-1 BFS: use deque instead of queue
+// Free edges (w=0) → push_front (like same level)
+// Cost edges (w=1) → push_back (like next level)
+vector<int> bfs01(int src, vector<vector<pair<int,int>>>& adj, int n) {
+  vector<int> dist(n, INT_MAX);
+  deque<int> dq;
+  dist[src] = 0;
+  dq.push_back(src);
+  while (!dq.empty()) {
+    int u = dq.front(); dq.pop_front();
+    for (auto [v, w] : adj[u]) {
+      if (dist[u] + w < dist[v]) {
+        dist[v] = dist[u] + w;
+        if (w == 0) dq.push_front(v);  // free: higher priority
+        else        dq.push_back(v);   // cost: normal priority
+      }
+    }
+  }
+  return dist;
+}
+// Use case: grid where you can move normally (cost 1) or
+// with a special pass (cost 0) — e.g., Leetcode 1368`,
+      },
+        ],
     bestPractices: [
       "Marcar nodos como visitados al insertarlos en la cola, no al sacarlos",
       "Para cuadrículas, usar arrays dx/dy para 4 u 8 direcciones",
@@ -645,7 +840,43 @@ for (int i = 0; i < n; i++)
   if (color[i] == 0) dfs(i, adj);
 reverse(topo.begin(), topo.end());`,
       },
-    ],
+      {
+        title: "SCC de Tarjan y Detección de Puentes",
+        description: "Encuentra SCCs y puentes en O(V+E) usando arreglos disc[] y low[]",
+        codeSnippet: `// Tarjan's SCC: disc[u]=discovery time, low[u]=lowest disc reachable via subtree
+int timer_t = 0, numSCC = 0;
+vector<int> disc_t, low_t, comp;
+vector<bool> onStack;
+stack<int> st;
+
+void tarjan(int u, vector<vector<int>>& adj) {
+  disc_t[u] = low_t[u] = timer_t++;
+  st.push(u); onStack[u] = true;
+  for (int v : adj[u]) {
+    if (disc_t[v] == -1) { tarjan(v, adj); low_t[u] = min(low_t[u], low_t[v]); }
+    else if (onStack[v])  { low_t[u] = min(low_t[u], disc_t[v]); }
+  }
+  if (low_t[u] == disc_t[u]) { // u is root of an SCC
+    while (true) { int v = st.top(); st.pop(); onStack[v]=false; comp[v]=numSCC; if(v==u)break; }
+    numSCC++;
+  }
+}
+
+// Bridge detection (undirected graph):
+// Edge (u,v) is a bridge if low[v] > disc[u]
+void bridge(int u, int par, vector<vector<int>>& adj,
+            vector<int>& disc, vector<int>& low, vector<pair<int,int>>& bridges, int& t) {
+  disc[u] = low[u] = t++;
+  for (int v : adj[u]) {
+    if (disc[v]==-1) {
+      bridge(v, u, adj, disc, low, bridges, t);
+      low[u] = min(low[u], low[v]);
+      if (low[v] > disc[u]) bridges.push_back({u,v}); // it's a bridge!
+    } else if (v != par) low[u] = min(low[u], disc[v]);
+  }
+}`,
+      },
+        ],
     bestPractices: [
       "Usar DFS iterativo con pila explícita para grafos profundos (evitar stack overflow)",
       "Rastrear marcas de tiempo de entrada/salida para consultas de ancestros y subárboles",
@@ -725,7 +956,31 @@ reverse(topo.begin(), topo.end());`,
   return dist;
 }`,
       },
-    ],
+      {
+        title: "Bellman-Ford y Comparación de Algoritmos",
+        description: "Caminos más cortos en O(V×E); maneja pesos negativos y detecta ciclos negativos",
+        codeSnippet: `struct Edge { int u, v, w; };
+
+vector<long long> bellmanFord(int src, vector<Edge>& edges, int n) {
+  vector<long long> dist(n, LLONG_MAX);
+  dist[src] = 0;
+  for (int i = 0; i < n - 1; i++) // V-1 relaxations
+    for (auto& [u, v, w] : edges)
+      if (dist[u] != LLONG_MAX && dist[u] + w < dist[v])
+        dist[v] = dist[u] + w;
+  // Detect negative cycles: if still relaxable → negative cycle
+  for (auto& [u, v, w] : edges)
+    if (dist[u] != LLONG_MAX && dist[u] + w < dist[v])
+      dist[v] = LLONG_MIN; // reachable via negative cycle
+  return dist;
+}
+
+// Algorithm Selection Guide:
+// Dijkstra       O((V+E) log V)  non-negative weights only  ← default choice
+// Bellman-Ford   O(V × E)        negative weights, cycle detection
+// Floyd-Warshall O(V³)           all-pairs shortest paths, V ≤ 400`,
+      },
+        ],
     bestPractices: [
       "Usar long long para distancias para evitar desbordamiento",
       "Omitir entradas obsoletas con la verificación de eliminación perezosa",
@@ -802,7 +1057,30 @@ reverse(topo.begin(), topo.end());`,
     bool connected(int x, int y) { return find(x) == find(y); }
 };`,
       },
-    ],
+      {
+        title: "MST de Kruskal usando DSU",
+        description: "Encuentra el Árbol de Expansión Mínimo en O(E log E) — ordena aristas + DSU",
+        codeSnippet: `struct Edge { int u, v, w; };
+
+int kruskal(int n, vector<Edge>& edges) {
+  // Sort edges by weight ascending
+  sort(edges.begin(), edges.end(), [](auto& a, auto& b){ return a.w < b.w; });
+  DSU dsu(n);
+  int mstCost = 0, edgesUsed = 0;
+  for (auto& [u, v, w] : edges) {
+    if (dsu.unite(u, v)) {   // only add edge if it connects two components
+      mstCost += w;
+      if (++edgesUsed == n - 1) break; // MST has exactly n-1 edges
+    }
+  }
+  return edgesUsed == n - 1 ? mstCost : -1; // -1 if graph disconnected
+}
+// MST properties:
+// - Unique MST if all edge weights are distinct
+// - n-1 edges in MST for n nodes
+// - Minimum total weight connecting all nodes`,
+      },
+        ],
     bestPractices: [
       "Siempre usar TANTO compresión de caminos COMO unión por rango juntos",
       "Retornar bool desde unite() para verificar si se formó un ciclo",
@@ -878,7 +1156,20 @@ LIS — Subsecuencia Creciente Más Larga de [3,1,8,2,5]:
     return dp[amount] == INT_MAX ? -1 : dp[amount];
 }`,
       },
-    ],
+      {
+        title: "Cambio de Moneda (Mínimo de Monedas)",
+        description: "PD ascendente en 1D",
+        codeSnippet: `int coinChange(vector<int>& coins, int amount) {
+    vector<int> dp(amount + 1, INT_MAX);
+    dp[0] = 0;
+    for (int i = 1; i <= amount; i++)
+        for (int c : coins)
+            if (c <= i && dp[i - c] != INT_MAX)
+                dp[i] = min(dp[i], dp[i - c] + 1);
+    return dp[amount] == INT_MAX ? -1 : dp[amount];
+}`,
+      },
+        ],
     bestPractices: [
       "Siempre definir claramente qué representa dp[i]",
       "Comenzar con top-down, optimizar a bottom-up si es necesario",
@@ -951,7 +1242,32 @@ Distancia de Edición "gato" → "pato":
     return dp[n][m];
 }`,
       },
-    ],
+      {
+        title: "DP de Intervalos — Multiplicación en Cadena de Matrices",
+        description: "Minimiza multiplicaciones escalares para encadenar n matrices en O(n³)",
+        codeSnippet: `// dims[i] * dims[i+1] = dimensions of matrix i (n matrices total)
+// Cost to multiply matrices i..j via split at k:
+//   dp[i][j] = min over k of: dp[i][k] + dp[k+1][j] + dims[i]*dims[k+1]*dims[j+1]
+int matrixChain(vector<int>& dims) {
+  int n = dims.size() - 1; // number of matrices
+  vector<vector<int>> dp(n, vector<int>(n, 0));
+  for (int len = 2; len <= n; len++) {        // chain length
+    for (int i = 0; i <= n - len; i++) {      // start index
+      int j = i + len - 1;                   // end index
+      dp[i][j] = INT_MAX;
+      for (int k = i; k < j; k++)            // split point
+        dp[i][j] = min(dp[i][j],
+                       dp[i][k] + dp[k+1][j] + dims[i]*dims[k+1]*dims[j+1]);
+    }
+  }
+  return dp[0][n-1];
+}
+// Pattern: for any interval DP, always:
+// 1. Iterate length first (outer loop)
+// 2. Iterate start index (middle loop)
+// 3. Try all split points (inner loop)`,
+      },
+        ],
     bestPractices: [
       "Dibujar la tabla de PD con ejemplos pequeños primero",
       "Identificar casos base (string vacío, fila/columna vacía)",
@@ -1021,7 +1337,33 @@ for (int i = 0; i < n; i++)
     for (int cap = w[i]; cap <= W; cap++)  // hacia adelante
         dp[cap] = max(dp[cap], dp[cap - w[i]] + v[i]);`,
       },
-    ],
+      {
+        title: "Mochila Acotada con Agrupación Binaria",
+        description: "Divide k copias en grupos 1,2,4,...,resto → mochila 0/1 en O(nW log k)",
+        codeSnippet: `// Bounded knapsack: item i can be used cnt[i] times
+// Binary grouping: split cnt[i] into groups of 1, 2, 4, ..., remainder
+// Each group is a "virtual item" → then solve 0/1 knapsack
+int boundedKnapsack(vector<int>& w, vector<int>& v, vector<int>& cnt, int W) {
+  vector<int> nw, nv; // new item list after splitting
+  for (int i = 0; i < (int)w.size(); i++) {
+    int rem = cnt[i];
+    for (int k = 1; k <= rem; k <<= 1) { // 1, 2, 4, 8, ...
+      nw.push_back(k * w[i]); nv.push_back(k * v[i]);
+      rem -= k;
+    }
+    if (rem > 0) { nw.push_back(rem * w[i]); nv.push_back(rem * v[i]); }
+  }
+  // Standard 0/1 knapsack on expanded item list
+  vector<int> dp(W + 1, 0);
+  for (int i = 0; i < (int)nw.size(); i++)
+    for (int cap = W; cap >= nw[i]; cap--)
+      dp[cap] = max(dp[cap], dp[cap - nw[i]] + nv[i]);
+  return dp[W];
+}
+// Why binary grouping works: 1+2+4+...+2^(k-1) = 2^k - 1,
+// so any count up to cnt[i] can be represented as a subset of groups.`,
+      },
+        ],
     bestPractices: [
       "0/1: iterar capacidad HACIA ATRÁS para evitar usar un objeto dos veces",
       "Ilimitada: iterar capacidad HACIA ADELANTE para permitir reutilización",
@@ -1101,6 +1443,34 @@ Enumeración de subconjuntos:
     return ans;
 }`,
       },
+      {
+        title: "PD SOS + Enumeración de Sub-máscaras",
+        description: "PD de Suma sobre Subconjuntos en O(n×2ⁿ); enumerar todas las sub-máscaras en O(3ⁿ) total",
+        codeSnippet: `// SOS DP: f[mask] = suma de a[sub] para todo sub ⊆ mask
+// Construir en O(n × 2ⁿ) — para n=20: ~20 millones de ops
+vector<long long> sos(vector<long long>& a, int n) {
+  vector<long long> f = a;
+  for (int i = 0; i < n; i++)           // iterar cada posición de bit
+    for (int mask = 0; mask < (1<<n); mask++)
+      if (mask >> i & 1)                // bit i está activo en mask
+        f[mask] += f[mask ^ (1 << i)]; // agregar contribución del subconjunto sin bit i
+  return f;
+}
+// Después de SOS: f[mask] = suma de a[sub] para todo sub ⊆ mask.
+// Caso de uso: "para cada máscara, sumar valores de todos sus subconjuntos"
+
+// Enumeración de sub-máscaras: todas las sub-máscaras no vacías de mask
+// Trabajo total sobre todas las máscaras = 3ⁿ (cada elemento: en mask∩sub, solo en mask, no en mask = 3 opciones)
+void enumerarSubmascaras(int mask) {
+  for (int sub = mask; sub > 0; sub = (sub - 1) & mask) {
+    // procesar sub-máscara 'sub'
+    // (sub-1)&mask elimina el bit más bajo de sub que también está en mask
+  }
+}
+// Patrón clásico: PD sobre todos los pares (mask, sub-máscara)
+// for (int mask = 0; mask < (1<<n); mask++)
+//   for (int sub = mask; sub > 0; sub = (sub-1)&mask) { dp[mask] = ... }`,
+      },
     ],
     bestPractices: [
       "Usar (mask >> i) & 1 para verificar si la ciudad i fue visitada",
@@ -1177,6 +1547,54 @@ Enumeración de subconjuntos:
              + query(2*node+1, mid+1, r, ql, qr);
     }
 };`,
+      },
+      {
+        title: "Árbol de Segmentos con Propagación Perezosa (Suma en Rango + Actualización en Rango)",
+        description: "Actualizaciones de rango en O(log n) mediante pushdown diferido",
+        codeSnippet: `// Cada nodo almacena: suma del rango, lazy = suma pendiente para todo el rango
+struct LazySegTree {
+  int n;
+  vector<long long> tree, lazy;
+  LazySegTree(int n) : n(n), tree(4*n, 0), lazy(4*n, 0) {}
+
+  void push(int node, int l, int r) {
+    if (lazy[node]) {
+      int mid = (l + r) / 2;
+      // empujar al hijo izquierdo
+      tree[2*node]   += lazy[node] * (mid - l + 1);
+      lazy[2*node]   += lazy[node];
+      // empujar al hijo derecho
+      tree[2*node+1] += lazy[node] * (r - mid);
+      lazy[2*node+1] += lazy[node];
+      lazy[node] = 0; // limpiar
+    }
+  }
+
+  void update(int node, int l, int r, int ql, int qr, long long val) {
+    if (qr < l || r < ql) return;
+    if (ql <= l && r <= qr) {
+      tree[node] += val * (r - l + 1); // aplicar a todo el rango
+      lazy[node] += val;               // diferir a los hijos
+      return;
+    }
+    push(node, l, r);                  // empujar antes de descender
+    int mid = (l + r) / 2;
+    update(2*node, l, mid, ql, qr, val);
+    update(2*node+1, mid+1, r, ql, qr, val);
+    tree[node] = tree[2*node] + tree[2*node+1];
+  }
+
+  long long query(int node, int l, int r, int ql, int qr) {
+    if (qr < l || r < ql) return 0;
+    if (ql <= l && r <= qr) return tree[node];
+    push(node, l, r);                  // empujar antes de descender
+    int mid = (l + r) / 2;
+    return query(2*node, l, mid, ql, qr)
+         + query(2*node+1, mid+1, r, ql, qr);
+  }
+};
+// Regla clave: SIEMPRE llamar push() antes de acceder a los hijos.
+// Complejidad: O(log n) por actualización de rango y consulta de rango.`,
       },
     ],
     bestPractices: [
@@ -1438,6 +1856,39 @@ long long C(int n, int k) {
     return fact[n] % MOD * inv_fact[k] % MOD * inv_fact[n-k] % MOD;
 }`,
       },
+      {
+        title: "Euclides Extendido + Precómputo Lineal O(n) de Inversos",
+        description: "Inverso cuando el mod NO es primo; inversos en lote en O(n) para 1..n",
+        codeSnippet: `// Euclides Extendido: encuentra x,y tal que a*x + b*y = mcd(a,b)
+// Retorna mcd; asigna x e y
+long long extgcd(long long a, long long b, long long& x, long long& y) {
+  if (b == 0) { x = 1; y = 0; return a; }
+  long long x1, y1;
+  long long g = extgcd(b, a % b, x1, y1);
+  x = y1;
+  y = x1 - (a / b) * y1;
+  return g;
+}
+
+// Inverso modular via extgcd (funciona cuando mcd(a, mod) = 1, mod NO necesita ser primo)
+long long modInv(long long a, long long mod) {
+  long long x, y;
+  long long g = extgcd(a, mod, x, y);
+  if (g != 1) return -1; // no existe inverso
+  return (x % mod + mod) % mod;
+}
+
+// Precómputo lineal O(n) de inversos para 1..n (mod debe ser primo)
+// Recurrencia: inv[i] = -(mod/i) * inv[mod%i] (mod mod)
+vector<long long> linearInv(int n, long long mod) {
+  vector<long long> inv(n + 1);
+  inv[1] = 1;
+  for (int i = 2; i <= n; i++)
+    inv[i] = (mod - (mod / i) * inv[mod % i] % mod) % mod;
+  return inv;
+}
+// Caso de uso: inversos modulares para todo i en [1..n] — O(n) total vs O(n log mod) con power()`,
+      },
     ],
     bestPractices: [
       "Siempre agregar MOD antes de tomar módulo para manejar negativos: (a - b % MOD + MOD) % MOD",
@@ -1521,6 +1972,42 @@ vector<int> factorize(int n) {
     }
     return factors;
 }`,
+      },
+      {
+        title: "Criba Lineal O(n) + Función Totiente de Euler φ(n)",
+        description: "Cada compuesto se marca exactamente una vez; el totiente se calcula en paralelo",
+        codeSnippet: `// Criba Lineal: cada número es tachado por su MENOR factor primo exactamente una vez
+// → O(n) total, vs O(n log log n) para la criba clásica
+const int MAXN = 1e6 + 5;
+vector<int> primes, spf2(MAXN, 0), phi(MAXN);
+vector<bool> composite(MAXN, false);
+
+void linearSieve() {
+  phi[1] = 1;
+  for (int i = 2; i < MAXN; i++) {
+    if (!composite[i]) {           // i es primo
+      primes.push_back(i);
+      spf2[i] = i;
+      phi[i] = i - 1;             // totiente de Euler para primo p = p-1
+    }
+    for (int p : primes) {
+      if ((long long)i * p >= MAXN) break;
+      composite[i * p] = true;
+      spf2[i * p] = p;
+      if (i % p == 0) {
+        // p ya es el menor factor primo de i
+        // phi[i*p] = phi[i] * p  (multiplicatividad)
+        phi[i * p] = phi[i] * p;
+        break;                    // crucial: parar aquí para marcar cada número una vez
+      } else {
+        // mcd(i, p) = 1 → phi[i*p] = phi[i] * phi[p] = phi[i] * (p-1)
+        phi[i * p] = phi[i] * (p - 1);
+      }
+    }
+  }
+}
+// phi[n] = cantidad de enteros en [1,n] que son coprimos con n
+// phi[p^k] = p^(k-1) * (p-1);  phi es multiplicativa: mcd(a,b)=1 → phi[ab]=phi[a]*phi[b]`,
       },
     ],
     bestPractices: [
@@ -1608,6 +2095,37 @@ long long C(int n, int k) {
 
 // Estrellas y barras: n objetos idénticos en k grupos distintos
 long long distribuir(int n, int k) { return C(n + k - 1, k - 1); }`,
+      },
+      {
+        title: "Números de Catalan + Desarreglos",
+        description: "Dos secuencias de conteo esenciales con recurrencias de PD",
+        codeSnippet: `// Números de Catalan: C_n = C(2n, n) / (n+1)
+// C_0=1, C_1=1, C_2=2, C_3=5, C_4=14, C_5=42, ...
+// Cuenta: parentizaciones válidas, formas de BST, particiones no cruzadas, caminos de Dyck
+// Recurrencia: C_n = suma_{i=0}^{n-1} C_i * C_{n-1-i}
+// Forma cerrada: C_n = C(2n, n) / (n+1) = C(2n, n) - C(2n, n+1)
+vector<long long> catalan(int n, long long mod) {
+  vector<long long> cat(n + 1, 0);
+  cat[0] = cat[1] = 1;
+  for (int i = 2; i <= n; i++)
+    for (int j = 0; j < i; j++)
+      cat[i] = (cat[i] + cat[j] % mod * cat[i-1-j]) % mod;
+  return cat;
+  // O también: cat[n] = C(2n,n) * modInv(n+1, mod) % mod  (O(1) con factoriales precalculados)
+}
+
+// Desarreglos D(n): permutaciones de n elementos sin punto fijo
+// D(0)=1, D(1)=0, D(2)=1, D(3)=2, D(4)=9, D(5)=44
+// Recurrencia: D(n) = (n-1) * (D(n-1) + D(n-2))  para n >= 2
+// Aproximación: D(n) = round(n! / e) para n grande
+vector<long long> desarreglos(int n, long long mod) {
+  vector<long long> D(n + 1, 0);
+  D[0] = 1; if (n >= 1) D[1] = 0;
+  for (int i = 2; i <= n; i++)
+    D[i] = (long long)(i - 1) % mod * ((D[i-1] + D[i-2]) % mod) % mod;
+  return D;
+}
+// Tipo de problema: "arreglos donde el elemento i NO está en la posición i" → desarreglos`,
       },
     ],
     bestPractices: [

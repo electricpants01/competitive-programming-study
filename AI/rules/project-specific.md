@@ -36,9 +36,10 @@ src/
   content/            ← Markdown learning content (problems, tutorials)
 
 public/
-  algorithms-data.js  ← Algorithm data (plain JS, loaded is:inline)
-  guide-script.js     ← Client-side interactivity for guide (plain JS, loaded is:inline)
-  slides-script.js    ← Client-side slide navigation (plain JS, loaded is:inline)
+  algorithms-data-en.js  ← Algorithm data in English (plain JS, loaded is:inline)
+  algorithms-data-es.js  ← Algorithm data in Spanish (plain JS, loaded is:inline)
+  guide-script.js        ← Client-side interactivity for guide (plain JS, loaded is:inline)
+  slides-script.js       ← Client-side slide navigation (plain JS, loaded is:inline)
   favicon.ico / .svg
 
 .github/
@@ -100,16 +101,16 @@ export default defineConfig({
 
 - Scripts referencing files in `public/` must use `is:inline` **and** include the `BASE_URL` prefix:
   ```astro
-  <!-- ✅ Correct -->
-  <script is:inline src={`${base}algorithms-data.js`}></script>
+  <!-- ✅ Correct — language-specific data file based on current lang -->
+  <script is:inline src={`${base}algorithms-data-${lang}.js`}></script>
   <script is:inline src={`${base}guide-script.js`}></script>
   <script is:inline src={`${base}slides-script.js`}></script>
 
   <!-- ❌ Will fail at build time (missing is:inline) -->
-  <script src="/algorithms-data.js"></script>
+  <script src="/algorithms-data-en.js"></script>
 
   <!-- ❌ Works in dev but broken on GitHub Pages (missing base prefix) -->
-  <script is:inline src="/algorithms-data.js"></script>
+  <script is:inline src="/algorithms-data-en.js"></script>
   ```
   Where `base` is computed as:
   ```astro
