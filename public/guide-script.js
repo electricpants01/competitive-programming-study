@@ -115,6 +115,7 @@
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
+    { key: 'PRACTICE', items: ['watch-videos', 'search-problems'] },
     { key: 'OVERVIEW', items: ['introduction', 'learning-path', 'assessment'] },
     { key: 'FUNDAMENTALS', items: ['complexity-analysis', 'arrays-strings', 'stl-guide'] },
     { key: 'ALGORITHMS', items: ['two-pointers', 'sliding-window', 'binary-search', 'sorting'] },
@@ -122,8 +123,10 @@
     { key: 'DYNAMIC_PROGRAMMING', items: ['dp-1d', 'dp-2d', 'knapsack', 'bitmask-dp'] },
     { key: 'TREES_ADVANCED', items: ['segment-tree', 'fenwick-tree', 'trie'] },
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
-    { key: 'PRACTICE', items: ['search-problems'] },
   ];
+
+  // Items that display a "NEW" badge — remove an id once the feature is no longer new
+  const NEW_ITEMS = new Set(['watch-videos', 'search-problems']);
 
   // ── Build sidebar ─────────────────────────────────────────────
   function buildSidebar() {
@@ -139,10 +142,13 @@
 
       section.items.forEach((id) => {
         const itemLabel = t.sidebar.items[id] || id;
+        const newBadge = NEW_ITEMS.has(id)
+          ? '<span class="sidebar-new-badge">NEW</span>'
+          : '';
         const btn = document.createElement("button");
         btn.className = "sidebar-item";
         btn.dataset.id = id;
-        btn.innerHTML = `<span class="item-dot"></span>${itemLabel}`;
+        btn.innerHTML = `<span class="item-dot"></span>${itemLabel}${newBadge}`;
         btn.addEventListener("click", () => handleSidebarItemClick(id));
         sectionEl.appendChild(btn);
       });
@@ -167,6 +173,8 @@
 
     if (id === 'search-problems') {
       setActiveSection("search");
+    } else if (id === 'watch-videos') {
+      setActiveSection("videos");
     } else if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
       showDetailPanel(id);
     } else {
@@ -800,6 +808,179 @@
     function hideStatus() { statusEl.style.display = 'none'; }
   }
 
+  // ── Video Library ─────────────────────────────────────────────
+  function initVideoSearch() {
+    // Data is loaded by videos-data-{lang}.js → window.videosData
+    const data = (typeof videosData !== 'undefined') ? videosData : null;
+
+    const sectionEl    = document.querySelector('.page-section[data-section="videos"]');
+    if (!sectionEl) return;
+
+    // Populate static heading strings
+    const titleEl    = document.getElementById('vl-title');
+    const subtitleEl = document.getElementById('vl-subtitle');
+    if (titleEl)    titleEl.textContent    = t.videos.title;
+    if (subtitleEl) subtitleEl.textContent = t.videos.subtitle;
+
+    const queryInput  = document.getElementById('vl-query');
+    const resultsEl   = document.getElementById('vl-results');
+    const channelRow  = document.getElementById('vl-channel-row');
+    const tagCloudEl  = document.getElementById('vl-tag-cloud');
+    const clearTagBtn = document.getElementById('vl-clear-tags');
+
+    if (!queryInput || !resultsEl) return;
+
+    // Placeholder
+    queryInput.placeholder = t.videos.searchPlaceholder;
+    if (clearTagBtn) clearTagBtn.textContent = t.videos.clearTags;
+
+    // If no data file yet, show a placeholder message
+    if (!data || !data.videos || data.videos.length === 0) {
+      resultsEl.innerHTML = `<p style="padding:24px;color:var(--text-muted);text-align:center">
+        ${t.videos.noResults}
+      </p>`;
+      return;
+    }
+
+    const allVideos = data.videos;
+
+    const vState = {
+      query: '',
+      channel: '',    // '' = all
+      tags: [],       // selected topic tags
+    };
+
+    // -- CP topic tags derived from all videos
+    const allTags = [...new Set(allVideos.flatMap(v => v.tags || []))].sort();
+
+    // Build tag cloud
+    if (tagCloudEl && allTags.length > 0) {
+      allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'vl-tag';
+        btn.textContent = tag;
+        btn.addEventListener('click', () => {
+          const idx = vState.tags.indexOf(tag);
+          if (idx === -1) { vState.tags.push(tag); btn.classList.add('selected'); }
+          else { vState.tags.splice(idx, 1); btn.classList.remove('selected'); }
+          render();
+        });
+        tagCloudEl.appendChild(btn);
+      });
+    }
+
+    if (clearTagBtn) {
+      clearTagBtn.addEventListener('click', () => {
+        vState.tags = [];
+        if (tagCloudEl) tagCloudEl.querySelectorAll('.vl-tag').forEach(b => b.classList.remove('selected'));
+        render();
+      });
+    }
+
+    // Build channel filter row
+    if (channelRow) {
+      const allBtn = document.createElement('button');
+      allBtn.className = 'vl-channel-btn active';
+      allBtn.textContent = t.videos.channelAll;
+      allBtn.dataset.ch = '';
+      channelRow.appendChild(allBtn);
+
+      (data.channels || []).forEach(ch => {
+        const btn = document.createElement('button');
+        btn.className = 'vl-channel-btn';
+        btn.textContent = ch.name;
+        btn.dataset.ch = ch.id;
+        channelRow.appendChild(btn);
+      });
+
+      channelRow.addEventListener('click', e => {
+        const btn = e.target.closest('.vl-channel-btn');
+        if (!btn) return;
+        vState.channel = btn.dataset.ch || '';
+        channelRow.querySelectorAll('.vl-channel-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.ch === vState.channel);
+        });
+        render();
+      });
+    }
+
+    // Search input
+    let debounceVL = null;
+    queryInput.addEventListener('input', e => {
+      vState.query = e.target.value;
+      clearTimeout(debounceVL);
+      debounceVL = setTimeout(render, 160);
+    });
+
+    // Util: format seconds → MM:SS / H:MM:SS
+    function fmtTime(secs) {
+      const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = Math.floor(secs % 60);
+      if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      return m + ':' + String(s).padStart(2,'0');
+    }
+
+    // Filter + render
+    function render() {
+      const q    = vState.query.trim().toLowerCase();
+      const tags = vState.tags;
+      const ch   = vState.channel;
+
+      let filtered = allVideos.filter(v => {
+        if (ch && v.channel !== ch) return false;
+        if (tags.length > 0 && !tags.some(tag => (v.tags || []).includes(tag))) return false;
+        if (!q) return true;
+        // Match title
+        if (v.title.toLowerCase().includes(q)) return true;
+        // Match transcript text
+        return (v.segments || []).some(seg => seg.text.toLowerCase().includes(q));
+      });
+
+      if (filtered.length === 0) {
+        resultsEl.innerHTML = `<p style="padding:32px;text-align:center;color:var(--text-muted)">${t.videos.noResults}</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = filtered.map(v => {
+        // Find transcript matches
+        const matchedSegs = q ? (v.segments || []).filter(seg => seg.text.toLowerCase().includes(q)).slice(0, 5) : [];
+        const ytBase      = 'https://www.youtube.com/watch?v=' + v.id;
+        const segsHtml    = matchedSegs.length > 0
+          ? matchedSegs.map(seg => {
+              const ts = fmtTime(seg.t);
+              const href = ytBase + '&t=' + seg.t + 's';
+              const snippet = esc(seg.text.slice(0, 100));
+              return `<a class="vl-segment" href="${href}" target="_blank" rel="noopener">
+                <span class="vl-seg-ts">${typeof t.videos.watchAt === 'function' ? t.videos.watchAt(ts) : '▶ ' + ts}</span>
+                <span class="vl-seg-text">${snippet}…</span>
+              </a>`;
+            }).join('')
+          : '';
+
+        const matchCount = matchedSegs.length > 0
+          ? `<span class="vl-match-count">${typeof t.videos.matchesFound === 'function' ? t.videos.matchesFound(matchedSegs.length) : matchedSegs.length + ' matches'}</span>`
+          : '';
+
+        return `<div class="vl-card">
+          <a href="${ytBase}" target="_blank" rel="noopener" class="vl-thumb-link">
+            <img class="vl-thumb" src="${v.thumbnail}" loading="lazy" alt="${esc(v.title)}" />
+            <span class="vl-duration-badge">${v.duration || ''}</span>
+          </a>
+          <div class="vl-info">
+            <a class="vl-title" href="${ytBase}" target="_blank" rel="noopener">${esc(v.title)}</a>
+            <div class="vl-meta">
+              <span class="vl-channel">${esc(v.channelName)}</span>
+              ${(v.tags || []).slice(0, 4).map(tag => `<span class="vl-badge">${esc(tag)}</span>`).join('')}
+            </div>
+            ${matchCount}
+            ${segsHtml ? `<div class="vl-segments">${segsHtml}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    render(); // initial render shows all videos
+  }
+
   // ── Init ──────────────────────────────────────────────────────
   applyTheme(state.theme);
   buildSidebar();
@@ -807,4 +988,5 @@
   updateProgress();
   setActiveSection("overview");
   initCfSearch();
+  initVideoSearch();
 })();

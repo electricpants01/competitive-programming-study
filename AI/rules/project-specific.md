@@ -39,6 +39,8 @@ src/
 public/
   algorithms-data-en.js  ← Algorithm data in English (plain JS, loaded is:inline)
   algorithms-data-es.js  ← Algorithm data in Spanish (plain JS, loaded is:inline)
+  videos-data-en.js      ← Auto-generated EN video data (do not edit manually)
+  videos-data-es.js      ← Auto-generated ES video data (do not edit manually)
   guide-script.js        ← Client-side interactivity for guide (plain JS, loaded is:inline)
   slides-script.js       ← Client-side slide navigation (plain JS, loaded is:inline)
   favicon.ico / .svg
@@ -49,6 +51,9 @@ public/
 
 scripts/
   sync-ai-configs.sh  ← Generates AI tool configs from AI/ sources
+  scrape-videos.cjs   ← yt-dlp scraper: fetches video metadata + VTT subtitles
+  video-channels.cjs  ← Channel registry (ES + EN) and CP keyword→tag map
+  cp-keywords.cjs     ← Extended keyword→tag mappings (imported by scrape-videos.cjs)
 
 AI/
   rules/              ← Universal rules (this file lives here)
@@ -70,8 +75,10 @@ The guide page (`src/pages/[lang]/guide/index.astro`) renders multiple `<section
 | `detail` | clicking an algorithm card |
 | `tools` | nav link |
 | `search` | sidebar item `search-problems` (PRACTICE section) |
+| `videos` | sidebar item `watch-videos` (PRACTICE section) |
 
 The **search** section hosts the Codeforces Problem Search feature. See `AI/skills/cf-problem-search.md` for full details.
+The **videos** section hosts the CP Video Library feature. See `AI/skills/video-library.md` for full details.
 
 ## Sidebar Sections
 
@@ -86,7 +93,7 @@ The **search** section hosts the Codeforces Problem Search feature. See `AI/skil
 | `DYNAMIC_PROGRAMMING` | dp-1d, dp-2d, knapsack, bitmask-dp |
 | `TREES_ADVANCED` | segment-tree, fenwick-tree, trie |
 | `MATHEMATICS` | modular-arithmetic, sieve, combinatorics |
-| `PRACTICE` | search-problems |
+| `PRACTICE` | search-problems, watch-videos |
 
 The `search-problems` item calls `setActiveSection('search')` instead of opening an algorithm detail panel.
 
@@ -120,6 +127,7 @@ export default defineConfig({
   </script>
   ```
 - The `search` key in `Translations` holds all strings for the Codeforces Problem Search feature (`t.search.*`). See `AI/skills/cf-problem-search.md` for the full key list.
+- The `videos` key in `Translations` holds all strings for the CP Video Library feature (`t.videos.*`). See `AI/skills/video-library.md` for the full key list.
 
 ## Astro CSS Scoping Rule
 

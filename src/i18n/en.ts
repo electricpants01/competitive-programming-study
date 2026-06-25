@@ -53,6 +53,7 @@ export const en: Translations = {
       sieve: 'Sieve of Eratosthenes',
       combinatorics: 'Combinatorics',
       'search-problems': '🔍 Search Problems',
+      'watch-videos': '🎬 Watch Videos',
     },
   },
 
@@ -302,6 +303,24 @@ export const en: Translations = {
     prevPage: '← Prev',
     nextPage: 'Next →',
     ratingLabel: 'Rating',
+  },
+
+  videos: {
+    title: 'CP Video Library',
+    subtitle: 'Top videos from the best competitive programming channels — searchable by topic and keyword.',
+    searchPlaceholder: 'Search videos by title or keyword…',
+    channelAll: 'All Channels',
+    tagsLabel: 'Filter by Topic',
+    clearTags: 'Clear all',
+    noResults: 'No videos found. Try a different keyword or remove some filters.',
+    noTranscript: 'No transcript available for this video.',
+    watchAt: (ts) => `▶ Watch at ${ts}`,
+    viewsLabel: 'views',
+    durationLabel: 'Duration',
+    matchesFound: (n) => `${n} transcript match${n !== 1 ? 'es' : ''}`,
+    openVideo: 'Open ↗',
+    langEs: '🇪🇸 Spanish',
+    langEn: '🇬🇧 English',
   },
 
   quiz: {

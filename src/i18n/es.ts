@@ -53,6 +53,7 @@ export const es: Translations = {
       sieve: 'Criba de Eratóstenes',
       combinatorics: 'Combinatoria',
       'search-problems': '🔍 Buscar Problemas',
+      'watch-videos': '🎬 Ver Videos',
     },
   },
 
@@ -303,6 +304,24 @@ export const es: Translations = {
     prevPage: '← Anterior',
     nextPage: 'Siguiente →',
     ratingLabel: 'Rating',
+  },
+
+  videos: {
+    title: 'Videoteca de PC',
+    subtitle: 'Los mejores videos de los canales más reconocidos de programación competitiva — buscables por tema y palabra clave.',
+    searchPlaceholder: 'Buscar videos por título o palabra clave…',
+    channelAll: 'Todos los Canales',
+    tagsLabel: 'Filtrar por Tema',
+    clearTags: 'Limpiar todo',
+    noResults: 'No se encontraron videos. Prueba otra palabra clave o quita algunos filtros.',
+    noTranscript: 'No hay transcripción disponible para este video.',
+    watchAt: (ts: string) => `▶ Ver en ${ts}`,
+    viewsLabel: 'vistas',
+    durationLabel: 'Duración',
+    matchesFound: (n: number) => `${n} coincidencia${n !== 1 ? 's' : ''} en transcripción`,
+    openVideo: 'Abrir ↗',
+    langEs: '🇪🇸 Español',
+    langEn: '🇬🇧 Inglés',
   },
 
   quiz: {

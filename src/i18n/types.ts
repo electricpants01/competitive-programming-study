@@ -167,6 +167,24 @@ export interface Translations {
     ratingLabel: string;
   };
 
+  videos: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    channelAll: string;
+    tagsLabel: string;
+    clearTags: string;
+    noResults: string;
+    noTranscript: string;
+    watchAt: (ts: string) => string;
+    viewsLabel: string;
+    durationLabel: string;
+    matchesFound: (n: number) => string;
+    openVideo: string;
+    langEs: string;
+    langEn: string;
+  };
+
   quiz: {
     tab: string;
     learnTab: string;
