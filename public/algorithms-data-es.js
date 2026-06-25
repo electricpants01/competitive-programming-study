@@ -2208,4 +2208,10 @@ const sidebarSections = [
       { id: "combinatorics", title: "Combinatoria" },
     ],
   },
+  {
+    label: "PRÁCTICA",
+    items: [
+      { id: "search-problems", title: "🔍 Buscar Problemas", section: "search" },
+    ],
+  },
 ];

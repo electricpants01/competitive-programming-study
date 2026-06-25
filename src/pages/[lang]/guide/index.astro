@@ -520,6 +520,124 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       .quick-nav-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 480px) { .nav-links { display: none; } }
+
+    /* ── Codeforces Problem Search ── */
+    .cf-tabs {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      border-bottom: 2px solid var(--border); padding-bottom: 0;
+    }
+    .cf-tab {
+      padding: 8px 20px; font-size: 13.5px; font-weight: 600;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-secondary); border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .cf-tab:hover { color: var(--text-primary); background: var(--bg-hover); }
+    .cf-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .cf-tag-section { margin-bottom: 20px; }
+    .cf-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
+    .cf-tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .cf-tag {
+      padding: 4px 10px; background: var(--bg-body); border: 1.5px solid var(--border);
+      border-radius: 14px; font-size: 12px; font-weight: 500; color: var(--text-secondary);
+      cursor: pointer; transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .cf-tag:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .cf-tag.selected { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+    .cf-clear-btn {
+      font-size: 11.5px; color: var(--text-muted); background: none; border: none;
+      cursor: pointer; padding: 2px 0; text-decoration: underline;
+      transition: color var(--transition);
+    }
+    .cf-clear-btn:hover { color: var(--text-primary); }
+    .cf-filters-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 20px; }
+    .cf-filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .cf-rating-input {
+      width: 80px; padding: 7px 10px; font-size: 13px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--bg-surface); color: var(--text-primary);
+      transition: border-color var(--transition);
+    }
+    .cf-rating-input:focus { outline: none; border-color: var(--color-primary); }
+    .cf-combine-toggle { display: flex; border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .cf-mode-btn {
+      padding: 7px 14px; font-size: 12.5px; font-weight: 600;
+      background: var(--bg-surface); border: none; cursor: pointer;
+      color: var(--text-secondary);
+      transition: background var(--transition), color var(--transition);
+    }
+    .cf-mode-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .cf-mode-btn.active { background: var(--color-primary); color: #fff; }
+    .cf-search-submit {
+      padding: 8px 22px; background: var(--color-primary); color: #fff;
+      border: none; border-radius: var(--radius-sm); font-size: 13.5px;
+      font-weight: 600; cursor: pointer;
+      transition: opacity var(--transition);
+    }
+    .cf-search-submit:hover { opacity: 0.88; }
+    .cf-status {
+      padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px;
+      margin-bottom: 16px; background: var(--bg-surface); border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .cf-status.error { border-color: #dc2626; color: #dc2626; background: #fee2e2; }
+    [data-theme="dark"] .cf-status.error { background: #450a0a; }
+    .cf-sort-row { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+    .cf-sort-btn {
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      background: var(--bg-surface); border: 1.5px solid var(--border);
+      border-radius: 14px; cursor: pointer; color: var(--text-secondary);
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+    }
+    .cf-sort-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .cf-sort-btn.active { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+    .cf-count { font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; }
+    .cf-results-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .cf-problem-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 16px; background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); flex-wrap: wrap;
+      transition: box-shadow var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .cf-problem-card:hover { box-shadow: var(--shadow-sm); border-color: var(--color-primary); }
+    .cf-problem-card.solved { border-left: 3px solid #16a34a; }
+    .cf-problem-info { flex: 1; min-width: 0; }
+    .cf-problem-title { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .cf-problem-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .cf-problem-tag {
+      padding: 2px 8px; background: var(--color-primary-light); color: var(--color-primary);
+      border-radius: 10px; font-size: 11px; font-weight: 500;
+    }
+    .cf-problem-rating {
+      font-size: 12px; font-weight: 700; color: var(--text-muted);
+      background: var(--bg-body); padding: 2px 8px; border-radius: 10px;
+    }
+    .cf-problem-solved-badge {
+      font-size: 11px; font-weight: 600; color: #16a34a;
+    }
+    .cf-problem-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .cf-action-btn {
+      padding: 5px 10px; font-size: 11.5px; font-weight: 600;
+      border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+      background: var(--bg-body); color: var(--text-secondary);
+      cursor: pointer; white-space: nowrap;
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+      text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .cf-action-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .cf-action-btn.fav-active { border-color: #f59e0b; color: #f59e0b; }
+    .cf-action-btn.solved-active { border-color: #16a34a; color: #16a34a; }
+    .cf-pagination { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .cf-page-btn {
+      padding: 6px 12px; font-size: 12.5px; font-weight: 600;
+      background: var(--bg-surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); cursor: pointer; color: var(--text-secondary);
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+    }
+    .cf-page-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .cf-page-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+    .cf-page-btn:disabled { opacity: 0.4; cursor: default; }
   </style>
 </head>
 <body>
@@ -745,6 +863,61 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         <div class="tool-card"><div class="tool-card-icon">🔧</div><div class="tool-card-title">{t.tools.items.gdb.title}</div><div class="tool-card-desc">{t.tools.items.gdb.desc}</div><a class="tool-card-link" href="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html" target="_blank" rel="noopener">{t.tools.docsLabel}</a></div>
         <div class="tool-card"><div class="tool-card-icon">🖊️</div><div class="tool-card-title">{t.tools.items.stlCheatsheet.title}</div><div class="tool-card-desc">{t.tools.items.stlCheatsheet.desc}</div><a class="tool-card-link" href="https://hackingcpp.com/cpp/cheat_sheets.html" target="_blank" rel="noopener">{t.tools.viewLabel}</a></div>
         <div class="tool-card"><div class="tool-card-icon">📈</div><div class="tool-card-title">{t.tools.items.cfTracker.title}</div><div class="tool-card-desc">{t.tools.items.cfTracker.desc}</div><a class="tool-card-link" href="https://cftracker.netlify.app" target="_blank" rel="noopener">{t.tools.visitLabel}</a></div>
+      </div>
+    </section>
+
+    <!-- ══ SEARCH PROBLEMS ══ -->
+    <section class="page-section" data-section="search">
+      <div style="margin-bottom:24px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-primary);margin-bottom:6px">{t.search.title}</h2>
+        <p style="font-size:13.5px;color:var(--text-secondary)">{t.search.subtitle}</p>
+      </div>
+      <!-- Tabs -->
+      <div class="cf-tabs">
+        <button class="cf-tab active" id="cf-tab-search">{t.search.searchTab}</button>
+        <button class="cf-tab" id="cf-tab-favs">{t.search.favoritesTab}</button>
+      </div>
+      <!-- Search panel -->
+      <div id="cf-search-panel">
+        <div class="cf-tag-section">
+          <div class="cf-label">{t.search.tagsLabel}</div>
+          <div id="cf-tag-cloud" class="cf-tag-cloud"></div>
+          <button id="cf-clear-tags" class="cf-clear-btn">{t.search.clearTags}</button>
+        </div>
+        <div class="cf-filters-row">
+          <div class="cf-filter-group">
+            <label class="cf-label">{t.search.difficultyLabel}</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="cf-min-rating" class="cf-rating-input" type="number" placeholder={t.search.minRating} min="800" max="3500" step="100" value="800" />
+              <span style="color:var(--text-secondary)">–</span>
+              <input id="cf-max-rating" class="cf-rating-input" type="number" placeholder={t.search.maxRating} min="800" max="3500" step="100" value="2000" />
+            </div>
+          </div>
+          <div class="cf-filter-group">
+            <label class="cf-label">&nbsp;</label>
+            <div class="cf-combine-toggle">
+              <button class="cf-mode-btn active" id="cf-mode-and">{t.search.combineModeAnd}</button>
+              <button class="cf-mode-btn" id="cf-mode-or">{t.search.combineModeOr}</button>
+            </div>
+          </div>
+          <div class="cf-filter-group" style="align-self:flex-end">
+            <button id="cf-search-btn" class="cf-search-submit">{t.search.searchBtn}</button>
+          </div>
+        </div>
+        <div id="cf-status" class="cf-status" style="display:none"></div>
+        <div id="cf-sort-row" class="cf-sort-row" style="display:none">
+          <span style="font-size:12px;color:var(--text-secondary)">Sort:</span>
+          <button class="cf-sort-btn active" id="cf-sort-rating">{t.search.sortByRating}</button>
+          <button class="cf-sort-btn" id="cf-sort-rating-desc">{t.search.sortByRatingDesc}</button>
+          <button class="cf-sort-btn" id="cf-sort-id">{t.search.sortById}</button>
+        </div>
+        <div id="cf-count" class="cf-count" style="display:none"></div>
+        <div id="cf-results-list" class="cf-results-list"></div>
+        <div id="cf-pagination" class="cf-pagination"></div>
+      </div>
+      <!-- Favorites panel -->
+      <div id="cf-favs-panel" style="display:none">
+        <div id="cf-favs-list" class="cf-results-list"></div>
       </div>
     </section>
 
