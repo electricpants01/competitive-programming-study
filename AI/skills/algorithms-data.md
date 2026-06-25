@@ -204,3 +204,4 @@ The following topics have only one code example and need a second:
 | DYNAMIC PROGRAMMING | dp-1d, dp-2d, knapsack, bitmask-dp |
 | TREES & ADVANCED | segment-tree, fenwick-tree, trie |
 | MATHEMATICS | modular-arithmetic, sieve, combinatorics |
+| PRACTICE | search-problems |
