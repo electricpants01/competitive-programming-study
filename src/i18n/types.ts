@@ -68,6 +68,7 @@ export interface Translations {
       DYNAMIC_PROGRAMMING: string;
       TREES_ADVANCED: string;
       MATHEMATICS: string;
+      PRACTICE: string;
     };
     items: Record<string, string>;
   };
@@ -132,6 +133,56 @@ export interface Translations {
     viewLabel: string;
     docsLabel: string;
     items: Record<string, { title: string; desc: string }>;
+  };
+
+  search: {
+    title: string;
+    subtitle: string;
+    searchTab: string;
+    favoritesTab: string;
+    tagsLabel: string;
+    difficultyLabel: string;
+    minRating: string;
+    maxRating: string;
+    combineModeAnd: string;
+    combineModeOr: string;
+    searchBtn: string;
+    clearTags: string;
+    sortByRating: string;
+    sortByRatingDesc: string;
+    sortById: string;
+    problemsFound: (n: number) => string;
+    noResults: string;
+    noFavorites: string;
+    loading: string;
+    errorMsg: string;
+    openProblem: string;
+    markSolved: string;
+    favorite: string;
+    unfavorite: string;
+    solvedLabel: string;
+    pageOf: (cur: number, total: number) => string;
+    prevPage: string;
+    nextPage: string;
+    ratingLabel: string;
+  };
+
+  videos: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    channelAll: string;
+    tagsLabel: string;
+    clearTags: string;
+    noResults: string;
+    noTranscript: string;
+    watchAt: (ts: string) => string;
+    viewsLabel: string;
+    durationLabel: string;
+    matchesFound: (n: number) => string;
+    openVideo: string;
+    langEs: string;
+    langEn: string;
   };
 
   quiz: {

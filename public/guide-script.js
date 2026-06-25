@@ -115,6 +115,7 @@
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
+    { key: 'PRACTICE', items: ['watch-videos', 'search-problems'] },
     { key: 'OVERVIEW', items: ['introduction', 'learning-path', 'assessment'] },
     { key: 'FUNDAMENTALS', items: ['complexity-analysis', 'arrays-strings', 'stl-guide'] },
     { key: 'ALGORITHMS', items: ['two-pointers', 'sliding-window', 'binary-search', 'sorting'] },
@@ -123,6 +124,9 @@
     { key: 'TREES_ADVANCED', items: ['segment-tree', 'fenwick-tree', 'trie'] },
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
   ];
+
+  // Items that display a "NEW" badge — remove an id once the feature is no longer new
+  const NEW_ITEMS = new Set(['watch-videos', 'search-problems']);
 
   // ── Build sidebar ─────────────────────────────────────────────
   function buildSidebar() {
@@ -138,10 +142,13 @@
 
       section.items.forEach((id) => {
         const itemLabel = t.sidebar.items[id] || id;
+        const newBadge = NEW_ITEMS.has(id)
+          ? '<span class="sidebar-new-badge">NEW</span>'
+          : '';
         const btn = document.createElement("button");
         btn.className = "sidebar-item";
         btn.dataset.id = id;
-        btn.innerHTML = `<span class="item-dot"></span>${itemLabel}`;
+        btn.innerHTML = `<span class="item-dot"></span>${itemLabel}${newBadge}`;
         btn.addEventListener("click", () => handleSidebarItemClick(id));
         sectionEl.appendChild(btn);
       });
@@ -164,7 +171,11 @@
     updateProgress();
     updateActiveSidebarItem(id);
 
-    if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
+    if (id === 'search-problems') {
+      setActiveSection("search");
+    } else if (id === 'watch-videos') {
+      setActiveSection("videos");
+    } else if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
       showDetailPanel(id);
     } else {
       setActiveSection("overview");
@@ -506,10 +517,476 @@
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
+  // ── Codeforces Problem Search ──────────────────────────────────
+  function initCfSearch() {
+    const CF_TAGS = [
+      'dp', 'graphs', 'greedy', 'implementation', 'math',
+      'binary search', 'brute force', 'constructive algorithms',
+      'data structures', 'dfs and similar', 'sortings', 'trees',
+      'strings', 'number theory', 'combinatorics', 'two pointers',
+      'bitmasks', 'shortest paths', 'geometry', 'hashing',
+      'divide and conquer', 'games', 'flows', 'probabilities',
+      'matrices', 'fft', 'string suffix structures',
+      'meet-in-the-middle', 'dsu',
+    ];
+
+    const CF_FAV_KEY    = 'cp-cf-favorites';
+    const CF_SOLVED_KEY = 'cp-cf-solved';
+    const PAGE_SIZE     = 20;
+
+    // favorites is stored as { "contestId-index": { contestId, index, name, rating, tags } }
+    // so we can render the Favorites tab even without running a search first.
+
+    // Migrate from old string[] format (just keys) → new object format.
+    // If the saved value is an array we can't recover problem data, so reset to {}.
+    let _savedFavs = JSON.parse(localStorage.getItem(CF_FAV_KEY) || '{}');
+    if (Array.isArray(_savedFavs)) {
+      _savedFavs = {};
+      localStorage.removeItem(CF_FAV_KEY);
+    }
+
+    const cfState = {
+      selectedTags: [],
+      combineMode: 'and',
+      minRating: 800,
+      maxRating: 2000,
+      allProblems: [],
+      filtered: [],
+      sortMode: 'rating',
+      page: 1,
+      favoritesData: _savedFavs,
+      solved:        JSON.parse(localStorage.getItem(CF_SOLVED_KEY) || '[]'),
+      activeTab: 'search',
+    };
+
+    const tagCloudEl   = document.getElementById('cf-tag-cloud');
+    const clearTagsBtn = document.getElementById('cf-clear-tags');
+    const minRatingEl  = document.getElementById('cf-min-rating');
+    const maxRatingEl  = document.getElementById('cf-max-rating');
+    const modeAndBtn   = document.getElementById('cf-mode-and');
+    const modeOrBtn    = document.getElementById('cf-mode-or');
+    const searchBtn    = document.getElementById('cf-search-btn');
+    const statusEl     = document.getElementById('cf-status');
+    const sortRow      = document.getElementById('cf-sort-row');
+    const countEl      = document.getElementById('cf-count');
+    const resultsList  = document.getElementById('cf-results-list');
+    const paginationEl = document.getElementById('cf-pagination');
+    const searchPanel  = document.getElementById('cf-search-panel');
+    const favsPanel    = document.getElementById('cf-favs-panel');
+    const favsList     = document.getElementById('cf-favs-list');
+    const tabSearch    = document.getElementById('cf-tab-search');
+    const tabFavs      = document.getElementById('cf-tab-favs');
+    const sortRatingBtn     = document.getElementById('cf-sort-rating');
+    const sortRatingDescBtn = document.getElementById('cf-sort-rating-desc');
+    const sortIdBtn         = document.getElementById('cf-sort-id');
+
+    if (!tagCloudEl || !searchBtn) return; // section not present
+
+    // Build tag cloud
+    CF_TAGS.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'cf-tag';
+      btn.textContent = tag;
+      btn.addEventListener('click', () => {
+        const idx = cfState.selectedTags.indexOf(tag);
+        if (idx === -1) { cfState.selectedTags.push(tag); btn.classList.add('selected'); }
+        else { cfState.selectedTags.splice(idx, 1); btn.classList.remove('selected'); }
+      });
+      tagCloudEl.appendChild(btn);
+    });
+
+    clearTagsBtn.addEventListener('click', () => {
+      cfState.selectedTags = [];
+      tagCloudEl.querySelectorAll('.cf-tag').forEach(b => b.classList.remove('selected'));
+    });
+
+    // Combine mode toggle
+    modeAndBtn.addEventListener('click', () => {
+      cfState.combineMode = 'and';
+      modeAndBtn.classList.add('active');
+      modeOrBtn.classList.remove('active');
+    });
+    modeOrBtn.addEventListener('click', () => {
+      cfState.combineMode = 'or';
+      modeOrBtn.classList.add('active');
+      modeAndBtn.classList.remove('active');
+    });
+
+    // Tab switching
+    tabSearch.addEventListener('click', () => switchTab('search'));
+    tabFavs.addEventListener('click',   () => switchTab('favs'));
+
+    function switchTab(tab) {
+      cfState.activeTab = tab;
+      tabSearch.classList.toggle('active', tab === 'search');
+      tabFavs.classList.toggle('active',   tab === 'favs');
+      searchPanel.style.display = tab === 'search' ? '' : 'none';
+      favsPanel.style.display   = tab === 'favs'   ? '' : 'none';
+      if (tab === 'favs') renderFavs();
+    }
+
+    // Sort buttons
+    [[sortRatingBtn, 'rating'], [sortRatingDescBtn, 'rating-desc'], [sortIdBtn, 'id']].forEach(([btn, mode]) => {
+      btn.addEventListener('click', () => {
+        cfState.sortMode = mode;
+        [sortRatingBtn, sortRatingDescBtn, sortIdBtn].forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        cfState.page = 1;
+        applyFilterSort();
+        renderPage();
+      });
+    });
+
+    // Search button
+    searchBtn.addEventListener('click', doSearch);
+
+    async function doSearch() {
+      cfState.minRating = parseInt(minRatingEl.value) || 800;
+      cfState.maxRating = parseInt(maxRatingEl.value) || 2000;
+      showStatus(t.search.loading, false);
+      searchBtn.disabled = true;
+      try {
+        const resp = await fetch('https://codeforces.com/api/problemset.problems');
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        if (data.status !== 'OK') throw new Error('CF API error');
+        cfState.allProblems = (data.result.problems || []).filter(p => p.rating);
+        cfState.page = 1;
+        applyFilterSort();
+        hideStatus();
+        renderPage();
+      } catch (_) {
+        showStatus(t.search.errorMsg, true);
+      } finally {
+        searchBtn.disabled = false;
+      }
+    }
+
+    function applyFilterSort() {
+      const { minRating, maxRating, selectedTags, combineMode, sortMode } = cfState;
+      let filtered = cfState.allProblems.filter(p => {
+        if (p.rating < minRating || p.rating > maxRating) return false;
+        if (selectedTags.length === 0) return true;
+        const pTags = p.tags || [];
+        return combineMode === 'and'
+          ? selectedTags.every(tag => pTags.includes(tag))
+          : selectedTags.some(tag => pTags.includes(tag));
+      });
+      if (sortMode === 'rating')      filtered.sort((a, b) => a.rating - b.rating);
+      else if (sortMode === 'rating-desc') filtered.sort((a, b) => b.rating - a.rating);
+      else filtered.sort((a, b) => a.contestId !== b.contestId ? a.contestId - b.contestId : a.index.localeCompare(b.index));
+      cfState.filtered = filtered;
+    }
+
+    function problemKey(p) { return p.contestId + '-' + p.index; }
+
+    function renderProblemCard(p) {
+      const key = problemKey(p);
+      const isFav    = key in cfState.favoritesData;
+      const isSolved = cfState.solved.includes(key);
+      const url = 'https://codeforces.com/contest/' + p.contestId + '/problem/' + p.index;
+      const tagsHtml = (p.tags || []).slice(0, 4).map(tag => `<span class="cf-problem-tag">${esc(tag)}</span>`).join('');
+      const solvedLabel = t.search.solvedLabel || 'Solved';
+      const ratingLabel = t.search.ratingLabel || 'Rating';
+      return `<div class="cf-problem-card${isSolved ? ' solved' : ''}" data-key="${key}">
+        <div class="cf-problem-info">
+          <div class="cf-problem-title">${esc(p.contestId + p.index + '. ' + p.name)}</div>
+          <div class="cf-problem-meta">
+            ${tagsHtml}
+            ${p.rating ? `<span class="cf-problem-rating">${ratingLabel}: ${p.rating}</span>` : ''}
+            ${isSolved ? `<span class="cf-problem-solved-badge">✅ ${solvedLabel}</span>` : ''}
+          </div>
+        </div>
+        <div class="cf-problem-actions">
+          <a class="cf-action-btn" href="${url}" target="_blank" rel="noopener">${t.search.openProblem || 'Open ↗'}</a>
+          <button class="cf-action-btn${isSolved ? ' solved-active' : ''}" data-action="solve" data-key="${key}">
+            ${isSolved ? '✅' : (t.search.markSolved || 'Solved')}
+          </button>
+          <button class="cf-action-btn${isFav ? ' fav-active' : ''}" data-action="fav" data-key="${key}">
+            ${isFav ? '⭐' : '☆'}
+          </button>
+        </div>
+      </div>`;
+    }
+
+    function attachCardListeners(container) {
+      container.querySelectorAll('[data-action="solve"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.key;
+          const idx = cfState.solved.indexOf(key);
+          if (idx === -1) cfState.solved.push(key); else cfState.solved.splice(idx, 1);
+          localStorage.setItem(CF_SOLVED_KEY, JSON.stringify(cfState.solved));
+          renderPage();
+          if (cfState.activeTab === 'favs') renderFavs();
+        });
+      });
+      container.querySelectorAll('[data-action="fav"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.key;
+          if (key in cfState.favoritesData) {
+            delete cfState.favoritesData[key];
+          } else {
+            // Find the problem object to store full data
+            const problem = cfState.allProblems.find(p => problemKey(p) === key);
+            if (problem) {
+              cfState.favoritesData[key] = {
+                contestId: problem.contestId,
+                index: problem.index,
+                name: problem.name,
+                rating: problem.rating,
+                tags: problem.tags || [],
+              };
+            }
+          }
+          localStorage.setItem(CF_FAV_KEY, JSON.stringify(cfState.favoritesData));
+          renderPage();
+          if (cfState.activeTab === 'favs') renderFavs();
+        });
+      });
+    }
+
+    function renderPage() {
+      const { filtered, page } = cfState;
+      const total      = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      const slice      = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+      sortRow.style.display = total > 0 ? 'flex' : 'none';
+      countEl.style.display = total > 0 ? 'block' : 'none';
+      if (typeof t.search.problemsFound === 'function') countEl.textContent = t.search.problemsFound(total);
+
+      if (total === 0) {
+        resultsList.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">${t.search.noResults}</div>`;
+        paginationEl.innerHTML = '';
+        return;
+      }
+
+      resultsList.innerHTML = slice.map(p => renderProblemCard(p)).join('');
+      attachCardListeners(resultsList);
+      renderPagination(totalPages);
+    }
+
+    function renderFavs() {
+      const favProblems = Object.values(cfState.favoritesData);
+      if (favProblems.length === 0) {
+        favsList.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">${t.search.noFavorites}</div>`;
+        return;
+      }
+      favsList.innerHTML = favProblems.map(p => renderProblemCard(p)).join('');
+      attachCardListeners(favsList);
+    }
+
+    function renderPagination(totalPages) {
+      if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+      const { page } = cfState;
+      const start = Math.max(1, page - 3);
+      const end   = Math.min(totalPages, start + 6);
+      let html = `<button class="cf-page-btn" id="cf-prev" ${page === 1 ? 'disabled' : ''}>${t.search.prevPage}</button>`;
+      for (let i = start; i <= end; i++) {
+        html += `<button class="cf-page-btn${i === page ? ' active' : ''}" data-p="${i}">${i}</button>`;
+      }
+      if (typeof t.search.pageOf === 'function') {
+        html += `<span style="font-size:12px;color:var(--text-muted);padding:0 6px">${t.search.pageOf(page, totalPages)}</span>`;
+      }
+      html += `<button class="cf-page-btn" id="cf-next" ${page === totalPages ? 'disabled' : ''}>${t.search.nextPage}</button>`;
+      paginationEl.innerHTML = html;
+
+      paginationEl.querySelectorAll('[data-p]').forEach(btn => {
+        btn.addEventListener('click', () => { cfState.page = parseInt(btn.dataset.p, 10); renderPage(); });
+      });
+      const prevBtn = document.getElementById('cf-prev');
+      const nextBtn = document.getElementById('cf-next');
+      if (prevBtn) prevBtn.addEventListener('click', () => { if (cfState.page > 1) { cfState.page--; renderPage(); } });
+      if (nextBtn) nextBtn.addEventListener('click', () => { if (cfState.page < totalPages) { cfState.page++; renderPage(); } });
+    }
+
+    function showStatus(msg, isError) {
+      statusEl.textContent = msg;
+      statusEl.className = 'cf-status' + (isError ? ' error' : '');
+      statusEl.style.display = 'block';
+    }
+    function hideStatus() { statusEl.style.display = 'none'; }
+  }
+
+  // ── Video Library ─────────────────────────────────────────────
+  function initVideoSearch() {
+    // Data is loaded by videos-data-{lang}.js → window.videosData
+    const data = (typeof videosData !== 'undefined') ? videosData : null;
+
+    const sectionEl    = document.querySelector('.page-section[data-section="videos"]');
+    if (!sectionEl) return;
+
+    // Populate static heading strings
+    const titleEl    = document.getElementById('vl-title');
+    const subtitleEl = document.getElementById('vl-subtitle');
+    if (titleEl)    titleEl.textContent    = t.videos.title;
+    if (subtitleEl) subtitleEl.textContent = t.videos.subtitle;
+
+    const queryInput  = document.getElementById('vl-query');
+    const resultsEl   = document.getElementById('vl-results');
+    const channelRow  = document.getElementById('vl-channel-row');
+    const tagCloudEl  = document.getElementById('vl-tag-cloud');
+    const clearTagBtn = document.getElementById('vl-clear-tags');
+
+    if (!queryInput || !resultsEl) return;
+
+    // Placeholder
+    queryInput.placeholder = t.videos.searchPlaceholder;
+    if (clearTagBtn) clearTagBtn.textContent = t.videos.clearTags;
+
+    // If no data file yet, show a placeholder message
+    if (!data || !data.videos || data.videos.length === 0) {
+      resultsEl.innerHTML = `<p style="padding:24px;color:var(--text-muted);text-align:center">
+        ${t.videos.noResults}
+      </p>`;
+      return;
+    }
+
+    const allVideos = data.videos;
+
+    const vState = {
+      query: '',
+      channel: '',    // '' = all
+      tags: [],       // selected topic tags
+    };
+
+    // -- CP topic tags derived from all videos
+    const allTags = [...new Set(allVideos.flatMap(v => v.tags || []))].sort();
+
+    // Build tag cloud
+    if (tagCloudEl && allTags.length > 0) {
+      allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'vl-tag';
+        btn.textContent = tag;
+        btn.addEventListener('click', () => {
+          const idx = vState.tags.indexOf(tag);
+          if (idx === -1) { vState.tags.push(tag); btn.classList.add('selected'); }
+          else { vState.tags.splice(idx, 1); btn.classList.remove('selected'); }
+          render();
+        });
+        tagCloudEl.appendChild(btn);
+      });
+    }
+
+    if (clearTagBtn) {
+      clearTagBtn.addEventListener('click', () => {
+        vState.tags = [];
+        if (tagCloudEl) tagCloudEl.querySelectorAll('.vl-tag').forEach(b => b.classList.remove('selected'));
+        render();
+      });
+    }
+
+    // Build channel filter row
+    if (channelRow) {
+      const allBtn = document.createElement('button');
+      allBtn.className = 'vl-channel-btn active';
+      allBtn.textContent = t.videos.channelAll;
+      allBtn.dataset.ch = '';
+      channelRow.appendChild(allBtn);
+
+      (data.channels || []).forEach(ch => {
+        const btn = document.createElement('button');
+        btn.className = 'vl-channel-btn';
+        btn.textContent = ch.name;
+        btn.dataset.ch = ch.id;
+        channelRow.appendChild(btn);
+      });
+
+      channelRow.addEventListener('click', e => {
+        const btn = e.target.closest('.vl-channel-btn');
+        if (!btn) return;
+        vState.channel = btn.dataset.ch || '';
+        channelRow.querySelectorAll('.vl-channel-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.ch === vState.channel);
+        });
+        render();
+      });
+    }
+
+    // Search input
+    let debounceVL = null;
+    queryInput.addEventListener('input', e => {
+      vState.query = e.target.value;
+      clearTimeout(debounceVL);
+      debounceVL = setTimeout(render, 160);
+    });
+
+    // Util: format seconds → MM:SS / H:MM:SS
+    function fmtTime(secs) {
+      const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = Math.floor(secs % 60);
+      if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      return m + ':' + String(s).padStart(2,'0');
+    }
+
+    // Filter + render
+    function render() {
+      const q    = vState.query.trim().toLowerCase();
+      const tags = vState.tags;
+      const ch   = vState.channel;
+
+      let filtered = allVideos.filter(v => {
+        if (ch && v.channel !== ch) return false;
+        if (tags.length > 0 && !tags.some(tag => (v.tags || []).includes(tag))) return false;
+        if (!q) return true;
+        // Match title
+        if (v.title.toLowerCase().includes(q)) return true;
+        // Match transcript text
+        return (v.segments || []).some(seg => seg.text.toLowerCase().includes(q));
+      });
+
+      if (filtered.length === 0) {
+        resultsEl.innerHTML = `<p style="padding:32px;text-align:center;color:var(--text-muted)">${t.videos.noResults}</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = filtered.map(v => {
+        // Find transcript matches
+        const matchedSegs = q ? (v.segments || []).filter(seg => seg.text.toLowerCase().includes(q)).slice(0, 5) : [];
+        const ytBase      = 'https://www.youtube.com/watch?v=' + v.id;
+        const segsHtml    = matchedSegs.length > 0
+          ? matchedSegs.map(seg => {
+              const ts = fmtTime(seg.t);
+              const href = ytBase + '&t=' + seg.t + 's';
+              const snippet = esc(seg.text.slice(0, 100));
+              return `<a class="vl-segment" href="${href}" target="_blank" rel="noopener">
+                <span class="vl-seg-ts">${typeof t.videos.watchAt === 'function' ? t.videos.watchAt(ts) : '▶ ' + ts}</span>
+                <span class="vl-seg-text">${snippet}…</span>
+              </a>`;
+            }).join('')
+          : '';
+
+        const matchCount = matchedSegs.length > 0
+          ? `<span class="vl-match-count">${typeof t.videos.matchesFound === 'function' ? t.videos.matchesFound(matchedSegs.length) : matchedSegs.length + ' matches'}</span>`
+          : '';
+
+        return `<div class="vl-card">
+          <a href="${ytBase}" target="_blank" rel="noopener" class="vl-thumb-link">
+            <img class="vl-thumb" src="${v.thumbnail}" loading="lazy" alt="${esc(v.title)}" />
+            <span class="vl-duration-badge">${v.duration || ''}</span>
+          </a>
+          <div class="vl-info">
+            <a class="vl-title" href="${ytBase}" target="_blank" rel="noopener">${esc(v.title)}</a>
+            <div class="vl-meta">
+              <span class="vl-channel">${esc(v.channelName)}</span>
+              ${(v.tags || []).slice(0, 4).map(tag => `<span class="vl-badge">${esc(tag)}</span>`).join('')}
+            </div>
+            ${matchCount}
+            ${segsHtml ? `<div class="vl-segments">${segsHtml}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    render(); // initial render shows all videos
+  }
+
   // ── Init ──────────────────────────────────────────────────────
   applyTheme(state.theme);
   buildSidebar();
   buildAlgoGrid();
   updateProgress();
   setActiveSection("overview");
+  initCfSearch();
+  initVideoSearch();
 })();

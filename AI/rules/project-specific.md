@@ -30,6 +30,7 @@ src/
     [lang]/
       guide/
         index.astro   ← Main guide page (EN + ES via getStaticPaths)
+                         Sections: overview, algorithms, roadmap, detail, tools, search
       slides/
         index.astro   ← Slide presentation page (EN + ES via getStaticPaths)
   components/         ← Reusable .astro components (create here when needed)
@@ -38,6 +39,8 @@ src/
 public/
   algorithms-data-en.js  ← Algorithm data in English (plain JS, loaded is:inline)
   algorithms-data-es.js  ← Algorithm data in Spanish (plain JS, loaded is:inline)
+  videos-data-en.js      ← Auto-generated EN video data (do not edit manually)
+  videos-data-es.js      ← Auto-generated ES video data (do not edit manually)
   guide-script.js        ← Client-side interactivity for guide (plain JS, loaded is:inline)
   slides-script.js       ← Client-side slide navigation (plain JS, loaded is:inline)
   favicon.ico / .svg
@@ -48,6 +51,9 @@ public/
 
 scripts/
   sync-ai-configs.sh  ← Generates AI tool configs from AI/ sources
+  scrape-videos.cjs   ← yt-dlp scraper: fetches video metadata + VTT subtitles
+  video-channels.cjs  ← Channel registry (ES + EN) and CP keyword→tag map
+  cp-keywords.cjs     ← Extended keyword→tag mappings (imported by scrape-videos.cjs)
 
 AI/
   rules/              ← Universal rules (this file lives here)
@@ -56,6 +62,40 @@ AI/
 
 Makefile              ← Run `make sync-ai` to regenerate AI tool configs
 ```
+
+## Guide Page Sections
+
+The guide page (`src/pages/[lang]/guide/index.astro`) renders multiple `<section class="page-section" data-section="…">` blocks. Only the active one is visible at a time. Sections:
+
+| `data-section` | Activated by |
+|----------------|-------------|
+| `overview` | nav link / default |
+| `algorithms` | nav link |
+| `roadmap` | nav link |
+| `detail` | clicking an algorithm card |
+| `tools` | nav link |
+| `search` | sidebar item `search-problems` (PRACTICE section) |
+| `videos` | sidebar item `watch-videos` (PRACTICE section) |
+
+The **search** section hosts the Codeforces Problem Search feature. See `AI/skills/cf-problem-search.md` for full details.
+The **videos** section hosts the CP Video Library feature. See `AI/skills/video-library.md` for full details.
+
+## Sidebar Sections
+
+`guide-script.js` defines `sidebarSectionDefs` — the canonical sidebar structure. Section keys map to `t.sidebar.sections[key]` for i18n labels.
+
+| Key | Items |
+|-----|-------|
+| `OVERVIEW` | introduction, learning-path, assessment |
+| `FUNDAMENTALS` | complexity-analysis, arrays-strings, stl-guide |
+| `ALGORITHMS` | two-pointers, sliding-window, binary-search, sorting |
+| `GRAPH_THEORY` | bfs, dfs, dijkstra, union-find |
+| `DYNAMIC_PROGRAMMING` | dp-1d, dp-2d, knapsack, bitmask-dp |
+| `TREES_ADVANCED` | segment-tree, fenwick-tree, trie |
+| `MATHEMATICS` | modular-arithmetic, sieve, combinatorics |
+| `PRACTICE` | search-problems, watch-videos |
+
+The `search-problems` item calls `setActiveSection('search')` instead of opening an algorithm detail panel.
 
 ## GitHub Pages Deployment
 
@@ -86,6 +126,8 @@ export default defineConfig({
     window.__CP_T__ = JSON.parse(translations);
   </script>
   ```
+- The `search` key in `Translations` holds all strings for the Codeforces Problem Search feature (`t.search.*`). See `AI/skills/cf-problem-search.md` for the full key list.
+- The `videos` key in `Translations` holds all strings for the CP Video Library feature (`t.videos.*`). See `AI/skills/video-library.md` for the full key list.
 
 ## Astro CSS Scoping Rule
 
