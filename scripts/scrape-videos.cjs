@@ -35,6 +35,10 @@ const OUT_DIR            = path.resolve(__dirname, '..', 'public');
 const SEGMENT_GAP_SECS   = 60;
 // Max segments to keep per video (keeps file size reasonable)
 const MAX_SEGMENTS        = 80;
+// Pause between subtitle requests to avoid YouTube HTTP 429 rate limiting
+const SUBTITLE_DELAY_MS   = 2000;
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -251,6 +255,7 @@ async function processChannel(channel) {
     console.log(`  [${i + 1}/${videos.length}] ${v.title.slice(0, 70)}`);
 
     const segments = fetchTranscript(v.id, channel.lang);
+    await sleep(SUBTITLE_DELAY_MS); // avoid YouTube 429 rate limiting
     const tags     = videoTagsFromSegments(segments);
 
     processed.push({
