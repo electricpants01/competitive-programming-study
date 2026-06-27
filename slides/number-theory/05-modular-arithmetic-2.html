@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Aritmética Modular - Propiedades</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #7e1d5f, #9d174d); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #ec4899; }
+  .header-topic { font-size: 20px; color: #fbcfe8; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #f9a8d4; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 40px; padding: 30px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .prop { background: #1e293b; border-radius: 14px; padding: 20px 26px; border: 2px solid #334155; }
+  .prop-title { font-size: 20px; color: #f9a8d4; font-weight: 700; margin-bottom: 12px; }
+  .formula { font-size: 22px; color: #fce7f3; font-family: 'Consolas', monospace; font-weight: 700; background: #0f172a; border-radius: 8px; padding: 8px 14px; display: inline-block; margin-bottom: 8px; }
+  .example { font-size: 18px; color: #94a3b8; }
+  .example strong { color: #ec4899; }
+  .warning { background: linear-gradient(135deg, #500724, #881337); border: 2px solid #ec4899; border-radius: 14px; padding: 18px 24px; }
+  .warning-title { font-size: 20px; color: #f9a8d4; font-weight: 700; margin-bottom: 10px; }
+  .warning p { font-size: 18px; color: #fce7f3; line-height: 1.6; }
+  .warning strong { color: #fbbf24; }
+  .check-row { display: flex; gap: 20px; }
+  .check-card { flex: 1; background: #0f172a; border-radius: 10px; padding: 14px; border: 2px solid #334155; text-align: center; }
+  .check-card .op { font-size: 18px; color: #94a3b8; margin-bottom: 6px; }
+  .check-card .safe { font-size: 26px; color: #34d399; font-weight: 700; }
+  .check-card .unsafe { font-size: 26px; color: #f87171; font-weight: 700; }
+  .check-card .note { font-size: 14px; color: #64748b; margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Aritmética Modular · Diapositiva 2 de 4</div>
+      <div class="header-title">Propiedades del Módulo</div>
+    </div>
+    <div class="slide-num">17 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="prop">
+        <div class="prop-title">➕ Suma</div>
+        <div class="formula">(a + b) mod m = ((a mod m) + (b mod m)) mod m</div>
+        <div class="example">Ej: (15 + 27) mod 10 = <strong>2</strong><br>(15 mod 10 + 27 mod 10) mod 10 = (5 + 7) mod 10 = <strong>2 ✓</strong></div>
+      </div>
+      <div class="prop">
+        <div class="prop-title">➖ Resta</div>
+        <div class="formula">(a − b) mod m = ((a mod m) − (b mod m) + m) mod m</div>
+        <div class="example">Ej: (5 − 8) mod 7 = (−3 + 7) mod 7 = <strong>4</strong><br>El <strong>+m</strong> evita resultados negativos</div>
+      </div>
+      <div class="prop">
+        <div class="prop-title">✖️ Multiplicación</div>
+        <div class="formula">(a × b) mod m = ((a mod m) × (b mod m)) mod m</div>
+        <div class="example">Ej: (13 × 17) mod 5 = 221 mod 5 = <strong>1</strong><br>(13 mod 5) × (17 mod 5) = 3 × 2 = 6 mod 5 = <strong>1 ✓</strong></div>
+      </div>
+      <div class="prop">
+        <div class="prop-title">🔢 Potencia</div>
+        <div class="formula">(aⁿ) mod m = ((a mod m)ⁿ) mod m</div>
+        <div class="example">Funciona igual que multiplicación repetida</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="warning">
+        <div class="warning-title">⚠️ División es Especial</div>
+        <p>¡La división <strong>NO</strong> funciona igual que suma/resta/multiplicación!</p>
+        <p style="margin-top:8px;">6/3 = 2, pero (6 mod 4) / (3 mod 4) = 2/3 ≠ 2</p>
+        <p style="margin-top:8px;"><strong>✓ Solución:</strong> usar el inverso modular: (a ÷ b) mod m = a × inv(b, m) mod m</p>
+      </div>
+      <div style="background:#1e293b; border-radius:14px; padding:20px 26px; border:2px solid #334155;">
+        <div class="prop-title" style="font-size:20px; color:#f9a8d4; font-weight:700; margin-bottom:14px;">✅ Seguridad de Operaciones (mod m)</div>
+        <div class="check-row">
+          <div class="check-card"><div class="op">+</div><div class="safe">✓</div><div class="note">Seguro directo</div></div>
+          <div class="check-card"><div class="op">−</div><div class="safe">✓</div><div class="note">+m si negativo</div></div>
+          <div class="check-card"><div class="op">×</div><div class="safe">✓</div><div class="note">Seguro directo</div></div>
+          <div class="check-card"><div class="op">÷</div><div class="unsafe">⚠</div><div class="note">Usar inv_mod</div></div>
+        </div>
+      </div>
+      <div style="background:#1e293b; border-radius:14px; padding:20px 26px; border:2px solid #334155;">
+        <div style="font-size:20px; color:#f9a8d4; font-weight:700; margin-bottom:14px;">🔢 MOD = 10⁹+7</div>
+        <div style="font-size:18px; color:#fce7f3; line-height:1.7;">
+          En CP, el módulo estándar es <strong style="color:#ec4899;">1,000,000,007</strong> (10⁹+7).<br>
+          ▸ Es primo → todos los números tienen inverso modular<br>
+          ▸ Cabe en un <code style="background:#0f172a;padding:2px 6px;border-radius:4px;">long long</code> (máx: ~9.2×10¹⁸)<br>
+          ▸ Al multiplicar: a×b &lt; 10¹⁸ → sin overflow
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Aritmética Modular - Exponenciación Rápida</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #7e1d5f, #9d174d); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #ec4899; }
+  .header-topic { font-size: 20px; color: #fbcfe8; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #f9a8d4; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .box { border-radius: 14px; padding: 20px 26px; }
+  .box-pink { background: linear-gradient(135deg, #500724, #881337); border: 2px solid #ec4899; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 22px; margin-bottom: 12px; color: #f9a8d4; }
+  h3 { font-size: 20px; margin-bottom: 10px; color: #f9a8d4; }
+  p { font-size: 19px; line-height: 1.6; color: #fce7f3; }
+  strong { color: #ec4899; }
+  .formula-big { font-size: 28px; font-weight: 800; color: #f9a8d4; font-family: 'Consolas', monospace; text-align: center; margin: 10px 0; }
+  .step-row { display: flex; gap: 14px; background: #0f172a; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; border-left: 4px solid #ec4899; font-size: 18px; }
+  .step-n { color: #f9a8d4; font-weight: 700; font-family: 'Consolas', monospace; min-width: 90px; }
+  .step-op { color: #94a3b8; min-width: 50px; }
+  .step-result { color: #fce7f3; }
+  .highlight { color: #ec4899; font-weight: 700; }
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cmp-card { background: #0f172a; border-radius: 10px; padding: 16px; border: 2px solid; }
+  .card-slow { border-color: #ef4444; }
+  .card-fast { border-color: #10b981; }
+  .cmp-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .slow-title { color: #f87171; }
+  .fast-title { color: #34d399; }
+  .cmp-body { font-size: 17px; color: #94a3b8; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Aritmética Modular · Diapositiva 3 de 4</div>
+      <div class="header-title">Exponenciación Rápida (Fast Power)</div>
+    </div>
+    <div class="slide-num">18 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-pink">
+        <h2>🤔 El problema</h2>
+        <p>Calcular <strong>aⁿ mod m</strong> multiplicando n veces es O(n). Para n = 10¹⁸ es imposible. Necesitamos algo mejor.</p>
+      </div>
+      <div class="box box-slate">
+        <h3>💡 La idea: dividir el exponente a la mitad</h3>
+        <div class="formula-big">aⁿ = (a^(n/2))² si n es par</div>
+        <div class="formula-big">aⁿ = a · (a^((n−1)/2))² si n es impar</div>
+        <p style="color:#94a3b8; font-size:17px;">En lugar de n multiplicaciones, solo necesitamos log₂(n) pasos.</p>
+      </div>
+      <div class="box box-slate">
+        <h3>📊 Traza: 2¹⁰ mod 1000</h3>
+        <div class="step-row"><div class="step-n">pow(2,10)</div><div class="step-op">→ par</div><div class="step-result">= (2⁵)² = 32² mod 1000 = <span class="highlight">1024 mod 1000 = 24</span></div></div>
+        <div class="step-row"><div class="step-n">pow(2,5)</div><div class="step-op">→ impar</div><div class="step-result">= 2 · (2²)² = 2 · 4² = 2 · 16 = <span class="highlight">32</span></div></div>
+        <div class="step-row"><div class="step-n">pow(2,2)</div><div class="step-op">→ par</div><div class="step-result">= (2¹)² = 1² · 2 = <span class="highlight">4</span></div></div>
+        <div class="step-row"><div class="step-n">pow(2,1)</div><div class="step-op">→ base</div><div class="step-result">= <span class="highlight">2</span></div></div>
+        <div style="color:#ec4899; font-size:17px; margin-top:6px;">✓ Solo 4 pasos en lugar de 10</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="comparison">
+        <div class="cmp-card card-slow">
+          <div class="cmp-title slow-title">❌ Método lento O(n)</div>
+          <div class="cmp-body">
+            2¹⁰⁰⁰ = 2×2×2×...×2<br>
+            1000 multiplicaciones<br>
+            Para n = 10¹⁸ → imposible
+          </div>
+        </div>
+        <div class="cmp-card card-fast">
+          <div class="cmp-title fast-title">✅ Rápido O(log n)</div>
+          <div class="cmp-body">
+            2¹⁰⁰⁰ → ~10 pasos<br>
+            2^(10¹⁸) → ~60 pasos<br>
+            ¡Siempre manejable!
+          </div>
+        </div>
+      </div>
+      <div class="box box-slate" style="flex:1;">
+        <h3>💻 Implementación iterativa</h3>
+        <pre style="background:#0d1117; border-radius:10px; padding:18px 22px; font-family:'Consolas',monospace; font-size:18px; line-height:1.75; overflow:hidden;">
+<span style="color:#79c0ff;">long long</span> <span style="color:#d2a8ff;">powmod</span>(<span style="color:#79c0ff;">long long</span> base, <span style="color:#79c0ff;">long long</span> exp, <span style="color:#79c0ff;">long long</span> mod) {
+    <span style="color:#79c0ff;">long long</span> result = <span style="color:#a5c261;">1</span>;
+    base %= mod;
+    <span style="color:#ff7b72;">while</span> (exp > <span style="color:#a5c261;">0</span>) {
+        <span style="color:#ff7b72;">if</span> (exp % <span style="color:#a5c261;">2</span> == <span style="color:#a5c261;">1</span>)          <span style="color:#8b949e;">// si exp es impar</span>
+            result = result * base % mod;
+        base = base * base % mod;   <span style="color:#8b949e;">// elevar al cuadrado</span>
+        exp /= <span style="color:#a5c261;">2</span>;                  <span style="color:#8b949e;">// dividir exp a la mitad</span>
+    }
+    <span style="color:#ff7b72;">return</span> result;
+}</pre>
+      </div>
+      <div style="background:linear-gradient(135deg,#500724,#881337); border:2px solid #ec4899; border-radius:12px; padding:16px 22px; text-align:center;">
+        <div style="font-size:20px; color:#fce7f3;">Complejidad: <span style="font-size:26px; font-weight:800; color:#f9a8d4;">O(log n)</span></div>
+        <div style="font-size:17px; color:#ec4899; margin-top:6px;">¡De O(10¹⁸) a solo O(60) pasos!</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

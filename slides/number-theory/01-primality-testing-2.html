@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Prueba de Primalidad - Método Básico</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #3b82f6;
+  }
+  .header-topic { font-size: 20px; color: #93c5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #60a5fa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1.1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 0.9; display: flex; flex-direction: column; gap: 20px; }
+
+  .idea-box {
+    background: linear-gradient(135deg, #1e3a5f, #1e3a8a);
+    border: 2px solid #3b82f6;
+    border-radius: 16px; padding: 24px 30px;
+  }
+  .idea-box h2 { font-size: 22px; color: #60a5fa; margin-bottom: 12px; }
+  .idea-box p { font-size: 20px; line-height: 1.6; color: #cbd5e1; }
+
+  .steps-title { font-size: 22px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .step {
+    display: flex; align-items: flex-start; gap: 18px;
+    background: #1e293b; border-radius: 14px; padding: 18px 22px;
+    border-left: 5px solid #3b82f6;
+  }
+  .step-num {
+    background: #1e3a8a; color: #93c5fd;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; flex-shrink: 0;
+  }
+  .step-text { font-size: 20px; line-height: 1.5; color: #cbd5e1; }
+  .step-text strong { color: #60a5fa; }
+
+  .trace-title { font-size: 22px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .trace-box {
+    background: #1e293b; border-radius: 14px; padding: 20px 24px;
+    border: 2px solid #334155;
+  }
+  .trace-header { font-size: 20px; color: #60a5fa; font-weight: 700; margin-bottom: 14px; }
+  .trace-table { width: 100%; border-collapse: collapse; }
+  .trace-table th {
+    background: #0f172a; color: #64748b; font-size: 15px;
+    padding: 8px 14px; text-align: center; letter-spacing: 1px;
+  }
+  .trace-table td {
+    padding: 9px 14px; text-align: center; font-size: 19px;
+    border-bottom: 1px solid #1e293b;
+  }
+  .row-pass { color: #f87171; }
+  .row-fail { background: rgba(16,185,129,0.1); color: #34d399; font-weight: 700; }
+  .row-neutral { color: #94a3b8; }
+
+  .complexity-box {
+    background: linear-gradient(135deg, #1a1a3e, #1e1b4b);
+    border: 2px solid #818cf8; border-radius: 14px; padding: 22px 28px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .complexity-icon { font-size: 36px; }
+  .complexity-text h3 { font-size: 20px; color: #a5b4fc; margin-bottom: 6px; }
+  .complexity-text p { font-size: 24px; color: #c7d2fe; font-weight: 700; }
+  .complexity-text span { font-size: 17px; color: #818cf8; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #2d1b00, #451a00);
+    border: 2px solid #f59e0b; border-radius: 14px; padding: 18px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .warning-box p { font-size: 19px; color: #fcd34d; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Prueba de Primalidad · Diapositiva 2 de 4</div>
+      <div class="header-title">Método Básico: Dividir por Todos</div>
+    </div>
+    <div class="slide-num">02 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="idea-box">
+        <h2>💡 La idea</h2>
+        <p>Para saber si <strong style="color:#93c5fd;">n</strong> es primo, intentamos dividirlo por todos los números desde <strong style="color:#93c5fd;">2</strong> hasta <strong style="color:#93c5fd;">n−1</strong>. Si alguno divide exactamente → no es primo. Si ninguno divide → ¡es primo!</p>
+      </div>
+
+      <div class="steps-title">Pasos del algoritmo</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Si <strong>n ≤ 1</strong>, NO es primo (caso especial).</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Para cada <strong>i</strong> desde 2 hasta n−1, pregunta: ¿n ÷ i tiene residuo 0?</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Si algún <strong>n % i == 0</strong> → n <strong>NO</strong> es primo. ¡Para!</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Si llegaste al final sin encontrar divisor → n <strong>SÍ</strong> es primo. ✓</div>
+      </div>
+
+      <div class="complexity-box">
+        <div class="complexity-icon">⏱️</div>
+        <div class="complexity-text">
+          <h3>Complejidad temporal</h3>
+          <p>O(n)</p>
+          <span>— Por cada número revisamos hasta n−1 divisores</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="trace-title">📊 Traza: ¿Es 17 primo?</div>
+      <div class="trace-box">
+        <div class="trace-header">n = 17 &nbsp;|&nbsp; Revisando i desde 2 hasta 16</div>
+        <table class="trace-table">
+          <tr><th>i</th><th>17 % i</th><th>¿Divide?</th></tr>
+          <tr class="row-neutral"><td>2</td><td>1</td><td>❌ No</td></tr>
+          <tr class="row-neutral"><td>3</td><td>2</td><td>❌ No</td></tr>
+          <tr class="row-neutral"><td>4</td><td>1</td><td>❌ No</td></tr>
+          <tr class="row-neutral"><td>5</td><td>2</td><td>❌ No</td></tr>
+          <tr class="row-neutral"><td>6</td><td>5</td><td>❌ No</td></tr>
+          <tr class="row-neutral"><td>7</td><td>3</td><td>❌ No</td></tr>
+          <tr class="row-neutral" style="opacity:0.5"><td>8..16</td><td>...</td><td>❌ No</td></tr>
+          <tr class="row-fail"><td colspan="3">✅ 17 ES PRIMO (ningún divisor encontrado)</td></tr>
+        </table>
+      </div>
+
+      <div class="trace-box">
+        <div class="trace-header">n = 15 &nbsp;|&nbsp; ¿Es primo?</div>
+        <table class="trace-table">
+          <tr><th>i</th><th>15 % i</th><th>¿Divide?</th></tr>
+          <tr class="row-neutral"><td>2</td><td>1</td><td>❌ No</td></tr>
+          <tr class="row-neutral"><td>3</td><td>0</td><td class="row-pass">✗ ¡SÍ divide!</td></tr>
+          <tr class="row-pass"><td colspan="3">❌ 15 NO es primo → 15 = 3 × 5</td></tr>
+        </table>
+      </div>
+
+      <div class="warning-box">
+        <span style="font-size:28px;">⚠️</span>
+        <p><strong>Problema:</strong> Para n = 1,000,000 revisamos 999,998 números. ¡Muy lento! En la siguiente diapositiva veremos cómo hacerlo mucho más rápido.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

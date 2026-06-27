@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Teorema Chino del Resto - Solución</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #0c4a6e, #075985); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #0ea5e9; }
+  .header-topic { font-size: 20px; color: #bae6fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #7dd3fc; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .box { border-radius: 14px; padding: 18px 24px; }
+  .box-blue { background: linear-gradient(135deg, #082f49, #0c4a6e); border: 2px solid #0ea5e9; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 22px; margin-bottom: 12px; color: #7dd3fc; }
+  h3 { font-size: 20px; margin-bottom: 10px; color: #7dd3fc; }
+  p { font-size: 18px; line-height: 1.6; color: #bae6fd; }
+  .formula { font-size: 24px; font-family: 'Consolas', monospace; color: #7dd3fc; font-weight: 700; text-align: center; margin: 8px 0; }
+  .step { background: #0f172a; border-radius: 10px; padding: 12px 18px; border-left: 4px solid #0ea5e9; margin-bottom: 10px; }
+  .step-title { font-size: 18px; color: #0ea5e9; font-weight: 700; margin-bottom: 6px; }
+  .step-body { font-size: 17px; color: #bae6fd; line-height: 1.5; }
+  .step-body .val { color: #7dd3fc; font-weight: 700; font-family: 'Consolas', monospace; }
+  .code-block { background: #0d1117; border-radius: 12px; padding: 18px 22px; font-family: 'Consolas', monospace; font-size: 17px; line-height: 1.75; flex: 1; border: 2px solid #30363d; }
+  .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .tp { color: #79c0ff; } .cm { color: #8b949e; font-style: italic; } .nu { color: #a5c261; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Teorema Chino del Resto · Diapositiva 2 de 3</div>
+      <div class="header-title">Cómo Resolver el Sistema</div>
+    </div>
+    <div class="slide-num">21 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-blue">
+        <h2>📐 Fórmula general</h2>
+        <p>Para el sistema x ≡ aᵢ (mod mᵢ) con módulos coprimos:</p>
+        <div class="formula">M = m₁ × m₂ × ... × mₖ</div>
+        <div class="formula">Mᵢ = M / mᵢ</div>
+        <div class="formula">yᵢ = Mᵢ⁻¹ (mod mᵢ)</div>
+        <div class="formula">x = (Σ aᵢ · Mᵢ · yᵢ) mod M</div>
+      </div>
+      <div class="box box-slate">
+        <h3>🔢 Aplicando al ejemplo: x≡2(mod3), x≡3(mod5), x≡2(mod7)</h3>
+        <div class="step">
+          <div class="step-title">Paso 1: M = 3 × 5 × 7</div>
+          <div class="step-body"><span class="val">M = 105</span></div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 2: Calcular Mᵢ = M / mᵢ</div>
+          <div class="step-body"><span class="val">M₁ = 35, M₂ = 21, M₃ = 15</span></div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 3: Calcular yᵢ = Mᵢ⁻¹ (mod mᵢ)</div>
+          <div class="step-body"><span class="val">y₁ = 35⁻¹ mod 3 = 2</span> (35×2=70≡1 mod3 ✓)<br><span class="val">y₂ = 21⁻¹ mod 5 = 1</span> (21×1=21≡1 mod5 ✓)<br><span class="val">y₃ = 15⁻¹ mod 7 = 1</span> (15×1=15≡1 mod7 ✓)</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 4: x = (a₁M₁y₁ + a₂M₂y₂ + a₃M₃y₃) mod M</div>
+          <div class="step-body">x = (2·35·2 + 3·21·1 + 2·15·1) mod 105<br>x = (140 + 63 + 30) mod 105<br>x = 233 mod 105 = <span class="val" style="font-size:20px; color:#38bdf8;">23 ✅</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="code-block">
+<span class="kw">#include</span> <span style="color:#a8ff60;">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="tp">typedef long long</span> ll;
+
+ll <span class="fn">mcd_ext</span>(ll a, ll b, ll &amp;x, ll &amp;y) {
+    <span class="kw">if</span> (!b) { x=<span class="nu">1</span>; y=<span class="nu">0</span>; <span class="kw">return</span> a; }
+    ll x1,y1; ll g=<span class="fn">mcd_ext</span>(b,a%b,x1,y1);
+    x=y1; y=x1-(a/b)*y1; <span class="kw">return</span> g;
+}
+
+<span class="cm">// Teorema Chino del Resto</span>
+<span class="cm">// r[], m[] son residuos y módulos; n = cantidad</span>
+ll <span class="fn">tcr</span>(ll r[], ll m[], <span class="tp">int</span> n) {
+    ll M = <span class="nu">1</span>;
+    <span class="kw">for</span> (<span class="tp">int</span> i=<span class="nu">0</span>; i&lt;n; i++) M *= m[i];
+    ll x = <span class="nu">0</span>;
+    <span class="kw">for</span> (<span class="tp">int</span> i=<span class="nu">0</span>; i&lt;n; i++) {
+        ll Mi = M / m[i];
+        ll xi, yi;
+        <span class="fn">mcd_ext</span>(Mi, m[i], xi, yi);
+        ll inv = (xi % m[i] + m[i]) % m[i]; <span class="cm">// Mᵢ⁻¹ mod mᵢ</span>
+        x = (x + r[i] % M * (Mi % M) % M * inv % M) % M;
+    }
+    <span class="kw">return</span> x % M;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    ll r[] = {<span class="nu">2</span>, <span class="nu">3</span>, <span class="nu">2</span>};
+    ll m[] = {<span class="nu">3</span>, <span class="nu">5</span>, <span class="nu">7</span>};
+    cout &lt;&lt; <span class="fn">tcr</span>(r, m, <span class="nu">3</span>); <span class="cm">// → 23</span>
+}
+      </div>
+      <div style="background:linear-gradient(135deg,#082f49,#0c4a6e); border:2px solid #0ea5e9; border-radius:12px; padding:16px 22px; text-align:center;">
+        <div style="font-size:20px; color:#bae6fd;">Salida: <span style="font-size:30px; font-weight:800; color:#7dd3fc;">23</span></div>
+        <div style="font-size:17px; color:#0ea5e9; margin-top:6px;">Complejidad: O(n log m)</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>MCD y MCM - Código C++</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #065f46, #047857); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #10b981; }
+  .header-topic { font-size: 20px; color: #a7f3d0; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #6ee7b7; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1.2; display: flex; flex-direction: column; gap: 20px; }
+  .right { flex: 0.8; display: flex; flex-direction: column; gap: 20px; }
+  .code-wrap { background: #0d1117; border-radius: 16px; overflow: hidden; border: 2px solid #30363d; flex: 1; }
+  .code-header { background: #161b22; padding: 14px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #30363d; }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+  .filename { color: #8b949e; font-size: 16px; margin-left: 10px; }
+  pre { padding: 22px 28px; font-family: 'Consolas', 'Fira Code', monospace; font-size: 19px; line-height: 1.75; overflow: hidden; }
+  .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .tp { color: #79c0ff; } .cm { color: #8b949e; font-style: italic; } .nu { color: #a5c261; } .str { color: #a8ff60; }
+  .ann { background: #1e293b; border-radius: 12px; padding: 14px 20px; border-left: 5px solid #10b981; display: flex; gap: 12px; align-items: flex-start; }
+  .ann-text { font-size: 18px; line-height: 1.5; color: #cbd5e1; }
+  .ann-text strong { color: #34d399; }
+  .ex-box { background: #1e293b; border-radius: 12px; padding: 18px 22px; border: 2px solid #334155; }
+  .ex-box h3 { font-size: 19px; color: #34d399; margin-bottom: 12px; }
+  .ex-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 18px; }
+  .out { font-weight: 700; padding: 3px 12px; border-radius: 8px; }
+  .out-g { background: #064e3b; color: #34d399; }
+  .cplx { background: linear-gradient(135deg, #064e3b, #065f46); border: 2px solid #10b981; border-radius: 12px; padding: 18px 22px; text-align: center; }
+  .cplx p { font-size: 26px; color: #6ee7b7; font-weight: 800; }
+  .cplx span { font-size: 17px; color: #34d399; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">MCD y MCM · Diapositiva 4 de 4</div>
+      <div class="header-title">Código en C++</div>
+    </div>
+    <div class="slide-num">11 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <span class="filename">gcd_lcm.cpp</span>
+        </div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="tp">typedef long long</span> ll;
+
+<span class="cm">// MCD con el Algoritmo de Euclides (recursivo)</span>
+ll <span class="fn">mcd</span>(ll a, ll b) {
+    <span class="kw">return</span> b == <span class="nu">0</span> ? a : <span class="fn">mcd</span>(b, a % b);
+}
+
+<span class="cm">// MCD iterativo (equivalente, sin recursión)</span>
+ll <span class="fn">mcd_iter</span>(ll a, ll b) {
+    <span class="kw">while</span> (b != <span class="nu">0</span>) {
+        ll r = a % b;
+        a = b; b = r;
+    }
+    <span class="kw">return</span> a;
+}
+
+<span class="cm">// MCM usando la fórmula mcd × mcm = a × b</span>
+ll <span class="fn">mcm</span>(ll a, ll b) {
+    <span class="kw">return</span> a / <span class="fn">mcd</span>(a, b) * b; <span class="cm">// divide primero para evitar overflow</span>
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    ll a = <span class="nu">252</span>, b = <span class="nu">198</span>;
+    cout &lt;&lt; <span class="str">"MCD("</span> &lt;&lt; a &lt;&lt; <span class="str">","</span> &lt;&lt; b &lt;&lt; <span class="str">") = "</span> &lt;&lt; <span class="fn">mcd</span>(a, b) &lt;&lt; endl;
+    cout &lt;&lt; <span class="str">"MCM("</span> &lt;&lt; a &lt;&lt; <span class="str">","</span> &lt;&lt; b &lt;&lt; <span class="str">") = "</span> &lt;&lt; <span class="fn">mcm</span>(a, b) &lt;&lt; endl;
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+      </div>
+    </div>
+    <div class="right">
+      <div class="ann"><span style="font-size:22px;">🔁</span><div class="ann-text"><strong>Recursivo vs Iterativo:</strong> Ambos son O(log n). El recursivo es más elegante, el iterativo evita el stack overflow para recursión profunda.</div></div>
+      <div class="ann"><span style="font-size:22px;">⚠️</span><div class="ann-text"><strong>Divide primero:</strong> <code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#fbbf24;">a/mcd(a,b)*b</code> evita overflow que produciría <code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#fbbf24;">a*b/mcd(a,b)</code>.</div></div>
+      <div class="ann"><span style="font-size:22px;">⚡</span><div class="ann-text"><strong>C++17 built-in:</strong> <code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#fbbf24;">#include &lt;numeric&gt;</code> y usar <code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#fbbf24;">__gcd(a,b)</code> o <code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#fbbf24;">std::gcd(a,b)</code>.</div></div>
+      <div class="ex-box">
+        <h3>📋 Salida del programa</h3>
+        <div class="ex-row"><span>MCD(252, 198)</span><span class="out out-g">= 18</span></div>
+        <div class="ex-row"><span>MCM(252, 198)</span><span class="out out-g">= 2772</span></div>
+        <div style="font-size:16px; color:#64748b; margin-top:8px;">Verificar: 252 × 198 = 49,896 = 18 × 2772 ✓</div>
+      </div>
+      <div class="cplx">
+        <div style="font-size:20px; color:#a7f3d0; margin-bottom:6px;">Complejidad</div>
+        <p>O(log min(a,b))</p>
+        <span>para MCD y MCM — extremadamente eficiente</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Teorema Chino del Resto - Aplicaciones</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #0c4a6e, #075985); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #0ea5e9; }
+  .header-topic { font-size: 20px; color: #bae6fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #7dd3fc; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 40px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .box { border-radius: 14px; padding: 22px 28px; }
+  .box-blue { background: linear-gradient(135deg, #082f49, #0c4a6e); border: 2px solid #0ea5e9; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 24px; margin-bottom: 14px; color: #7dd3fc; }
+  h3 { font-size: 21px; margin-bottom: 12px; color: #7dd3fc; }
+  p { font-size: 19px; line-height: 1.6; color: #bae6fd; }
+  strong { color: #38bdf8; }
+  .app-card { background: #0f172a; border-radius: 12px; padding: 18px 22px; border: 2px solid #1e3a5f; margin-bottom: 12px; }
+  .app-card .title { font-size: 20px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; }
+  .app-card .body { font-size: 18px; color: #bae6fd; line-height: 1.5; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sum-card { background: #0f172a; border-radius: 12px; padding: 16px 20px; border: 2px solid #334155; text-align: center; }
+  .sum-card .icon { font-size: 30px; margin-bottom: 8px; }
+  .sum-card .label { font-size: 17px; color: #94a3b8; margin-bottom: 4px; }
+  .sum-card .value { font-size: 20px; color: #7dd3fc; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Teorema Chino del Resto · Diapositiva 3 de 3</div>
+      <div class="header-title">Aplicaciones y Resumen</div>
+    </div>
+    <div class="slide-num">22 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-blue">
+        <h2>🌟 ¿Para qué sirve?</h2>
+        <p>El TCR tiene aplicaciones tanto en matemáticas puras como en problemas reales de computación.</p>
+      </div>
+      <div class="box box-slate" style="flex:1;">
+        <h3>🚀 Aplicaciones principales</h3>
+        <div class="app-card">
+          <div class="title">🔐 Criptografía RSA</div>
+          <div class="body">Se usa para acelerar el descifrado RSA. En vez de trabajar con números enormes, se trabaja con números más pequeños módulo p y q (los factores primos de n).</div>
+        </div>
+        <div class="app-card">
+          <div class="title">💻 Aritmética de precisión arbitraria</div>
+          <div class="body">Para multiplicar números muy grandes, se usa el TCR para dividir el problema en varios módulos pequeños y luego reconstruir el resultado.</div>
+        </div>
+        <div class="app-card">
+          <div class="title">🏆 Competitive Programming</div>
+          <div class="body">Problemas de tipo "encuentra x tal que x mod mᵢ = aᵢ" aparecen frecuentemente. El TCR da la solución directa en O(n log m).</div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="box box-slate">
+        <h3>📋 Resumen del TCR</h3>
+        <div class="summary-grid">
+          <div class="sum-card"><div class="icon">🎯</div><div class="label">Condición</div><div class="value">módulos coprimos</div></div>
+          <div class="sum-card"><div class="icon">🔑</div><div class="value">x ≡ aᵢ (mod mᵢ)</div><div class="label">forma del sistema</div></div>
+          <div class="sum-card"><div class="icon">📐</div><div class="label">Solución módulo</div><div class="value">M = m₁·m₂·...·mₖ</div></div>
+          <div class="sum-card"><div class="icon">⚡</div><div class="label">Complejidad</div><div class="value">O(n log m)</div></div>
+        </div>
+      </div>
+      <div class="box box-blue">
+        <h3>⚠️ Cuando los módulos NO son coprimos</h3>
+        <p>Si mcd(mᵢ, mⱼ) ≠ 1 para algún par, el sistema puede:</p>
+        <div style="margin-top:10px; font-size:18px; color:#bae6fd; line-height:1.8;">
+          ▸ No tener solución (inconsistente)<br>
+          ▸ Tener infinitas soluciones<br>
+          ▸ Requerir el TCR generalizado
+        </div>
+        <p style="margin-top:10px; color:#38bdf8;">En CP, generalmente los módulos dados son coprimos entre sí — verificar siempre.</p>
+      </div>
+      <div style="background:#1e293b; border:2px solid #334155; border-radius:12px; padding:18px 24px;">
+        <div style="font-size:20px; color:#7dd3fc; font-weight:700; margin-bottom:10px;">💡 Verificación rápida</div>
+        <div style="font-size:18px; color:#bae6fd; font-family:'Consolas',monospace;">
+          x = 23<br>
+          23 mod 3 = 2 ✓<br>
+          23 mod 5 = 3 ✓<br>
+          23 mod 7 = 2 ✓<br>
+          <span style="color:#7dd3fc;">Siguiente solución: 23 + 105 = 128</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

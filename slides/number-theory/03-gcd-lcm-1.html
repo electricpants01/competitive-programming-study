@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>MCD - Definición</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #065f46, #047857);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #10b981;
+  }
+  .header-topic { font-size: 20px; color: #a7f3d0; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #6ee7b7; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 40px 60px; align-items: stretch; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+
+  .def-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 16px; padding: 28px 34px;
+  }
+  .def-box h2 { font-size: 24px; color: #34d399; margin-bottom: 14px; }
+  .def-box p { font-size: 22px; line-height: 1.6; color: #a7f3d0; }
+  .def-box strong { color: #6ee7b7; }
+
+  .visual-box {
+    background: #1e293b; border-radius: 16px; padding: 24px 30px;
+    border: 2px solid #334155; flex: 1;
+  }
+  .visual-box h3 { font-size: 22px; color: #34d399; margin-bottom: 16px; font-weight: 700; }
+
+  .divisor-section { margin-bottom: 16px; }
+  .divisor-label { font-size: 19px; color: #94a3b8; margin-bottom: 8px; }
+  .divisor-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .div-chip {
+    padding: 8px 16px; border-radius: 10px; font-size: 18px; font-weight: 700;
+    border: 2px solid;
+  }
+  .div-normal { background: #1e293b; border-color: #334155; color: #94a3b8; }
+  .div-common { background: rgba(16,185,129,0.15); border-color: #10b981; color: #34d399; }
+  .div-gcd { background: #10b981; border-color: #059669; color: #fff; font-size: 20px; }
+
+  .gcd-highlight {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 3px solid #10b981; border-radius: 14px; padding: 18px 24px;
+    text-align: center;
+  }
+  .gcd-highlight .result { font-size: 30px; color: #6ee7b7; font-weight: 800; }
+  .gcd-highlight p { font-size: 18px; color: #a7f3d0; margin-top: 6px; }
+
+  .tiles-box {
+    background: #1e293b; border-radius: 16px; padding: 24px 30px;
+    border: 2px solid #334155;
+  }
+  .tiles-box h3 { font-size: 22px; color: #34d399; margin-bottom: 18px; font-weight: 700; }
+  .tile-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .tile-label { font-size: 18px; color: #94a3b8; min-width: 60px; }
+  .tile { display: inline-block; height: 40px; background: linear-gradient(135deg, #065f46, #10b981); border-radius: 6px; border: 2px solid #10b981; }
+  .tile-gcd { background: linear-gradient(135deg, #7f1d1d, #dc2626); border-color: #ef4444; }
+  .tile-val { font-size: 18px; color: #64748b; margin-left: 8px; }
+
+  .notation-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 14px; padding: 18px 26px;
+  }
+  .notation-box h3 { font-size: 20px; color: #34d399; margin-bottom: 10px; }
+  .notation-box .formulas { display: flex; gap: 30px; }
+  .formula-item { font-size: 20px; color: #a7f3d0; text-align: center; }
+  .formula-item .form { font-size: 24px; color: #6ee7b7; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">MCD y MCM · Diapositiva 1 de 4</div>
+      <div class="header-title">MCD: Máximo Común Divisor</div>
+    </div>
+    <div class="slide-num">08 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="def-box">
+        <h2>📖 Definición</h2>
+        <p>El <strong>Máximo Común Divisor (MCD)</strong> de dos números a y b es el número más grande que divide exactamente a <strong>ambos</strong>.</p>
+      </div>
+
+      <div class="visual-box">
+        <h3>🔍 Divisores de 24 y 36</h3>
+        <div class="divisor-section">
+          <div class="divisor-label">Divisores de 24:</div>
+          <div class="divisor-row">
+            <div class="div-chip div-common">1</div>
+            <div class="div-chip div-common">2</div>
+            <div class="div-chip div-common">3</div>
+            <div class="div-chip div-common">4</div>
+            <div class="div-chip div-normal">8</div>
+            <div class="div-chip div-common">6</div>
+            <div class="div-chip div-common">12</div>
+            <div class="div-chip div-normal">24</div>
+          </div>
+        </div>
+        <div class="divisor-section">
+          <div class="divisor-label">Divisores de 36:</div>
+          <div class="divisor-row">
+            <div class="div-chip div-common">1</div>
+            <div class="div-chip div-common">2</div>
+            <div class="div-chip div-common">3</div>
+            <div class="div-chip div-common">4</div>
+            <div class="div-chip div-common">6</div>
+            <div class="div-chip div-normal">9</div>
+            <div class="div-chip div-common">12</div>
+            <div class="div-chip div-normal">18</div>
+            <div class="div-chip div-normal">36</div>
+          </div>
+        </div>
+        <div class="divisor-section" style="margin-top: 14px;">
+          <div class="divisor-label">Divisores comunes: {1, 2, 3, 4, 6, 12}</div>
+          <div class="gcd-highlight" style="margin-top: 10px;">
+            <div class="result">MCD(24, 36) = 12</div>
+            <p>El mayor de los divisores comunes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="tiles-box">
+        <h3>🧱 Visualización con bloques</h3>
+        <p style="font-size:18px; color:#94a3b8; margin-bottom:16px;">El MCD es el tamaño más grande del bloque que cabe exactamente en ambas barras:</p>
+        <div class="tile-row">
+          <span class="tile-label">24:</span>
+          <div style="display:flex; gap:3px;">
+            <div class="tile" style="width:58px;"></div>
+            <div class="tile" style="width:58px;"></div>
+          </div>
+          <span class="tile-val">2 bloques de 12</span>
+        </div>
+        <div class="tile-row">
+          <span class="tile-label">36:</span>
+          <div style="display:flex; gap:3px;">
+            <div class="tile" style="width:58px;"></div>
+            <div class="tile" style="width:58px;"></div>
+            <div class="tile" style="width:58px;"></div>
+          </div>
+          <span class="tile-val">3 bloques de 12</span>
+        </div>
+        <div style="margin-top:14px; font-size:18px; color:#34d399; font-weight:700;">
+          ✓ El bloque de tamaño 12 encaja en ambos → MCD = 12
+        </div>
+      </div>
+
+      <div class="visual-box" style="flex:unset;">
+        <h3>📐 Ejemplo con factorización prima</h3>
+        <div style="font-size:19px; color:#cbd5e1; line-height:2;">
+          <div>24 = <span style="color:#34d399;">2³ × 3</span></div>
+          <div>36 = <span style="color:#34d399;">2² × 3²</span></div>
+          <div style="margin-top:8px; color:#6ee7b7; font-weight:700;">
+            MCD = producto de los factores comunes con menor exponente<br>
+            MCD(24,36) = 2² × 3 = <strong style="font-size:22px;">12</strong>
+          </div>
+          <div style="color:#94a3b8; font-size:16px; margin-top:4px;">(usando factorización prima directamente)</div>
+        </div>
+      </div>
+
+      <div class="notation-box">
+        <h3>📝 Notaciones equivalentes</h3>
+        <div class="formulas">
+          <div class="formula-item"><div class="form">mcd(a, b)</div><div>Español</div></div>
+          <div class="formula-item"><div class="form">gcd(a, b)</div><div>Inglés</div></div>
+          <div class="formula-item"><div class="form">(a, b)</div><div>Matemática</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

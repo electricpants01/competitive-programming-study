@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Factorización Prima - Código C++</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #4c1d95, #5b21b6);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #8b5cf6;
+  }
+  .header-topic { font-size: 20px; color: #c4b5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #a78bfa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1.2; display: flex; flex-direction: column; gap: 20px; }
+  .right { flex: 0.8; display: flex; flex-direction: column; gap: 20px; }
+
+  .code-wrap {
+    background: #0d1117; border-radius: 16px; overflow: hidden;
+    border: 2px solid #30363d; flex: 1;
+  }
+  .code-header {
+    background: #161b22; padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #30363d;
+  }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .filename { color: #8b949e; font-size: 16px; margin-left: 10px; }
+  pre {
+    padding: 22px 28px;
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 19px; line-height: 1.75; overflow: hidden;
+  }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .tp { color: #79c0ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .nu { color: #a5c261; }
+  .str { color: #a8ff60; }
+
+  .output-box {
+    background: #0d1117; border-radius: 14px; padding: 20px 24px;
+    border: 2px solid #30363d;
+  }
+  .output-box h3 { font-size: 19px; color: #8b949e; margin-bottom: 12px; font-family: 'Consolas', monospace; }
+  .output-line { font-family: 'Consolas', monospace; font-size: 18px; color: #a5c261; line-height: 1.8; }
+
+  .apps-box {
+    background: linear-gradient(135deg, #2d1b69, #3730a3);
+    border: 2px solid #818cf8; border-radius: 14px; padding: 20px 26px;
+  }
+  .apps-box h3 { font-size: 20px; color: #a5b4fc; margin-bottom: 12px; }
+  .app-item { display: flex; gap: 12px; font-size: 18px; color: #c7d2fe; margin-bottom: 8px; align-items: flex-start; }
+
+  .complexity-box {
+    background: #1e293b; border: 2px solid #4c1d95; border-radius: 14px; padding: 18px 24px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .complexity-text h3 { font-size: 19px; color: #a78bfa; margin-bottom: 4px; }
+  .complexity-text p { font-size: 24px; color: #c4b5fd; font-weight: 800; }
+  .complexity-text span { font-size: 16px; color: #818cf8; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Factorización Prima · Diapositiva 3 de 3</div>
+      <div class="header-title">Código en C++</div>
+    </div>
+    <div class="slide-num">07 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <span class="filename">factorizacion.cpp</span>
+        </div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;map&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="cm">// Retorna los factores primos de n</span>
+vector&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt; <span class="fn">factorizar</span>(<span class="tp">int</span> n) {
+    vector&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt; factores;
+    <span class="kw">for</span> (<span class="tp">int</span> d = <span class="nu">2</span>; d * d &lt;= n; d++) {
+        <span class="kw">if</span> (n % d == <span class="nu">0</span>) {
+            <span class="tp">int</span> exp = <span class="nu">0</span>;
+            <span class="kw">while</span> (n % d == <span class="nu">0</span>) { <span class="cm">// contar cuántas veces divide</span>
+                exp++;
+                n /= d;
+            }
+            factores.push_back({d, exp}); <span class="cm">// guardar (primo, exponente)</span>
+        }
+    }
+    <span class="kw">if</span> (n > <span class="nu">1</span>) factores.push_back({n, <span class="nu">1</span>}); <span class="cm">// factor primo restante</span>
+    <span class="kw">return</span> factores;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">int</span> n = <span class="nu">360</span>;
+    <span class="kw">auto</span> f = <span class="fn">factorizar</span>(n);
+    cout &lt;&lt; n &lt;&lt; <span class="str">" = "</span>;
+    <span class="kw">for</span> (<span class="kw">auto</span> [p, e] : f)
+        cout &lt;&lt; p &lt;&lt; <span class="str">"^"</span> &lt;&lt; e &lt;&lt; <span class="str">" * "</span>;
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="output-box">
+        <h3>$ ./factorizacion</h3>
+        <div class="output-line">360 = 2^3 * 3^2 * 5^1 *</div>
+        <div class="output-line" style="margin-top:8px; color:#8b949e;">→ 360 = 2³ × 3² × 5</div>
+      </div>
+
+      <div class="apps-box">
+        <h3>🚀 Aplicaciones</h3>
+        <div class="app-item"><span>▸</span><span>Calcular MCD y MCM rápidamente</span></div>
+        <div class="app-item"><span>▸</span><span>Contar divisores de un número</span></div>
+        <div class="app-item"><span>▸</span><span>Criptografía (RSA se basa en esto)</span></div>
+        <div class="app-item"><span>▸</span><span>Simplificar fracciones</span></div>
+        <div class="app-item"><span>▸</span><span>Problemas de divisibilidad en CP</span></div>
+      </div>
+
+      <div style="background:#1e293b; border-radius:14px; padding:20px 24px; border:2px solid #334155;">
+        <div style="font-size:20px; color:#a78bfa; font-weight:700; margin-bottom:12px;">📌 Número de divisores</div>
+        <div style="font-size:19px; color:#cbd5e1; line-height:1.7;">
+          Si n = p₁^a₁ × p₂^a₂ × ... × pₖ^aₖ<br>
+          <span style="color:#c4b5fd; font-weight:700;">divisores(n) = (a₁+1)(a₂+1)···(aₖ+1)</span><br>
+          <span style="color:#94a3b8; font-size:17px;">Ej: 12 = 2²×3¹ → (2+1)(1+1) = 6 divisores</span>
+        </div>
+      </div>
+
+      <div class="complexity-box">
+        <div style="font-size:36px;">⏱️</div>
+        <div class="complexity-text">
+          <h3>Complejidad</h3>
+          <p>O(√n)</p>
+          <span>— por cada número a factorizar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

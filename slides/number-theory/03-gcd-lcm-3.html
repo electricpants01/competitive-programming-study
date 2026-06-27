@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>MCM - Mínimo Común Múltiplo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #065f46, #047857);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #10b981;
+  }
+  .header-topic { font-size: 20px; color: #a7f3d0; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #6ee7b7; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; align-items: stretch; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+
+  .def-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 16px; padding: 26px 32px;
+  }
+  .def-box h2 { font-size: 24px; color: #34d399; margin-bottom: 14px; }
+  .def-box p { font-size: 21px; line-height: 1.6; color: #a7f3d0; }
+  .def-box strong { color: #6ee7b7; }
+
+  .timeline-box {
+    background: #1e293b; border-radius: 14px; padding: 20px 26px;
+    border: 2px solid #334155;
+  }
+  .timeline-box h3 { font-size: 21px; color: #34d399; margin-bottom: 14px; }
+  .mult-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .mult-label { font-size: 18px; color: #94a3b8; min-width: 30px; font-weight: 700; }
+  .mult-chip {
+    padding: 7px 13px; border-radius: 8px; font-size: 17px; font-weight: 700;
+    background: #1e293b; border: 2px solid #334155; color: #94a3b8;
+  }
+  .mult-common {
+    background: rgba(16,185,129,0.15); border-color: #10b981; color: #34d399;
+    transform: scale(1.1);
+  }
+  .mult-lcm {
+    background: #10b981; border-color: #059669; color: #fff; font-size: 19px;
+  }
+
+  .formula-box {
+    background: #1e293b; border: 2px solid #334155; border-radius: 14px;
+    padding: 24px 30px; text-align: center;
+  }
+  .formula-box h3 { font-size: 22px; color: #34d399; margin-bottom: 16px; }
+  .formula-box .eq { font-size: 30px; color: #6ee7b7; font-weight: 800; margin: 10px 0; font-family: 'Consolas', monospace; }
+  .formula-box p { font-size: 18px; color: #94a3b8; }
+
+  .examples-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; }
+  .example-card {
+    background: #1e293b; border-radius: 14px; padding: 18px 22px;
+    border: 2px solid #334155; display: flex; flex-direction: column; gap: 8px;
+  }
+  .ex-nums { font-size: 20px; color: #60a5fa; font-weight: 700; }
+  .ex-gcd { font-size: 17px; color: #94a3b8; }
+  .ex-lcm { font-size: 22px; color: #34d399; font-weight: 700; }
+  .ex-verify { font-size: 15px; color: #64748b; }
+
+  .app-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 14px; padding: 20px 26px;
+  }
+  .app-box h3 { font-size: 20px; color: #34d399; margin-bottom: 10px; }
+  .app-item { display: flex; gap: 10px; font-size: 18px; color: #a7f3d0; margin-bottom: 7px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">MCD y MCM · Diapositiva 3 de 4</div>
+      <div class="header-title">MCM: Mínimo Común Múltiplo</div>
+    </div>
+    <div class="slide-num">10 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="def-box">
+        <h2>📖 Definición</h2>
+        <p>El <strong>Mínimo Común Múltiplo (MCM)</strong> de a y b es el número más pequeño que es <strong>múltiplo de ambos</strong> a la vez.</p>
+      </div>
+
+      <div class="timeline-box">
+        <h3>🔢 Múltiplos de 4 y 6</h3>
+        <div class="mult-row">
+          <span class="mult-label">4:</span>
+          <div class="mult-chip">4</div>
+          <div class="mult-chip mult-common">8</div>
+          <div class="mult-chip">12</div>
+          <div class="mult-chip">16</div>
+          <div class="mult-chip mult-common">20</div>
+          <div class="mult-chip mult-lcm">24</div>
+          <div class="mult-chip">28</div>
+          <div class="mult-chip mult-common">32</div>
+        </div>
+        <div class="mult-row">
+          <span class="mult-label">6:</span>
+          <div class="mult-chip">6</div>
+          <div class="mult-chip">12</div>
+          <div class="mult-chip">18</div>
+          <div class="mult-chip mult-lcm">24</div>
+          <div class="mult-chip">30</div>
+          <div class="mult-chip">36</div>
+          <div class="mult-chip">42</div>
+          <div class="mult-chip">48</div>
+        </div>
+        <div style="margin-top:10px; font-size:18px; color:#6ee7b7; font-weight:700;">
+          ✓ MCM(4, 6) = 24  (el primer múltiplo en común)
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <h3>🔗 Relación Clave: MCD × MCM = a × b</h3>
+        <div class="eq">mcm(a, b) = (a × b) / mcd(a, b)</div>
+        <p>¡Usamos el MCD que ya sabemos calcular para obtener el MCM!</p>
+      </div>
+
+      <div class="app-box">
+        <h3>🚀 Aplicaciones</h3>
+        <div class="app-item"><span>▸</span><span>Sumar fracciones: necesitamos el denominador común</span></div>
+        <div class="app-item"><span>▸</span><span>Problemas de sincronización (ciclos, relojes)</span></div>
+        <div class="app-item"><span>▸</span><span>Teoría de números en competencias</span></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div style="font-size:22px; color:#34d399; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Ejemplos prácticos</div>
+      <div class="examples-grid">
+        <div class="example-card">
+          <div class="ex-nums">a = 12, b = 18</div>
+          <div class="ex-gcd">MCD(12,18) = 6</div>
+          <div class="ex-lcm">MCM = (12×18)/6 = 36</div>
+          <div class="ex-verify">12→12,24,36 | 18→18,36 ✓</div>
+        </div>
+        <div class="example-card">
+          <div class="ex-nums">a = 8, b = 12</div>
+          <div class="ex-gcd">MCD(8,12) = 4</div>
+          <div class="ex-lcm">MCM = (8×12)/4 = 24</div>
+          <div class="ex-verify">8→8,16,24 | 12→12,24 ✓</div>
+        </div>
+        <div class="example-card">
+          <div class="ex-nums">a = 5, b = 7</div>
+          <div class="ex-gcd">MCD(5,7) = 1 (coprimos)</div>
+          <div class="ex-lcm">MCM = (5×7)/1 = 35</div>
+          <div class="ex-verify">Cuando MCD=1, MCM=a×b</div>
+        </div>
+        <div class="example-card">
+          <div class="ex-nums">a = 6, b = 9</div>
+          <div class="ex-gcd">MCD(6,9) = 3</div>
+          <div class="ex-lcm">MCM = (6×9)/3 = 18</div>
+          <div class="ex-verify">6→6,12,18 | 9→9,18 ✓</div>
+        </div>
+      </div>
+
+      <div style="background:#1e293b; border-radius:14px; padding:20px 26px; border:2px solid #334155;">
+        <div style="font-size:20px; color:#34d399; font-weight:700; margin-bottom:12px;">⚠️ Cuidado con el Overflow</div>
+        <div style="font-size:19px; color:#cbd5e1; line-height:1.6;">
+          Al calcular <code style="background:#0f172a; padding:3px 8px; border-radius:4px; color:#fbbf24;">a * b</code> puede desbordar un <code style="background:#0f172a; padding:3px 8px; border-radius:4px; color:#fbbf24;">int</code>.<br>
+          <span style="color:#34d399; font-weight:700;">✓ Solución:</span> calcular <code style="background:#0f172a; padding:3px 8px; border-radius:4px; color:#fbbf24;">a / mcd(a,b) * b</code><br>
+          <span style="color:#94a3b8; font-size:16px;">Divide primero, luego multiplica — evita el overflow.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

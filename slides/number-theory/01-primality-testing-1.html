@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>¿Qué es un Número Primo?</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #3b82f6;
+  }
+  .header-topic { font-size: 20px; color: #93c5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #60a5fa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 40px 60px; align-items: center; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 28px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 24px; align-items: center; }
+
+  .def-box {
+    background: linear-gradient(135deg, #1e3a5f, #1e3a8a);
+    border: 2px solid #3b82f6;
+    border-radius: 16px;
+    padding: 30px 36px;
+  }
+  .def-box h2 { font-size: 26px; color: #60a5fa; margin-bottom: 14px; font-weight: 700; }
+  .def-box p { font-size: 24px; line-height: 1.6; color: #cbd5e1; }
+  .def-box strong { color: #93c5fd; }
+
+  .example-label { font-size: 22px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+  .number-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 14px; width: 100%;
+  }
+  .num-card {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 800;
+    border: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .num-card .label { font-size: 11px; font-weight: 600; margin-top: 4px; letter-spacing: 1px; }
+  .prime {
+    background: linear-gradient(135deg, #065f46, #047857);
+    border-color: #10b981;
+    color: #6ee7b7;
+    box-shadow: 0 0 20px rgba(16,185,129,0.3);
+  }
+  .prime .label { color: #6ee7b7; }
+  .composite {
+    background: linear-gradient(135deg, #4c1d1d, #7f1d1d);
+    border-color: #ef4444;
+    color: #fca5a5;
+  }
+  .composite .label { color: #f87171; }
+  .neither {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-color: #64748b;
+    color: #94a3b8;
+  }
+  .neither .label { color: #64748b; }
+
+  .legend { display: flex; gap: 28px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+  .legend-dot { width: 16px; height: 16px; border-radius: 50%; }
+  .dot-prime { background: #10b981; }
+  .dot-comp { background: #ef4444; }
+  .dot-neither { background: #64748b; }
+
+  .divisors-box {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 14px;
+    padding: 24px 30px;
+    width: 100%;
+  }
+  .divisors-box h3 { font-size: 20px; color: #60a5fa; margin-bottom: 14px; }
+  .div-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 20px; }
+  .div-num { font-weight: 800; color: #f1f5f9; min-width: 36px; }
+  .div-arrow { color: #64748b; }
+  .div-list { color: #94a3b8; }
+  .div-result { font-weight: 700; padding: 3px 12px; border-radius: 8px; font-size: 16px; }
+  .res-prime { background: #064e3b; color: #34d399; }
+  .res-comp { background: #450a0a; color: #f87171; }
+  .res-neither { background: #1e293b; color: #64748b; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Prueba de Primalidad · Diapositiva 1 de 4</div>
+      <div class="header-title">¿Qué es un Número Primo?</div>
+    </div>
+    <div class="slide-num">01 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="def-box">
+        <h2>📖 Definición</h2>
+        <p>Un <strong>número primo</strong> es un número entero mayor que <strong>1</strong> que solo puede dividirse exactamente por <strong>1</strong> y por <strong>sí mismo</strong>.</p>
+      </div>
+
+      <div class="def-box" style="background: linear-gradient(135deg, #1a1a3e, #1e1b4b); border-color: #818cf8;">
+        <h2 style="color: #a5b4fc;">⚡ En otras palabras</h2>
+        <p>Un primo no tiene divisores intermedios. Si intentas dividirlo por cualquier número entre 2 y n−1, el resultado <strong style="color:#a5b4fc;">nunca es exacto</strong>.</p>
+      </div>
+
+      <div class="divisors-box">
+        <h3>🔍 Verificando divisores</h3>
+        <div class="div-row">
+          <span class="div-num">1</span><span class="div-arrow">→</span>
+          <span class="div-list">divisores: {1}</span>
+          <span class="div-result res-neither">NI PRIMO NI COMPUESTO</span>
+        </div>
+        <div class="div-row">
+          <span class="div-num">7</span><span class="div-arrow">→</span>
+          <span class="div-list">divisores: {1, 7}</span>
+          <span class="div-result res-prime">✓ PRIMO</span>
+        </div>
+        <div class="div-row">
+          <span class="div-num">12</span><span class="div-arrow">→</span>
+          <span class="div-list">divisores: {1, 2, 3, 4, 6, 12}</span>
+          <span class="div-result res-comp">✗ COMPUESTO</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="example-label">Números del 1 al 20</div>
+      <div class="number-grid">
+        <div class="num-card neither"><span>1</span><span class="label">ESPECIAL</span></div>
+        <div class="num-card prime"><span>2</span><span class="label">PRIMO</span></div>
+        <div class="num-card prime"><span>3</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>4</span><span class="label">2×2</span></div>
+        <div class="num-card prime"><span>5</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>6</span><span class="label">2×3</span></div>
+        <div class="num-card prime"><span>7</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>8</span><span class="label">2³</span></div>
+        <div class="num-card composite"><span>9</span><span class="label">3²</span></div>
+        <div class="num-card composite"><span>10</span><span class="label">2×5</span></div>
+        <div class="num-card prime"><span>11</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>12</span><span class="label">2²×3</span></div>
+        <div class="num-card prime"><span>13</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>14</span><span class="label">2×7</span></div>
+        <div class="num-card composite"><span>15</span><span class="label">3×5</span></div>
+        <div class="num-card composite"><span>16</span><span class="label">2⁴</span></div>
+        <div class="num-card prime"><span>17</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>18</span><span class="label">2×3²</span></div>
+        <div class="num-card prime"><span>19</span><span class="label">PRIMO</span></div>
+        <div class="num-card composite"><span>20</span><span class="label">2²×5</span></div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-prime"></div><span>Primo (8 primos)</span></div>
+        <div class="legend-item"><div class="legend-dot dot-comp"></div><span>Compuesto (11)</span></div>
+        <div class="legend-item"><div class="legend-dot dot-neither"></div><span>El 1 (especial)</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

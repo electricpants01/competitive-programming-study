@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Factorización Prima - Algoritmo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #4c1d95, #5b21b6);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #8b5cf6;
+  }
+  .header-topic { font-size: 20px; color: #c4b5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #a78bfa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+  .algo-box {
+    background: #1e293b; border-radius: 16px; padding: 24px 30px;
+    border: 2px solid #334155;
+  }
+  .algo-box h2 { font-size: 22px; color: #a78bfa; margin-bottom: 16px; font-weight: 700; }
+  .step {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: #0f172a; border-radius: 12px; padding: 14px 18px;
+    margin-bottom: 10px; border-left: 4px solid #8b5cf6;
+  }
+  .step-num {
+    background: #4c1d95; color: #c4b5fd;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; flex-shrink: 0;
+  }
+  .step-text { font-size: 19px; line-height: 1.5; color: #cbd5e1; }
+  .step-text strong { color: #a78bfa; }
+
+  .trace-box {
+    background: #1e293b; border-radius: 16px; padding: 20px 26px;
+    border: 2px solid #334155; flex: 1;
+  }
+  .trace-box h3 { font-size: 22px; color: #a78bfa; margin-bottom: 16px; font-weight: 700; }
+  .trace-table { width: 100%; border-collapse: collapse; }
+  .trace-table th { background: #0f172a; color: #64748b; font-size: 15px; padding: 8px 14px; text-align: center; }
+  .trace-table td { padding: 10px 14px; text-align: center; font-size: 18px; border-bottom: 1px solid #1e293b; }
+  .td-n { color: #60a5fa; font-weight: 700; }
+  .td-div { color: #a78bfa; font-weight: 700; }
+  .td-mod { color: #94a3b8; }
+  .td-yes { color: #34d399; font-weight: 700; }
+  .td-no { color: #f87171; }
+  .td-action { color: #fbbf24; font-size: 16px; }
+  .final-row td { color: #6ee7b7; font-weight: 700; background: rgba(16,185,129,0.08); }
+
+  .result-box {
+    background: linear-gradient(135deg, #2d1b69, #3730a3);
+    border: 2px solid #818cf8; border-radius: 14px; padding: 18px 26px;
+    text-align: center;
+  }
+  .result-box p { font-size: 20px; color: #c7d2fe; }
+  .result-box .formula { font-size: 28px; color: #a5b4fc; font-weight: 800; margin: 8px 0; }
+
+  .idea-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 14px; padding: 20px 26px;
+  }
+  .idea-box h3 { font-size: 20px; color: #34d399; margin-bottom: 10px; }
+  .idea-box p { font-size: 19px; color: #a7f3d0; line-height: 1.5; }
+  .idea-box strong { color: #6ee7b7; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Factorización Prima · Diapositiva 2 de 3</div>
+      <div class="header-title">Algoritmo de División Sucesiva</div>
+    </div>
+    <div class="slide-num">06 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="algo-box">
+        <h2>⚙️ Cómo funciona</h2>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Empieza con el divisor <strong>d = 2</strong> (el primo más pequeño)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Mientras <strong>n % d == 0</strong> (d divide a n): divide n entre d y guarda d como factor</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Incrementa <strong>d</strong> y repite el paso 2</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">Si al final <strong>n > 1</strong>, entonces n también es un factor primo</div>
+        </div>
+      </div>
+
+      <div class="idea-box">
+        <h3>💡 ¿Por qué funciona?</h3>
+        <p>Al dividir siempre por el divisor más pequeño posible, garantizamos que ese divisor es <strong>primo</strong>. No puede ser compuesto porque ya habríamos dividido por sus factores antes.</p>
+      </div>
+
+      <div class="result-box">
+        <p>Factorización de 180</p>
+        <div class="formula">180 = 2² × 3² × 5</div>
+        <p style="font-size:17px; color:#818cf8;">= 4 × 9 × 5</p>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="trace-box">
+        <h3>📊 Traza paso a paso: n = 180</h3>
+        <table class="trace-table">
+          <tr>
+            <th>n actual</th>
+            <th>divisor d</th>
+            <th>n % d</th>
+            <th>¿Divide?</th>
+            <th>Acción</th>
+          </tr>
+          <tr>
+            <td class="td-n">180</td>
+            <td class="td-div">2</td>
+            <td class="td-mod">0</td>
+            <td class="td-yes">✓ Sí</td>
+            <td class="td-action">Guarda 2, n = 90</td>
+          </tr>
+          <tr>
+            <td class="td-n">90</td>
+            <td class="td-div">2</td>
+            <td class="td-mod">0</td>
+            <td class="td-yes">✓ Sí</td>
+            <td class="td-action">Guarda 2, n = 45</td>
+          </tr>
+          <tr>
+            <td class="td-n">45</td>
+            <td class="td-div">2</td>
+            <td class="td-mod">1</td>
+            <td class="td-no">✗ No</td>
+            <td class="td-action">d = 3</td>
+          </tr>
+          <tr>
+            <td class="td-n">45</td>
+            <td class="td-div">3</td>
+            <td class="td-mod">0</td>
+            <td class="td-yes">✓ Sí</td>
+            <td class="td-action">Guarda 3, n = 15</td>
+          </tr>
+          <tr>
+            <td class="td-n">15</td>
+            <td class="td-div">3</td>
+            <td class="td-mod">0</td>
+            <td class="td-yes">✓ Sí</td>
+            <td class="td-action">Guarda 3, n = 5</td>
+          </tr>
+          <tr>
+            <td class="td-n">5</td>
+            <td class="td-div">3</td>
+            <td class="td-mod">2</td>
+            <td class="td-no">✗ No</td>
+            <td class="td-action">d = 4</td>
+          </tr>
+          <tr>
+            <td class="td-n">5</td>
+            <td class="td-div">4</td>
+            <td class="td-mod">1</td>
+            <td class="td-no">✗ No</td>
+            <td class="td-action">d = 5</td>
+          </tr>
+          <tr>
+            <td class="td-n">5</td>
+            <td class="td-div">5</td>
+            <td class="td-mod">0</td>
+            <td class="td-yes">✓ Sí</td>
+            <td class="td-action">Guarda 5, n = 1</td>
+          </tr>
+          <tr class="final-row">
+            <td colspan="5">✅ n = 1 → Terminado! &nbsp; Factores: 2, 2, 3, 3, 5</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

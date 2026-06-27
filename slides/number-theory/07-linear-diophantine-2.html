@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Ecuaciones Diofánticas - Encontrar Solución</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #1a1a3e, #1e1b4b); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #818cf8; }
+  .header-topic { font-size: 20px; color: #c7d2fe; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #a5b4fc; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .box { border-radius: 14px; padding: 20px 26px; }
+  .box-indigo { background: linear-gradient(135deg, #1e1b4b, #312e81); border: 2px solid #818cf8; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 22px; margin-bottom: 12px; color: #a5b4fc; }
+  h3 { font-size: 20px; margin-bottom: 10px; color: #a5b4fc; }
+  p { font-size: 19px; line-height: 1.6; color: #c7d2fe; }
+  .step { background: #0f172a; border-radius: 10px; padding: 14px 18px; border-left: 4px solid #818cf8; margin-bottom: 10px; }
+  .step-title { font-size: 18px; color: #818cf8; font-weight: 700; margin-bottom: 6px; }
+  .step-body { font-size: 18px; color: #c7d2fe; line-height: 1.5; }
+  .step-body .val { color: #a5b4fc; font-weight: 700; font-family: 'Consolas', monospace; }
+  .formula { font-size: 24px; font-weight: 800; color: #a5b4fc; font-family: 'Consolas', monospace; text-align: center; margin: 8px 0; }
+  .solution-box { background: linear-gradient(135deg, #1e1b4b, #312e81); border: 3px solid #818cf8; border-radius: 12px; padding: 18px 24px; text-align: center; }
+  .solution-box .res { font-size: 26px; font-weight: 800; color: #a5b4fc; }
+  .inf-box { background: #1e293b; border-radius: 12px; padding: 16px 22px; border: 2px solid #334155; }
+  .inf-box h3 { font-size: 19px; color: #a5b4fc; margin-bottom: 10px; }
+  .sol-row { font-size: 18px; color: #c7d2fe; font-family: 'Consolas', monospace; line-height: 2; }
+  .sol-row strong { color: #818cf8; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Ecuaciones Diofánticas · Diapositiva 2 de 4</div>
+      <div class="header-title">Cómo Encontrar Una Solución</div>
+    </div>
+    <div class="slide-num">24 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-indigo">
+        <h2>💡 El método</h2>
+        <p>Usar el <strong style="color:#a5b4fc;">Algoritmo de Euclides Extendido</strong> para encontrar x₀, y₀ tal que ax₀ + by₀ = mcd(a,b), luego escalar para que el resultado sea c.</p>
+      </div>
+      <div class="box box-slate">
+        <h3>⚙️ Pasos para resolver ax + by = c</h3>
+        <div class="step">
+          <div class="step-title">Paso 1: Verificar condición</div>
+          <div class="step-body">Calcular <span class="val">d = mcd(a, b)</span>. Si d no divide a c → sin solución.</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 2: Resolver ax + by = d</div>
+          <div class="step-body">Usar <span class="val">mcd_extendido(a, b, x₀, y₀)</span> que da ax₀ + by₀ = d</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 3: Escalar por c/d</div>
+          <div class="step-body">Multiplicar ambos lados: <span class="val">a(x₀·c/d) + b(y₀·c/d) = c</span><br>Solución particular: x = x₀·(c/d), y = y₀·(c/d)</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 4: Familia de soluciones</div>
+          <div class="step-body">
+            <span class="val">x(t) = x₀·(c/d) + (b/d)·t</span><br>
+            <span class="val">y(t) = y₀·(c/d) − (a/d)·t</span><br>
+            para cualquier entero t
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="box box-slate">
+        <h3>🔢 Ejemplo completo: 6x + 9y = 12</h3>
+        <div class="step">
+          <div class="step-title">Paso 1: d = mcd(6, 9) = 3. ¿3 | 12? Sí ✓</div>
+          <div class="step-body">La ecuación tiene solución</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 2: mcd_ext(6, 9) → 6·(−1) + 9·1 = 3</div>
+          <div class="step-body"><span class="val">x₀ = −1, y₀ = 1</span> (solución para el MCD)</div>
+        </div>
+        <div class="step">
+          <div class="step-title">Paso 3: Escalar por c/d = 12/3 = 4</div>
+          <div class="step-body"><span class="val">x = −1 × 4 = −4, y = 1 × 4 = 4</span></div>
+        </div>
+        <div class="solution-box" style="margin-top:4px;">
+          <div class="res">Solución particular: x = −4, y = 4</div>
+          <div style="font-size:17px; color:#c7d2fe; margin-top:8px;">Verificar: 6×(−4) + 9×4 = −24 + 36 = 12 ✓</div>
+        </div>
+        <div class="step" style="margin-top:12px;">
+          <div class="step-title">Paso 4: Familia completa de soluciones (d=3)</div>
+          <div class="step-body">
+            <span class="val">x(t) = −4 + 3t</span><br>
+            <span class="val">y(t) = 4 − 2t</span>
+          </div>
+        </div>
+      </div>
+      <div class="inf-box">
+        <h3>📊 Primeras soluciones (t = 0, 1, 2, −1)</h3>
+        <div class="sol-row">
+          t=0: x=<strong>−4</strong>, y=<strong>4</strong> → 6(−4)+9(4)=12 ✓<br>
+          t=1: x=<strong>−1</strong>, y=<strong>2</strong> → 6(−1)+9(2)=12 ✓<br>
+          t=2: x=<strong>2</strong>, y=<strong>0</strong> &nbsp;→ 6(2)+9(0)=12 ✓<br>
+          t=−1: x=<strong>−7</strong>, y=<strong>6</strong> → 6(−7)+9(6)=12 ✓
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

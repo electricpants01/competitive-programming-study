@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Factorización Prima - Definición</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #4c1d95, #5b21b6);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #8b5cf6;
+  }
+  .header-topic { font-size: 20px; color: #c4b5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #a78bfa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 60px; padding: 40px 60px; align-items: center; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+  .right { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+
+  .def-box {
+    background: linear-gradient(135deg, #2d1b69, #3730a3);
+    border: 2px solid #8b5cf6; border-radius: 16px; padding: 28px 34px;
+  }
+  .def-box h2 { font-size: 24px; color: #a78bfa; margin-bottom: 14px; }
+  .def-box p { font-size: 22px; line-height: 1.6; color: #c4b5fd; }
+  .def-box strong { color: #ddd6fe; }
+
+  .theorem-box {
+    background: #1e293b; border: 2px solid #8b5cf6; border-radius: 16px; padding: 24px 32px;
+    text-align: center;
+  }
+  .theorem-box h3 { font-size: 20px; color: #a78bfa; margin-bottom: 14px; }
+  .theorem-box .formula { font-size: 28px; color: #e2e8f0; font-weight: 700; margin-bottom: 10px; }
+  .theorem-box p { font-size: 18px; color: #94a3b8; }
+
+  .example-row { display: flex; gap: 20px; }
+  .example-card {
+    flex: 1; background: #1e293b; border-radius: 14px; padding: 20px 24px;
+    border: 2px solid #334155; text-align: center;
+  }
+  .example-card .num { font-size: 36px; font-weight: 800; color: #8b5cf6; }
+  .example-card .eq { font-size: 20px; color: #64748b; margin: 6px 0; }
+  .example-card .factors { font-size: 22px; color: #cbd5e1; font-weight: 600; }
+  .example-card .pow { font-size: 16px; color: #94a3b8; margin-top: 6px; }
+
+  /* Factor Tree */
+  .tree-container {
+    background: #1e293b; border-radius: 20px; padding: 30px 40px;
+    border: 2px solid #334155; min-width: 600px;
+  }
+  .tree-title { font-size: 22px; color: #a78bfa; margin-bottom: 20px; text-align: center; font-weight: 700; }
+  .tree {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    font-size: 20px; font-weight: 700;
+  }
+  .t-node {
+    background: #334155; border: 2px solid #475569; border-radius: 50%;
+    width: 60px; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800;
+  }
+  .t-prime {
+    background: linear-gradient(135deg, #064e3b, #047857);
+    border-color: #10b981; color: #6ee7b7;
+  }
+  .t-comp {
+    background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+    border-color: #3b82f6; color: #93c5fd;
+  }
+  .t-level { display: flex; gap: 60px; align-items: center; }
+  .t-branch { display: flex; flex-direction: column; align-items: center; }
+  .t-line {
+    width: 2px; height: 30px; background: #475569;
+  }
+  .t-hline {
+    width: 120px; height: 2px; background: #475569; margin-bottom: 0;
+  }
+  .t-fork { display: flex; gap: 120px; }
+  .t-row { display: flex; flex-direction: column; align-items: center; }
+  .result-label {
+    font-size: 22px; color: #6ee7b7; font-weight: 700;
+    background: rgba(16,185,129,0.1); border: 2px solid #10b981;
+    border-radius: 12px; padding: 10px 24px; margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Factorización Prima · Diapositiva 1 de 3</div>
+      <div class="header-title">¿Qué es la Factorización Prima?</div>
+    </div>
+    <div class="slide-num">05 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="def-box">
+        <h2>📖 Definición</h2>
+        <p>La <strong>factorización prima</strong> de un número es escribirlo como un producto de <strong>números primos</strong>. Todo número entero mayor que 1 puede descomponerse de esta manera de forma <strong>única</strong>.</p>
+      </div>
+
+      <div class="theorem-box">
+        <h3>🏛️ Teorema Fundamental de la Aritmética</h3>
+        <div class="formula">n = p₁^a₁ × p₂^a₂ × ... × pₖ^aₖ</div>
+        <p>Todo número mayor que 1 tiene una única factorización prima (ignorando el orden)</p>
+      </div>
+
+      <div class="example-row">
+        <div class="example-card">
+          <div class="num">12</div>
+          <div class="eq">=</div>
+          <div class="factors">2 × 2 × 3</div>
+          <div class="pow">= 2² × 3¹</div>
+        </div>
+        <div class="example-card">
+          <div class="num">360</div>
+          <div class="eq">=</div>
+          <div class="factors">2³ × 3² × 5</div>
+          <div class="pow">= 8 × 9 × 5</div>
+        </div>
+        <div class="example-card">
+          <div class="num">100</div>
+          <div class="eq">=</div>
+          <div class="factors">2² × 5²</div>
+          <div class="pow">= 4 × 25</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="tree-container">
+        <div class="tree-title">🌳 Árbol de Factores de 60</div>
+        <!-- Tree visualization -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+          <!-- Root -->
+          <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="t-node t-comp">60</div>
+            <div style="display:flex;">
+              <div style="width:80px; height:2px; background:#475569; margin-top:30px;"></div>
+              <div style="width:2px; height:30px; background:#475569;"></div>
+              <div style="width:80px; height:2px; background:#475569; margin-top:30px;"></div>
+            </div>
+            <div style="display:flex; gap:100px;">
+              <!-- Left branch: 2 -->
+              <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+                <div class="t-node t-prime">2</div>
+                <div style="font-size:14px; color:#6ee7b7; margin-top:6px;">✓ primo</div>
+              </div>
+              <!-- Right branch: 30 -->
+              <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+                <div class="t-node t-comp">30</div>
+                <div style="display:flex;">
+                  <div style="width:60px; height:2px; background:#475569; margin-top:30px;"></div>
+                  <div style="width:2px; height:30px; background:#475569;"></div>
+                  <div style="width:60px; height:2px; background:#475569; margin-top:30px;"></div>
+                </div>
+                <div style="display:flex; gap:70px;">
+                  <div style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="t-node t-prime">2</div>
+                    <div style="font-size:14px; color:#6ee7b7; margin-top:6px;">✓ primo</div>
+                  </div>
+                  <div style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="t-node t-comp">15</div>
+                    <div style="display:flex;">
+                      <div style="width:40px; height:2px; background:#475569; margin-top:30px;"></div>
+                      <div style="width:2px; height:30px; background:#475569;"></div>
+                      <div style="width:40px; height:2px; background:#475569; margin-top:30px;"></div>
+                    </div>
+                    <div style="display:flex; gap:50px;">
+                      <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="t-node t-prime">3</div>
+                        <div style="font-size:14px; color:#6ee7b7; margin-top:6px;">✓ primo</div>
+                      </div>
+                      <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="t-node t-prime">5</div>
+                        <div style="font-size:14px; color:#6ee7b7; margin-top:6px;">✓ primo</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="result-label" style="margin-top:20px;">60 = 2² × 3 × 5</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

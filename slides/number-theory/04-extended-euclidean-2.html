@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Euclides Extendido - El Algoritmo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #92400e, #b45309); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #f59e0b; }
+  .header-topic { font-size: 20px; color: #fde68a; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #fbbf24; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .box { border-radius: 14px; padding: 22px 28px; }
+  .box-amber { background: linear-gradient(135deg, #451a03, #78350f); border: 2px solid #f59e0b; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 22px; margin-bottom: 12px; color: #fbbf24; }
+  h3 { font-size: 20px; margin-bottom: 12px; color: #fbbf24; }
+  .step { display: flex; gap: 14px; align-items: flex-start; background: #0f172a; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; border-left: 4px solid #f59e0b; }
+  .step-num { background: #78350f; color: #fde68a; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
+  .step-text { font-size: 19px; line-height: 1.5; color: #fde68a; }
+  .step-text strong { color: #fbbf24; }
+  .trace-table { width: 100%; border-collapse: collapse; }
+  .trace-table th { background: #0f172a; color: #64748b; font-size: 14px; padding: 8px 12px; text-align: center; }
+  .trace-table td { padding: 9px 12px; text-align: center; font-size: 17px; border-bottom: 1px solid #1e293b; }
+  .col-a { color: #60a5fa; font-weight: 700; }
+  .col-b { color: #a78bfa; font-weight: 700; }
+  .col-x { color: #fbbf24; font-weight: 700; }
+  .col-y { color: #fb923c; font-weight: 700; }
+  .col-q { color: #94a3b8; }
+  .final-row td { background: rgba(245,158,11,0.1); color: #fbbf24; font-weight: 700; }
+  .key-rel { background: #0f172a; border-radius: 10px; padding: 14px 18px; font-size: 18px; color: #fde68a; border: 2px solid #f59e0b; margin-bottom: 8px; }
+  .key-rel .eq { font-size: 20px; font-weight: 700; color: #fbbf24; font-family: 'Consolas', monospace; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Euclides Extendido · Diapositiva 2 de 4</div>
+      <div class="header-title">El Algoritmo Paso a Paso</div>
+    </div>
+    <div class="slide-num">13 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-amber">
+        <h2>⚙️ Idea del algoritmo</h2>
+        <p style="font-size:19px; color:#fde68a; line-height:1.6;">Hacemos la misma división que el Euclides normal, pero <strong style="color:#fbbf24;">rastreamos hacia atrás</strong> los coeficientes x e y usando las relaciones de recurrencia:</p>
+      </div>
+      <div class="box box-slate">
+        <h3>📐 Relaciones de recurrencia</h3>
+        <div class="key-rel"><div class="eq">x₀ = 1, x₁ = 0</div><div style="color:#94a3b8; font-size:16px; margin-top:4px;">Valores iniciales para x</div></div>
+        <div class="key-rel"><div class="eq">y₀ = 0, y₁ = 1</div><div style="color:#94a3b8; font-size:16px; margin-top:4px;">Valores iniciales para y</div></div>
+        <div class="key-rel"><div class="eq">xᵢ = xᵢ₋₂ − q · xᵢ₋₁</div><div style="color:#94a3b8; font-size:16px; margin-top:4px;">Actualizar x usando el cociente q = a ÷ b</div></div>
+        <div class="key-rel"><div class="eq">yᵢ = yᵢ₋₂ − q · yᵢ₋₁</div><div style="color:#94a3b8; font-size:16px; margin-top:4px;">Actualizar y usando el cociente q</div></div>
+      </div>
+      <div style="background:linear-gradient(135deg,#451a03,#78350f); border:2px solid #f59e0b; border-radius:12px; padding:16px 22px;">
+        <div style="font-size:18px; color:#fde68a;">En cada paso se cumple: <span style="color:#fbbf24; font-weight:700; font-size:20px;">a·xᵢ + b·yᵢ = rᵢ</span></div>
+        <div style="font-size:16px; color:#d97706; margin-top:6px;">donde rᵢ es el residuo en ese paso</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="box box-slate" style="flex:1;">
+        <h3>📊 Traza: mcd_ext(35, 15) → buscar x,y tal que 35x + 15y = mcd</h3>
+        <table class="trace-table">
+          <tr><th>a</th><th>b</th><th>q = a÷b</th><th>r = a%b</th><th>x</th><th>y</th></tr>
+          <tr>
+            <td class="col-a">35</td><td class="col-b">15</td>
+            <td class="col-q">2</td><td class="col-q">5</td>
+            <td class="col-x">1</td><td class="col-y">0</td>
+          </tr>
+          <tr>
+            <td class="col-a">15</td><td class="col-b">5</td>
+            <td class="col-q">3</td><td class="col-q">0</td>
+            <td class="col-x">0</td><td class="col-y">1</td>
+          </tr>
+          <tr>
+            <td class="col-a">5</td><td class="col-b">0</td>
+            <td class="col-q">—</td><td class="col-q">—</td>
+            <td class="col-x">1</td><td class="col-y">−2</td>
+          </tr>
+          <tr class="final-row">
+            <td colspan="6">✅ mcd = 5, &nbsp; x = 1, &nbsp; y = −2</td>
+          </tr>
+        </table>
+        <div style="margin-top:16px; background:#0f172a; border-radius:10px; padding:14px 18px;">
+          <div style="font-size:19px; color:#fbbf24; font-weight:700;">Verificación:</div>
+          <div style="font-size:19px; color:#fde68a; margin-top:6px;">35 × 1 + 15 × (−2) = 35 − 30 = <strong style="color:#fbbf24;">5</strong> ✓</div>
+          <div style="font-size:16px; color:#94a3b8; margin-top:4px;">Y efectivamente mcd(35, 15) = 5 ✓</div>
+        </div>
+        <div style="margin-top:12px; background:#064e3b; border:2px solid #10b981; border-radius:10px; padding:14px 18px;">
+          <div style="font-size:18px; color:#34d399;">💡 Truco: cuando b=0, x=1 e y=0 son los coeficientes finales. Se propagan hacia atrás en la recursión.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

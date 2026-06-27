@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Prueba de Primalidad - Método O(√n)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #3b82f6;
+  }
+  .header-topic { font-size: 20px; color: #93c5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #60a5fa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+
+  .insight-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 16px; padding: 26px 32px;
+  }
+  .insight-box h2 { font-size: 24px; color: #34d399; margin-bottom: 12px; font-weight: 700; }
+  .insight-box p { font-size: 21px; line-height: 1.6; color: #a7f3d0; }
+  .insight-box strong { color: #6ee7b7; }
+
+  .visual-box {
+    background: #1e293b; border-radius: 16px; padding: 24px 28px;
+    border: 2px solid #334155;
+  }
+  .visual-box h3 { font-size: 21px; color: #60a5fa; margin-bottom: 16px; font-weight: 700; }
+
+  .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pair-row {
+    background: #0f172a; border-radius: 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px; font-size: 19px;
+  }
+  .pair-a { color: #60a5fa; font-weight: 700; min-width: 30px; }
+  .pair-x { color: #64748b; font-size: 15px; }
+  .pair-b { color: #a78bfa; font-weight: 700; min-width: 30px; }
+  .pair-eq { color: #94a3b8; flex: 1; text-align: right; font-size: 17px; }
+  .pair-special { border: 2px solid #10b981; }
+  .pair-arrow {
+    background: #1e293b; border-radius: 10px; padding: 10px 14px;
+    font-size: 17px; color: #64748b; text-align: center; grid-column: 1/-1;
+  }
+
+  .key-insight {
+    background: linear-gradient(135deg, #2d1b69, #3730a3);
+    border: 2px solid #818cf8; border-radius: 14px; padding: 20px 26px;
+    text-align: center;
+  }
+  .key-insight p { font-size: 22px; color: #c7d2fe; line-height: 1.6; }
+  .key-insight .formula { font-size: 28px; color: #a5b4fc; font-weight: 800; margin: 10px 0; }
+
+  .comparison-box {
+    background: #1e293b; border-radius: 14px; padding: 20px 26px;
+    border: 2px solid #334155;
+  }
+  .comparison-box h3 { font-size: 20px; color: #94a3b8; margin-bottom: 14px; font-weight: 700; }
+  .cmp-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .cmp-method { font-size: 19px; color: #cbd5e1; min-width: 100px; }
+  .cmp-bar-wrap { flex: 1; background: #0f172a; border-radius: 8px; height: 32px; overflow: hidden; }
+  .cmp-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 12px; font-size: 16px; font-weight: 700; }
+  .bar-slow { background: linear-gradient(90deg, #7f1d1d, #ef4444); width: 100%; color: #fca5a5; }
+  .bar-fast { background: linear-gradient(90deg, #064e3b, #10b981); width: 32%; color: #6ee7b7; }
+  .cmp-val { font-size: 17px; color: #94a3b8; min-width: 80px; text-align: right; }
+
+  .complexity-box {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #10b981; border-radius: 14px; padding: 20px 28px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .complexity-text h3 { font-size: 20px; color: #34d399; margin-bottom: 6px; }
+  .complexity-text p { font-size: 26px; color: #6ee7b7; font-weight: 800; }
+  .complexity-text span { font-size: 17px; color: #10b981; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Prueba de Primalidad · Diapositiva 3 de 4</div>
+      <div class="header-title">Método Optimizado: Solo hasta √n</div>
+    </div>
+    <div class="slide-num">03 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="insight-box">
+        <h2>🔑 La clave</h2>
+        <p>Si <strong>n = a × b</strong>, al menos uno de los dos factores debe ser <strong>≤ √n</strong>. ¡No necesitamos revisar más allá de eso!</p>
+      </div>
+
+      <div class="visual-box">
+        <h3>📐 Pares de factores de 36</h3>
+        <div class="pair-grid">
+          <div class="pair-row pair-special">
+            <span class="pair-a">1</span><span class="pair-x">×</span><span class="pair-b">36</span>
+            <span class="pair-eq">= 36</span>
+          </div>
+          <div class="pair-row pair-special">
+            <span class="pair-a">2</span><span class="pair-x">×</span><span class="pair-b">18</span>
+            <span class="pair-eq">= 36</span>
+          </div>
+          <div class="pair-row pair-special">
+            <span class="pair-a">3</span><span class="pair-x">×</span><span class="pair-b">12</span>
+            <span class="pair-eq">= 36</span>
+          </div>
+          <div class="pair-row pair-special">
+            <span class="pair-a">4</span><span class="pair-x">×</span><span class="pair-b">9</span>
+            <span class="pair-eq">= 36</span>
+          </div>
+          <div class="pair-row" style="border: 2px solid #f59e0b; background: rgba(245,158,11,0.1);">
+            <span class="pair-a" style="color:#fbbf24;">6</span><span class="pair-x">×</span><span class="pair-b" style="color:#fbbf24;">6</span>
+            <span class="pair-eq" style="color:#f59e0b;">= 36 → √36 = 6</span>
+          </div>
+          <div class="pair-arrow">⬇️ Los factores después de √36 son "reflejos" de los anteriores</div>
+          <div class="pair-row" style="opacity: 0.5;">
+            <span class="pair-a">9</span><span class="pair-x">×</span><span class="pair-b">4</span>
+            <span class="pair-eq">= 36 (ya visto)</span>
+          </div>
+          <div class="pair-row" style="opacity: 0.5;">
+            <span class="pair-a">12</span><span class="pair-x">×</span><span class="pair-b">3</span>
+            <span class="pair-eq">= 36 (ya visto)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="key-insight">
+        <p>Solo necesitamos revisar los divisores desde <strong style="color:#a5b4fc;">2</strong> hasta</p>
+        <div class="formula">√n</div>
+        <p>Si hay un divisor mayor que √n, ya existe uno menor que lo "acompaña".</p>
+      </div>
+
+      <div class="comparison-box">
+        <h3>📊 Comparación para n = 1,000,000</h3>
+        <div class="cmp-row">
+          <div class="cmp-method">O(n)</div>
+          <div class="cmp-bar-wrap"><div class="cmp-bar bar-slow">999,998 pasos</div></div>
+          <div class="cmp-val">~1M</div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-method">O(√n)</div>
+          <div class="cmp-bar-wrap"><div class="cmp-bar bar-fast">1,000 pasos</div></div>
+          <div class="cmp-val">~1K ✓</div>
+        </div>
+        <p style="font-size:17px; color:#64748b; margin-top:10px;">¡1000 veces más rápido!</p>
+      </div>
+
+      <div class="visual-box">
+        <h3>🔢 Traza: ¿Es 37 primo? (√37 ≈ 6.08)</h3>
+        <div style="font-size: 19px; line-height: 2;">
+          <div>i = 2: 37 % 2 = 1 ❌</div>
+          <div>i = 3: 37 % 3 = 1 ❌</div>
+          <div>i = 4: 37 % 4 = 1 ❌</div>
+          <div>i = 5: 37 % 5 = 2 ❌</div>
+          <div>i = 6: 37 % 6 = 1 ❌</div>
+          <div style="color: #34d399; font-weight: 700; margin-top: 8px;">i > √37 → ¡PARAR! ✅ 37 es primo</div>
+          <div style="color: #64748b; font-size: 16px;">Solo 5 pasos en lugar de 35</div>
+        </div>
+      </div>
+
+      <div class="complexity-box">
+        <div style="font-size: 36px;">⚡</div>
+        <div class="complexity-text">
+          <h3>Complejidad mejorada</h3>
+          <p>O(√n)</p>
+          <span>— Mucho más eficiente para números grandes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

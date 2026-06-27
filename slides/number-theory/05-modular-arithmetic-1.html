@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Aritmética Modular - Introducción</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #7e1d5f, #9d174d); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #ec4899; }
+  .header-topic { font-size: 20px; color: #fbcfe8; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #f9a8d4; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 40px 60px; align-items: stretch; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; align-items: center; justify-content: center; }
+  .box { border-radius: 14px; padding: 22px 28px; }
+  .box-pink { background: linear-gradient(135deg, #500724, #881337); border: 2px solid #ec4899; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 24px; margin-bottom: 14px; color: #f9a8d4; }
+  h3 { font-size: 21px; margin-bottom: 12px; color: #f9a8d4; }
+  p { font-size: 20px; line-height: 1.6; color: #fce7f3; }
+  strong { color: #f9a8d4; }
+
+  .clock-wrap { position: relative; width: 340px; height: 340px; }
+  .clock-face { width: 340px; height: 340px; border-radius: 50%; background: #1e293b; border: 4px solid #ec4899; position: relative; display: flex; align-items: center; justify-content: center; }
+  .clock-label { position: absolute; font-size: 20px; font-weight: 800; color: #e2e8f0; }
+  .clock-center { font-size: 18px; color: #64748b; text-align: center; }
+  .clock-num-pos { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: #334155; border: 2px solid #475569; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #cbd5e1; }
+  .clock-highlight { background: #ec4899; border-color: #db2777; color: #fff; }
+
+  .mod-rule { background: #0f172a; border-radius: 10px; padding: 14px 18px; border-left: 4px solid #ec4899; margin-bottom: 10px; font-size: 19px; }
+  .mod-rule .rule { color: #f9a8d4; font-weight: 700; font-size: 21px; font-family: 'Consolas', monospace; }
+  .mod-rule .example { color: #94a3b8; font-size: 17px; margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Aritmética Modular · Diapositiva 1 de 4</div>
+      <div class="header-title">¿Qué es el Módulo?</div>
+    </div>
+    <div class="slide-num">16 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-pink">
+        <h2>📖 Definición</h2>
+        <p><strong>a mod m</strong> es el residuo que queda al dividir a entre m. Dos números son <strong>congruentes módulo m</strong> si tienen el mismo residuo:</p>
+        <div style="font-size:28px; font-weight:800; color:#f9a8d4; text-align:center; margin:14px 0; font-family:'Consolas',monospace;">a ≡ b (mod m) &nbsp;⟺&nbsp; m | (a−b)</div>
+      </div>
+      <div class="box box-slate">
+        <h3>⏰ La analogía del reloj</h3>
+        <p>El reloj trabaja <strong>módulo 12</strong>. Si son las 10 y pasan 5 horas: 10 + 5 = 15 ≡ <strong>3</strong> (mod 12). ¡Las 3 en punto!</p>
+      </div>
+      <div class="box box-slate">
+        <h3>📐 Ejemplos básicos</h3>
+        <div class="mod-rule"><div class="rule">17 mod 5 = 2</div><div class="example">17 = 3×5 + 2 → residuo = 2</div></div>
+        <div class="mod-rule"><div class="rule">24 mod 7 = 3</div><div class="example">24 = 3×7 + 3 → residuo = 3</div></div>
+        <div class="mod-rule"><div class="rule">−3 mod 5 = 2</div><div class="example">En C++: (−3 % 5 + 5) % 5 = 2 (siempre positivo)</div></div>
+      </div>
+    </div>
+    <div class="right">
+      <div style="font-size:22px; color:#f9a8d4; font-weight:700; margin-bottom:16px;">Reloj módulo 12</div>
+      <!-- Clock face using CSS -->
+      <div class="clock-face">
+        <!-- Numbers around the clock -->
+        <div class="clock-num-pos" style="top:10px; left:50%; transform:translateX(-50%);">12</div>
+        <div class="clock-num-pos" style="top:20%; right:8%;">1</div>
+        <div class="clock-num-pos" style="top:45%; right:2%;">3</div>
+        <div class="clock-num-pos" style="bottom:20%; right:8%;">5</div>
+        <div class="clock-num-pos clock-highlight" style="bottom:10px; left:50%; transform:translateX(-50%);">6</div>
+        <div class="clock-num-pos" style="bottom:20%; left:8%;">7</div>
+        <div class="clock-num-pos" style="top:45%; left:2%;">9</div>
+        <div class="clock-num-pos" style="top:20%; left:8%;">11</div>
+        <div class="clock-center">mod 12<br><span style="font-size:14px; color:#ec4899;">18 ≡ 6</span></div>
+      </div>
+      <div style="background:#1e293b; border:2px solid #ec4899; border-radius:12px; padding:18px 26px; width:100%;">
+        <div style="font-size:19px; color:#f9a8d4; font-weight:700; margin-bottom:10px;">🌟 Usos en Competitive Programming</div>
+        <div style="font-size:18px; color:#fce7f3; line-height:1.8;">
+          ▸ Evitar números enormes: resultados (mod 10⁹+7)<br>
+          ▸ Verificar divisibilidad<br>
+          ▸ Ciclos y patrones periódicos<br>
+          ▸ Hash de cadenas
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

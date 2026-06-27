@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Ecuaciones Diofánticas - Definición</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #1a1a3e, #1e1b4b); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #818cf8; }
+  .header-topic { font-size: 20px; color: #c7d2fe; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #a5b4fc; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 40px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .box { border-radius: 14px; padding: 22px 28px; }
+  .box-indigo { background: linear-gradient(135deg, #1e1b4b, #312e81); border: 2px solid #818cf8; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 24px; margin-bottom: 14px; color: #a5b4fc; }
+  h3 { font-size: 21px; margin-bottom: 12px; color: #a5b4fc; }
+  p { font-size: 20px; line-height: 1.6; color: #c7d2fe; }
+  strong { color: #818cf8; }
+  .formula-big { font-size: 36px; font-weight: 800; color: #a5b4fc; text-align: center; margin: 14px 0; font-family: 'Consolas', monospace; }
+  .example-row { display: flex; gap: 16px; }
+  .ex-card { flex: 1; background: #0f172a; border-radius: 12px; padding: 18px 20px; border: 2px solid #334155; text-align: center; }
+  .ex-card .eq { font-size: 22px; font-weight: 700; color: #a5b4fc; font-family: 'Consolas', monospace; margin-bottom: 8px; }
+  .ex-card .sol { font-size: 17px; color: #94a3b8; }
+  .ex-card .sol strong { color: #818cf8; }
+  .cond-box { background: #0f172a; border-radius: 12px; padding: 18px 22px; border-left: 5px solid #818cf8; margin-bottom: 12px; }
+  .cond-title { font-size: 20px; color: #818cf8; font-weight: 700; margin-bottom: 8px; }
+  .cond-body { font-size: 19px; color: #c7d2fe; line-height: 1.5; }
+  .cond-body .yes { color: #34d399; font-weight: 700; }
+  .cond-body .no { color: #f87171; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Ecuaciones Diofánticas · Diapositiva 1 de 4</div>
+      <div class="header-title">¿Qué es una Ecuación Diofántica Lineal?</div>
+    </div>
+    <div class="slide-num">23 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-indigo">
+        <h2>📖 Definición</h2>
+        <div class="formula-big">ax + by = c</div>
+        <p>Una ecuación donde <strong>a, b, c</strong> son enteros fijos y buscamos soluciones <strong>enteras</strong> para x e y. Se llama "diofántica" en honor al matemático griego Diofanto de Alejandría (~250 d.C.).</p>
+      </div>
+      <div class="box box-slate">
+        <h3>🔑 ¿Cuándo tiene solución?</h3>
+        <div class="cond-box">
+          <div class="cond-title">Teorema de Bezout aplicado</div>
+          <div class="cond-body">
+            <span class="yes">Tiene solución</span> si y solo si <strong>mcd(a, b) divide a c</strong><br>
+            Es decir: <strong>c mod mcd(a,b) = 0</strong>
+          </div>
+        </div>
+        <div class="cond-box">
+          <div class="cond-title">¿Cuántas soluciones?</div>
+          <div class="cond-body">
+            Si tiene una solución, tiene <span class="yes">infinitas</span>.<br>
+            Si (x₀, y₀) es solución, entonces también lo son:<br>
+            <strong>x = x₀ + (b/d)·t, &nbsp; y = y₀ − (a/d)·t</strong><br>
+            para todo entero t, donde d = mcd(a,b)
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div style="font-size:22px; color:#a5b4fc; font-weight:700; margin-bottom:4px;">Ejemplos</div>
+      <div class="example-row">
+        <div class="ex-card">
+          <div class="eq">3x + 5y = 7</div>
+          <div class="sol">mcd(3,5) = 1<br>1 | 7 → <strong>✅ Tiene solución</strong></div>
+        </div>
+        <div class="ex-card">
+          <div class="eq">6x + 9y = 15</div>
+          <div class="sol">mcd(6,9) = 3<br>3 | 15 → <strong>✅ Tiene solución</strong></div>
+        </div>
+      </div>
+      <div class="example-row">
+        <div class="ex-card">
+          <div class="eq">6x + 9y = 7</div>
+          <div class="sol">mcd(6,9) = 3<br>3 ∤ 7 → <strong style="color:#f87171;">❌ Sin solución</strong></div>
+        </div>
+        <div class="ex-card">
+          <div class="eq">2x + 4y = 6</div>
+          <div class="sol">mcd(2,4) = 2<br>2 | 6 → <strong>✅ Tiene solución</strong></div>
+        </div>
+      </div>
+      <div class="box box-slate">
+        <h3>📐 Diferencia con ecuaciones reales</h3>
+        <p>En los reales, <strong>3x + 5y = 7</strong> tiene infinitas soluciones (una línea). En los enteros, solo buscamos los puntos de esa línea con coordenadas enteras. ¡Son mucho más escasos!</p>
+      </div>
+      <div class="box box-indigo" style="text-align:center;">
+        <div style="font-size:20px; color:#c7d2fe; margin-bottom:6px;">Condición necesaria y suficiente:</div>
+        <div style="font-size:26px; font-weight:800; color:#a5b4fc; font-family:'Consolas',monospace;">mcd(a, b) | c</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

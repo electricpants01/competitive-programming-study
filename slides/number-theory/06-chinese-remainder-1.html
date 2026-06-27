@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Teorema Chino del Resto - El Problema</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #0c4a6e, #075985); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #0ea5e9; }
+  .header-topic { font-size: 20px; color: #bae6fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #7dd3fc; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 40px 60px; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+  .box { border-radius: 14px; padding: 22px 28px; }
+  .box-blue { background: linear-gradient(135deg, #082f49, #0c4a6e); border: 2px solid #0ea5e9; }
+  .box-slate { background: #1e293b; border: 2px solid #334155; }
+  h2 { font-size: 24px; margin-bottom: 14px; color: #7dd3fc; }
+  h3 { font-size: 21px; margin-bottom: 12px; color: #7dd3fc; }
+  p { font-size: 20px; line-height: 1.6; color: #bae6fd; }
+  strong { color: #38bdf8; }
+  .system { background: #0f172a; border-radius: 12px; padding: 20px 26px; border: 2px solid #0ea5e9; }
+  .congruence { font-size: 26px; font-family: 'Consolas', monospace; color: #7dd3fc; font-weight: 700; margin-bottom: 10px; }
+  .con-explain { font-size: 17px; color: #64748b; margin-bottom: 14px; }
+  .grid-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-col { background: #0f172a; border-radius: 10px; padding: 14px; border: 2px solid #334155; text-align: center; }
+  .grid-col .mod-label { font-size: 16px; color: #64748b; margin-bottom: 8px; }
+  .num-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .num { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; background: #1e293b; border: 2px solid #334155; color: #94a3b8; }
+  .num-match { background: rgba(14,165,233,0.2); border-color: #0ea5e9; color: #7dd3fc; }
+  .num-answer { background: #0ea5e9; border-color: #0284c7; color: #fff; font-size: 18px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Teorema Chino del Resto · Diapositiva 1 de 3</div>
+      <div class="header-title">El Problema de los Sistemas de Congruencias</div>
+    </div>
+    <div class="slide-num">20 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="box box-blue">
+        <h2>🤔 El Problema</h2>
+        <p>Queremos encontrar un número <strong>x</strong> que satisfaga simultáneamente varias congruencias con módulos diferentes.</p>
+      </div>
+      <div class="system">
+        <div style="font-size:19px; color:#64748b; margin-bottom:12px;">Ejemplo clásico: "Encuentro un número x tal que..."</div>
+        <div class="congruence">x ≡ 2 (mod 3)</div>
+        <div class="con-explain">Al dividir x entre 3, sobran 2</div>
+        <div class="congruence">x ≡ 3 (mod 5)</div>
+        <div class="con-explain">Al dividir x entre 5, sobran 3</div>
+        <div class="congruence">x ≡ 2 (mod 7)</div>
+        <div class="con-explain">Al dividir x entre 7, sobran 2</div>
+        <div style="margin-top:12px; font-size:20px; color:#7dd3fc; font-weight:700;">¿Cuál es el valor más pequeño de x?</div>
+      </div>
+      <div class="box box-slate">
+        <h3>🏛️ Nombre e historia</h3>
+        <p>El <strong>Teorema Chino del Resto (TCR)</strong> fue descrito por el matemático chino Sun Tzu (~300 d.C.). Es uno de los teoremas más importantes de la teoría de números con aplicaciones modernas en criptografía y computación.</p>
+      </div>
+    </div>
+    <div class="right">
+      <div class="box box-slate">
+        <h3>🔍 Búsqueda visual (fuerza bruta)</h3>
+        <div class="grid-visual">
+          <div class="grid-col">
+            <div class="mod-label">x ≡ 2 (mod 3)<br>válidos: 2, 5, 8, 11...</div>
+            <div class="num-row">
+              <div class="num">2</div><div class="num">5</div><div class="num">8</div><div class="num">11</div>
+              <div class="num">14</div><div class="num">17</div><div class="num">20</div><div class="num">23</div>
+              <div class="num num-match">23</div>
+            </div>
+          </div>
+          <div class="grid-col">
+            <div class="mod-label">x ≡ 3 (mod 5)<br>válidos: 3, 8, 13, 18...</div>
+            <div class="num-row">
+              <div class="num">3</div><div class="num">8</div><div class="num">13</div><div class="num">18</div>
+              <div class="num">23</div><div class="num num-match">23</div>
+            </div>
+          </div>
+          <div class="grid-col">
+            <div class="mod-label">x ≡ 2 (mod 7)<br>válidos: 2, 9, 16, 23...</div>
+            <div class="num-row">
+              <div class="num">2</div><div class="num">9</div><div class="num">16</div>
+              <div class="num num-match">23</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px; text-align:center;">
+          <div style="font-size:26px; font-weight:800; color:#7dd3fc;">✅ x = 23</div>
+          <div style="font-size:17px; color:#64748b;">23 = 3×7+2 ✓ | 23 = 4×5+3 ✓ | 23 = 3×7+2 ✓</div>
+          <div style="font-size:17px; color:#0ea5e9; margin-top:6px;">La solución es única módulo (3×5×7) = 105</div>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#082f49,#0c4a6e); border:2px solid #0ea5e9; border-radius:14px; padding:18px 26px;">
+        <div style="font-size:20px; color:#7dd3fc; font-weight:700; margin-bottom:10px;">⚡ Condición del TCR</div>
+        <div style="font-size:19px; color:#bae6fd; line-height:1.6;">Los módulos m₁, m₂, ..., mₖ deben ser <strong style="color:#38bdf8;">coprimos entre sí</strong> (MCD de cualquier par = 1).<br><br>Si se cumple: existe una solución única módulo (m₁ × m₂ × ... × mₖ)</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

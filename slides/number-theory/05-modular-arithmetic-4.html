@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Aritmética Modular - Pequeño Fermat y Código</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: #0f172a; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; display: flex; flex-direction: column; }
+  .header { background: linear-gradient(135deg, #7e1d5f, #9d174d); padding: 28px 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #ec4899; }
+  .header-topic { font-size: 20px; color: #fbcfe8; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #f9a8d4; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1.2; display: flex; flex-direction: column; gap: 18px; }
+  .right { flex: 0.8; display: flex; flex-direction: column; gap: 18px; }
+  .code-wrap { background: #0d1117; border-radius: 16px; overflow: hidden; border: 2px solid #30363d; flex: 1; }
+  .code-header { background: #161b22; padding: 14px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #30363d; }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+  .filename { color: #8b949e; font-size: 16px; margin-left: 10px; }
+  pre { padding: 20px 26px; font-family: 'Consolas', 'Fira Code', monospace; font-size: 18px; line-height: 1.75; overflow: hidden; }
+  .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .tp { color: #79c0ff; } .cm { color: #8b949e; font-style: italic; } .nu { color: #a5c261; } .str { color: #a8ff60; }
+  .fermat-box { background: linear-gradient(135deg, #500724, #881337); border: 2px solid #ec4899; border-radius: 14px; padding: 20px 26px; }
+  .fermat-box h3 { font-size: 21px; color: #f9a8d4; margin-bottom: 12px; }
+  .fermat-box p { font-size: 19px; color: #fce7f3; line-height: 1.6; }
+  .fermat-box strong { color: #ec4899; }
+  .formula { font-size: 26px; font-weight: 800; color: #f9a8d4; font-family: 'Consolas', monospace; text-align: center; margin: 10px 0; }
+  .ann { background: #1e293b; border-left: 5px solid #ec4899; border-radius: 10px; padding: 12px 18px; font-size: 18px; color: #fce7f3; margin-bottom: 8px; }
+  .ann strong { color: #f9a8d4; }
+  .out-box { background: #0d1117; border-radius: 10px; padding: 14px 18px; border: 2px solid #30363d; font-family: 'Consolas', monospace; font-size: 17px; color: #a5c261; line-height: 1.8; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Aritmética Modular · Diapositiva 4 de 4</div>
+      <div class="header-title">Pequeño Fermat y Código Completo</div>
+    </div>
+    <div class="slide-num">19 / 26</div>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="fermat-box">
+        <h3>🏛️ Pequeño Teorema de Fermat</h3>
+        <p>Si <strong>p es primo</strong> y <strong>a no es múltiplo de p</strong>:</p>
+        <div class="formula">aᵖ⁻¹ ≡ 1 (mod p)</div>
+        <p>Por tanto: <strong>a⁻¹ ≡ aᵖ⁻² (mod p)</strong></p>
+        <p style="color:#db2777; margin-top:8px;">¡Podemos calcular el inverso modular usando potenciación rápida!</p>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <span class="filename">modular.cpp</span>
+        </div>
+        <pre><span class="kw">const</span> <span class="tp">long long</span> MOD = <span class="nu">1e9</span> + <span class="nu">7</span>;
+
+<span class="tp">long long</span> <span class="fn">powmod</span>(<span class="tp">long long</span> b, <span class="tp">long long</span> e, <span class="tp">long long</span> m) {
+    <span class="tp">long long</span> r = <span class="nu">1</span>; b %= m;
+    <span class="kw">while</span> (e > <span class="nu">0</span>) {
+        <span class="kw">if</span> (e & <span class="nu">1</span>) r = r * b % m; <span class="cm">// bit menos significativo</span>
+        b = b * b % m;
+        e >>= <span class="nu">1</span>;               <span class="cm">// desplazar bits a la derecha</span>
+    }
+    <span class="kw">return</span> r;
+}
+
+<span class="cm">// Inverso por Fermat (solo para p primo)</span>
+<span class="tp">long long</span> <span class="fn">inv</span>(<span class="tp">long long</span> a) {
+    <span class="kw">return</span> <span class="fn">powmod</span>(a, MOD - <span class="nu">2</span>, MOD);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">long long</span> a = <span class="nu">2</span>, b = <span class="nu">3</span>;
+    cout &lt;&lt; (a + b) % MOD &lt;&lt; endl;        <span class="cm">// suma mod</span>
+    cout &lt;&lt; a * <span class="fn">inv</span>(b) % MOD &lt;&lt; endl;    <span class="cm">// división mod</span>
+    cout &lt;&lt; <span class="fn">powmod</span>(<span class="nu">2</span>, <span class="nu">1000000000</span>, MOD); <span class="cm">// 2^10⁹ mod p</span>
+}</pre>
+      </div>
+    </div>
+    <div class="right">
+      <div class="ann"><strong>e &amp; 1:</strong> comprueba si el bit menos significativo es 1 (si e es impar). Más rápido que <code>e % 2</code>.</div>
+      <div class="ann"><strong>e &gt;&gt;= 1:</strong> divide entre 2 usando bits. Equivalente a <code>e /= 2</code> pero más eficiente.</div>
+      <div class="ann"><strong>inv(a) = a^(MOD-2) % MOD:</strong> funciona porque MOD = 10⁹+7 es primo → Fermat aplica.</div>
+      <div class="out-box">
+        $ ./modular<br>
+        5 &nbsp; &nbsp;← (2+3) mod (10⁹+7)<br>
+        333333336 ← 2/3 mod (10⁹+7)<br>
+        <span style="color:#8b949e;">← 2^(10⁹) mod (10⁹+7)</span>
+      </div>
+      <div style="background:#1e293b; border-radius:12px; padding:18px 22px; border:2px solid #334155;">
+        <div style="font-size:20px; color:#f9a8d4; font-weight:700; margin-bottom:10px;">📌 Plantilla mínima para CP</div>
+        <div style="font-size:18px; color:#fce7f3; line-height:1.7;">
+          ▸ Suma: <code style="background:#0f172a;padding:2px 6px;border-radius:4px;">(a+b)%MOD</code><br>
+          ▸ Resta: <code style="background:#0f172a;padding:2px 6px;border-radius:4px;">(a-b+MOD)%MOD</code><br>
+          ▸ Mult: <code style="background:#0f172a;padding:2px 6px;border-radius:4px;">a*b%MOD</code><br>
+          ▸ Div: <code style="background:#0f172a;padding:2px 6px;border-radius:4px;">a*inv(b)%MOD</code><br>
+          ▸ Pot: <code style="background:#0f172a;padding:2px 6px;border-radius:4px;">powmod(a,b,MOD)</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

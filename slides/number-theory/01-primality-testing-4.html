@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Prueba de Primalidad - Código C++</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px; overflow: hidden;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e2e8f0;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #3b82f6;
+  }
+  .header-topic { font-size: 20px; color: #93c5fd; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 46px; font-weight: 800; color: #fff; }
+  .slide-num { font-size: 18px; color: #60a5fa; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+  .content { flex: 1; display: flex; gap: 50px; padding: 36px 60px; }
+  .left { flex: 1.2; display: flex; flex-direction: column; gap: 20px; }
+  .right { flex: 0.8; display: flex; flex-direction: column; gap: 20px; }
+
+  .code-wrap {
+    background: #0d1117; border-radius: 16px; overflow: hidden;
+    border: 2px solid #30363d; flex: 1;
+  }
+  .code-header {
+    background: #161b22; padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #30363d;
+  }
+  .code-header .dots { display: flex; gap: 8px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .code-header .filename { color: #8b949e; font-size: 16px; margin-left: 10px; }
+  pre {
+    padding: 22px 28px;
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 20px;
+    line-height: 1.75;
+    overflow: hidden;
+  }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .tp { color: #79c0ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .nu { color: #a5c261; }
+  .op { color: #ff7b72; }
+  .str { color: #a8ff60; }
+
+  .annotation {
+    background: #1e293b; border-radius: 14px; padding: 16px 22px;
+    border-left: 5px solid #3b82f6;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .ann-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .ann-text { font-size: 19px; line-height: 1.5; color: #cbd5e1; }
+  .ann-text strong { color: #60a5fa; }
+
+  .examples-box {
+    background: #1e293b; border-radius: 14px; padding: 20px 24px;
+    border: 2px solid #334155;
+  }
+  .examples-box h3 { font-size: 20px; color: #60a5fa; margin-bottom: 14px; }
+  .ex-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 19px; }
+  .ex-input { color: #cbd5e1; }
+  .ex-output { font-weight: 700; padding: 4px 14px; border-radius: 8px; }
+  .out-true { background: #064e3b; color: #34d399; }
+  .out-false { background: #450a0a; color: #f87171; }
+
+  .tips-box {
+    background: linear-gradient(135deg, #1a1a3e, #1e1b4b);
+    border: 2px solid #818cf8; border-radius: 14px; padding: 20px 24px;
+  }
+  .tips-box h3 { font-size: 20px; color: #a5b4fc; margin-bottom: 12px; }
+  .tip { display: flex; gap: 10px; font-size: 18px; color: #c7d2fe; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-topic">Prueba de Primalidad · Diapositiva 4 de 4</div>
+      <div class="header-title">Código en C++</div>
+    </div>
+    <div class="slide-num">04 / 26</div>
+  </div>
+
+  <div class="content">
+    <div class="left">
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <span class="filename">isPrime.cpp</span>
+        </div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;cmath&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="cm">// Retorna true si n es primo, false si no lo es</span>
+<span class="tp">bool</span> <span class="fn">esPrimo</span>(<span class="tp">long long</span> n) {
+    <span class="kw">if</span> (n &lt;= <span class="nu">1</span>) <span class="kw">return false</span>; <span class="cm">// 0 y 1 no son primos</span>
+    <span class="kw">if</span> (n &lt;= <span class="nu">3</span>) <span class="kw">return true</span>;  <span class="cm">// 2 y 3 son primos</span>
+    <span class="kw">if</span> (n % <span class="nu">2</span> == <span class="nu">0</span>) <span class="kw">return false</span>; <span class="cm">// pares no son primos</span>
+
+    <span class="cm">// Solo revisamos impares hasta √n</span>
+    <span class="kw">for</span> (<span class="tp">long long</span> i = <span class="nu">3</span>; i * i &lt;= n; i += <span class="nu">2</span>) {
+        <span class="kw">if</span> (n % i == <span class="nu">0</span>) <span class="kw">return false</span>;
+    }
+    <span class="kw">return true</span>;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+    <span class="tp">long long</span> n;
+    cin >> n;
+    cout &lt;&lt; (esPrimo(n) ? <span class="str">"ES PRIMO"</span> : <span class="str">"NO es primo"</span>) &lt;&lt; endl;
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="annotation">
+        <div class="ann-icon">🛡️</div>
+        <div class="ann-text"><strong>Casos base:</strong> Manejamos n ≤ 3 y pares al inicio para evitar errores y mejorar velocidad.</div>
+      </div>
+      <div class="annotation">
+        <div class="ann-icon">⚡</div>
+        <div class="ann-text"><strong>i * i &lt;= n</strong> es equivalente a <strong>i &lt;= √n</strong> pero evita usar la función sqrt() (más rápido y exacto).</div>
+      </div>
+      <div class="annotation">
+        <div class="ann-icon">➕</div>
+        <div class="ann-text"><strong>i += 2</strong> salta los pares. Como ya descartamos el 2, solo necesitamos revisar impares.</div>
+      </div>
+
+      <div class="examples-box">
+        <h3>📋 Ejemplos de salida</h3>
+        <div class="ex-row">
+          <span class="ex-input">esPrimo(2)</span>
+          <span class="ex-output out-true">true ✓</span>
+        </div>
+        <div class="ex-row">
+          <span class="ex-input">esPrimo(17)</span>
+          <span class="ex-output out-true">true ✓</span>
+        </div>
+        <div class="ex-row">
+          <span class="ex-input">esPrimo(100)</span>
+          <span class="ex-output out-false">false ✗</span>
+        </div>
+        <div class="ex-row">
+          <span class="ex-input">esPrimo(999983)</span>
+          <span class="ex-output out-true">true ✓</span>
+        </div>
+        <div class="ex-row">
+          <span class="ex-input">esPrimo(1)</span>
+          <span class="ex-output out-false">false ✗</span>
+        </div>
+      </div>
+
+      <div class="tips-box">
+        <h3>💡 Trucos para recordar</h3>
+        <div class="tip"><span>▸</span><span>Todo primo > 2 es <strong>impar</strong></span></div>
+        <div class="tip"><span>▸</span><span>El 2 es el único primo <strong>par</strong></span></div>
+        <div class="tip"><span>▸</span><span>El 1 <strong>NO</strong> es primo por definición</span></div>
+        <div class="tip"><span>▸</span><span>Complejidad: <strong>O(√n)</strong> por número</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
