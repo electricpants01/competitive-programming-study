@@ -40,9 +40,10 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     rel="stylesheet"
   />
   <!-- Inject translations into window for script.js -->
-  <script is:inline define:vars={{ translations: JSON.stringify(t), currentLang: lang }}>
+  <script is:inline define:vars={{ translations: JSON.stringify(t), currentLang: lang, cpBase: base }}>
     window.__CP_LANG__ = currentLang;
     window.__CP_T__ = JSON.parse(translations);
+    window.__CP_BASE__ = cpBase;
   </script>
   <style is:global>
     /* ============================================================
@@ -130,6 +131,63 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     }
     .nav-link:hover { color: var(--text-primary); background: var(--bg-hover); }
     .nav-link.active { background: var(--color-primary); color: #fff; }
+    .nav-practice {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .nav-practice-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-practice-chevron {
+      width: 12px;
+      height: 12px;
+      transition: transform var(--transition);
+    }
+    .nav-practice.open .nav-practice-chevron { transform: rotate(180deg); }
+    .nav-practice-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 220px;
+      padding: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      z-index: 120;
+    }
+    .nav-practice.open .nav-practice-menu { display: flex; flex-direction: column; gap: 2px; }
+    .nav-practice-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+    .nav-practice-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .nav-practice-item.active {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    .nav-practice-item .sidebar-new-badge {
+      font-size: 9px;
+      padding: 1px 5px;
+    }
     .nav-right {
       display: flex; align-items: center; gap: 8px; flex-shrink: 0;
     }
@@ -533,7 +591,11 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .quick-nav-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    @media (max-width: 480px) { .nav-links { display: none; } }
+    @media (max-width: 480px) {
+      .nav-links > .nav-link { display: none; }
+      .nav-links { flex: 0 0 auto; justify-content: flex-start; }
+      .nav-practice-menu { left: 0; transform: none; }
+    }
 
     /* ── Codeforces Problem Search ── */
     .cf-tabs {
@@ -744,6 +806,69 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       .vl-thumb { width: 100px; height: 56px; }
       .vl-card { gap: 10px; padding: 10px 12px; }
     }
+
+    /* ── ICPC Prelims ─────────────────────────────────────────── */
+    .ip-filter-row {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+    }
+    .ip-filter-btn {
+      padding: 6px 12px; background: var(--bg-body); border: 1.5px solid var(--border);
+      border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--text-secondary);
+      cursor: pointer; transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .ip-filter-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .ip-filter-btn.active {
+      background: var(--color-primary); border-color: var(--color-primary); color: #fff;
+    }
+    .ip-count {
+      font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; display: none;
+    }
+    .ip-results { display: flex; flex-direction: column; gap: 10px; }
+    .ip-empty {
+      padding: 24px; color: var(--text-muted); text-align: center;
+    }
+    .ip-card {
+      display: flex; gap: 14px; padding: 14px 16px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); align-items: flex-start;
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+    .ip-card:hover { box-shadow: var(--shadow-md); border-color: var(--color-primary); }
+    .ip-year {
+      flex-shrink: 0; min-width: 56px; text-align: center;
+      font-size: 15px; font-weight: 800; color: var(--color-primary);
+      background: var(--color-primary-light); border-radius: var(--radius-sm);
+      padding: 10px 8px;
+    }
+    .ip-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .ip-card-title {
+      font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.35;
+    }
+    .ip-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .ip-badge {
+      padding: 2px 8px; background: var(--bg-body); border: 1px solid var(--border);
+      border-radius: 9px; font-size: 10.5px; font-weight: 600; color: var(--text-secondary);
+    }
+    .ip-badge-kind {
+      background: var(--color-primary-light); border-color: transparent; color: var(--color-primary);
+    }
+    .ip-source {
+      font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-decoration: none;
+    }
+    .ip-source:hover { color: var(--color-primary); text-decoration: underline; }
+    .ip-notes { font-size: 12.5px; color: var(--text-secondary); line-height: 1.45; }
+    .ip-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+    .ip-btn {
+      display: inline-flex; align-items: center; padding: 6px 12px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 600; color: var(--text-secondary); text-decoration: none;
+      background: var(--bg-body); transition: border-color var(--transition), color var(--transition), background var(--transition);
+    }
+    .ip-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .ip-btn-primary {
+      background: var(--color-primary); border-color: var(--color-primary); color: #fff;
+    }
+    .ip-btn-primary:hover { opacity: 0.9; color: #fff; }
   </style>
 </head>
 <body>
@@ -763,6 +888,34 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     <button class="nav-link" data-section="algorithms">{t.nav.algorithms}</button>
     <button class="nav-link" data-section="roadmap">{t.nav.roadmap}</button>
     <button class="nav-link" data-section="tools">{t.nav.tools}</button>
+    <div class="nav-practice" id="nav-practice">
+      <button
+        class="nav-link nav-practice-toggle"
+        id="nav-practice-toggle"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        {t.nav.practice}
+        <svg class="nav-practice-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="nav-practice-menu" role="menu" aria-label={t.nav.practice}>
+        <button class="nav-practice-item" type="button" data-practice-section="search" data-practice-id="search-problems" role="menuitem">
+          <span>{t.sidebar.items['search-problems']}</span>
+          <span class="sidebar-new-badge">NEW</span>
+        </button>
+        <button class="nav-practice-item" type="button" data-practice-section="videos" data-practice-id="watch-videos" role="menuitem">
+          <span>{t.sidebar.items['watch-videos']}</span>
+          <span class="sidebar-new-badge">NEW</span>
+        </button>
+        <button class="nav-practice-item" type="button" data-practice-section="icpc-prelims" data-practice-id="icpc-prelims" role="menuitem">
+          <span>{t.sidebar.items['icpc-prelims']}</span>
+          <span class="sidebar-new-badge">NEW</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="nav-right">
@@ -1053,11 +1206,24 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       <div id="vl-results" class="vl-results"></div>
     </section>
 
+    <!-- ── ICPC Preliminaries Section ───────────────────────── -->
+    <section class="page-section" data-section="icpc-prelims">
+      <div class="section-header">
+        <h2 id="ip-title"></h2>
+        <p id="ip-subtitle" class="section-subtitle"></p>
+      </div>
+      <div id="ip-region-row" class="ip-filter-row"></div>
+      <div id="ip-kind-row" class="ip-filter-row"></div>
+      <div id="ip-count" class="ip-count"></div>
+      <div id="ip-results" class="ip-results"></div>
+    </section>
+
   </main>
 </div>
 
 <script is:inline src={`${base}algorithms-data-${lang}.js`}></script>
 <script is:inline src={`${base}videos-data-${lang}.js`}></script>
+<script is:inline src={`${base}icpc-prelims-data.js`}></script>
 <script is:inline src={`${base}guide-script.js`}></script>
 </body>
 </html>

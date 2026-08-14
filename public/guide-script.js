@@ -7,6 +7,7 @@
 
   const t = window.__CP_T__;
   const lang = window.__CP_LANG__ || 'en';
+  const base = window.__CP_BASE__ || '/';
 
   /** Replace `{key}` placeholders in i18n templates (JSON-safe strings). */
   function fmt(template, vars) {
@@ -130,11 +131,10 @@
     { key: 'DYNAMIC_PROGRAMMING', items: ['dp-1d', 'dp-2d', 'knapsack', 'bitmask-dp'] },
     { key: 'TREES_ADVANCED', items: ['segment-tree', 'fenwick-tree', 'trie'] },
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
-    { key: 'PRACTICE', items: ['search-problems', 'watch-videos'] },
   ];
 
   // Items that display a "NEW" badge — remove an id once the feature is no longer new
-  const NEW_ITEMS = new Set(['watch-videos', 'search-problems']);
+  const NEW_ITEMS = new Set([]);
 
   // ── Build sidebar ─────────────────────────────────────────────
   function buildSidebar() {
@@ -179,11 +179,7 @@
     updateProgress();
     updateActiveSidebarItem(id);
 
-    if (id === 'search-problems') {
-      setActiveSection("search");
-    } else if (id === 'watch-videos') {
-      setActiveSection("videos");
-    } else if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
+    if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
       showDetailPanel(id);
     } else {
       setActiveSection("overview");
@@ -194,10 +190,36 @@
 
   // ── Progress ──────────────────────────────────────────────────
   function updateProgress() {
-    const total = sidebarSectionDefs.reduce((acc, s) => acc + s.items.length, 0);
-    const pct = Math.round((state.visitedItems.length / total) * 100);
+    const sidebarIds = new Set(
+      sidebarSectionDefs.flatMap((s) => s.items)
+    );
+    const visitedCount = state.visitedItems.filter((id) => sidebarIds.has(id)).length;
+    const total = sidebarIds.size;
+    const pct = total === 0 ? 0 : Math.round((visitedCount / total) * 100);
     progressFill.style.width = pct + "%";
     progressLabel.textContent = fmt(t.sidebar.progress, { pct });
+  }
+
+  const PRACTICE_SECTIONS = new Set(['search', 'videos', 'icpc-prelims']);
+  const practiceRoot = document.getElementById('nav-practice');
+  const practiceToggle = document.getElementById('nav-practice-toggle');
+  const practiceItems = document.querySelectorAll('.nav-practice-item[data-practice-section]');
+
+  function setPracticeMenuOpen(open) {
+    if (!practiceRoot || !practiceToggle) return;
+    practiceRoot.classList.toggle('open', open);
+    practiceToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function goToPractice(section, practiceId) {
+    if (!PRACTICE_SECTIONS.has(section)) return;
+    if (practiceId && !state.visitedItems.includes(practiceId)) {
+      state.visitedItems.push(practiceId);
+      localStorage.setItem("cp-visited", JSON.stringify(state.visitedItems));
+    }
+    updateActiveSidebarItem('');
+    setActiveSection(section);
+    setPracticeMenuOpen(false);
   }
 
   // ── Section navigation ────────────────────────────────────────
@@ -209,10 +231,40 @@
     navLinks.forEach((link) => {
       link.classList.toggle("active", link.dataset.section === section);
     });
+    if (practiceToggle) {
+      practiceToggle.classList.toggle('active', PRACTICE_SECTIONS.has(section));
+    }
+    practiceItems.forEach((item) => {
+      item.classList.toggle('active', item.dataset.practiceSection === section);
+    });
   }
 
   navLinks.forEach((link) => {
-    link.addEventListener("click", () => setActiveSection(link.dataset.section));
+    link.addEventListener("click", () => {
+      setPracticeMenuOpen(false);
+      setActiveSection(link.dataset.section);
+    });
+  });
+
+  if (practiceToggle) {
+    practiceToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setPracticeMenuOpen(!(practiceRoot && practiceRoot.classList.contains('open')));
+    });
+  }
+
+  practiceItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      goToPractice(item.dataset.practiceSection, item.dataset.practiceId);
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!practiceRoot) return;
+    if (!practiceRoot.contains(e.target)) setPracticeMenuOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setPracticeMenuOpen(false);
   });
 
   document.querySelectorAll("[data-goto]").forEach((el) => {
@@ -1006,6 +1058,139 @@
     render(); // initial render shows all videos
   }
 
+  // ── ICPC Preliminaries library ────────────────────────────────
+  function initIcpcPrelims() {
+    const data = (typeof icpcPrelimsData !== 'undefined') ? icpcPrelimsData : null;
+    const sectionEl = document.querySelector('.page-section[data-section="icpc-prelims"]');
+    if (!sectionEl) return;
+
+    const ip = t.icpcPrelims || {};
+    const titleEl = document.getElementById('ip-title');
+    const subtitleEl = document.getElementById('ip-subtitle');
+    const regionRow = document.getElementById('ip-region-row');
+    const kindRow = document.getElementById('ip-kind-row');
+    const countEl = document.getElementById('ip-count');
+    const resultsEl = document.getElementById('ip-results');
+    if (!resultsEl) return;
+
+    if (titleEl) titleEl.textContent = ip.title || 'ACM ICPC Preliminaries';
+    if (subtitleEl) subtitleEl.textContent = ip.subtitle || '';
+
+    if (!data || !data.contests || data.contests.length === 0) {
+      resultsEl.innerHTML = `<p class="ip-empty">${ip.noResults || 'No problem sets found.'}</p>`;
+      return;
+    }
+
+    const kindLabels = {
+      preliminary: ip.kindPreliminary || 'Preliminary',
+      qualifier: ip.kindQualifier || 'Qualifier',
+      subregional: ip.kindSubregional || 'Sub-Regional',
+      regional: ip.kindRegional || 'Regional',
+    };
+
+    const regionName = (id) => {
+      const r = (data.regions || []).find((x) => x.id === id);
+      return r ? r.name : id;
+    };
+
+    const ipState = { region: '', kind: '' };
+
+    function setActiveButtons(row, activeValue) {
+      if (!row) return;
+      row.querySelectorAll('button').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.value === activeValue);
+      });
+    }
+
+    function buildFilterRow(row, options, allLabel, onPick) {
+      if (!row) return;
+      row.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'ip-filter-btn active';
+      allBtn.dataset.value = '';
+      allBtn.textContent = allLabel;
+      allBtn.addEventListener('click', () => onPick(''));
+      row.appendChild(allBtn);
+      options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = 'ip-filter-btn';
+        btn.dataset.value = opt.value;
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => onPick(opt.value));
+        row.appendChild(btn);
+      });
+    }
+
+    buildFilterRow(
+      regionRow,
+      (data.regions || []).map((r) => ({ value: r.id, label: r.name })),
+      ip.regionAll || 'All Regions',
+      (value) => {
+        ipState.region = value;
+        setActiveButtons(regionRow, value);
+        render();
+      }
+    );
+
+    buildFilterRow(
+      kindRow,
+      Object.keys(kindLabels).map((k) => ({ value: k, label: kindLabels[k] })),
+      ip.kindAll || 'All Types',
+      (value) => {
+        ipState.kind = value;
+        setActiveButtons(kindRow, value);
+        render();
+      }
+    );
+
+    function render() {
+      let list = data.contests.slice();
+      if (ipState.region) list = list.filter((c) => c.region === ipState.region);
+      if (ipState.kind) list = list.filter((c) => c.kind === ipState.kind);
+      list.sort((a, b) => (b.year - a.year) || String(a.title).localeCompare(String(b.title)));
+
+      if (countEl) {
+        countEl.textContent = fmt(ip.countFound || '{n} problem sets', { n: list.length });
+        countEl.style.display = 'block';
+      }
+
+      if (list.length === 0) {
+        resultsEl.innerHTML = `<p class="ip-empty">${ip.noResults || 'No problem sets found.'}</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = list.map((c) => {
+        const href = `${base}icpc-prelims/${c.file}`;
+        const kindLabel = kindLabels[c.kind] || c.kind;
+        const notes = c.notes
+          ? `<div class="ip-notes">${c.notes}</div>`
+          : '';
+        const source = c.source
+          ? `<a class="ip-source" href="${c.source}" target="_blank" rel="noopener noreferrer">${ip.sourceLabel || 'Source'} ↗</a>`
+          : '';
+        return `
+          <div class="ip-card">
+            <div class="ip-year">${c.year}</div>
+            <div class="ip-info">
+              <div class="ip-card-title">${c.title}</div>
+              <div class="ip-meta">
+                <span class="ip-badge">${regionName(c.region)}</span>
+                <span class="ip-badge ip-badge-kind">${kindLabel}</span>
+                ${source}
+              </div>
+              ${notes}
+              <div class="ip-actions">
+                <a class="ip-btn ip-btn-primary" href="${href}" target="_blank" rel="noopener noreferrer">${ip.openPdf || 'Open PDF'}</a>
+                <a class="ip-btn" href="${href}" download="${c.file}">${ip.download || 'Download'}</a>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    render();
+  }
+
   // ── Init ──────────────────────────────────────────────────────
   applyTheme(state.theme);
   buildSidebar();
@@ -1018,11 +1203,14 @@
     const fromQuery = params.get('section');
     const fromHash = (window.location.hash || '').replace(/^#/, '');
     const target = fromQuery || fromHash;
-    const valid = new Set(['overview', 'algorithms', 'roadmap', 'tools', 'search', 'videos', 'detail']);
+    const valid = new Set([
+      'overview', 'algorithms', 'roadmap', 'tools', 'search', 'videos', 'detail', 'icpc-prelims',
+    ]);
     if (target && valid.has(target)) {
       setActiveSection(target);
-      if (target === 'search') updateActiveSidebarItem('search-problems');
-      else if (target === 'videos') updateActiveSidebarItem('watch-videos');
+      if (PRACTICE_SECTIONS.has(target)) {
+        updateActiveSidebarItem('');
+      }
       return;
     }
     setActiveSection('overview');
@@ -1031,4 +1219,5 @@
 
   initCfSearch();
   initVideoSearch();
+  initIcpcPrelims();
 })();

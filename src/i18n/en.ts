@@ -9,6 +9,7 @@ export const en: Translations = {
     algorithms: 'Algorithms',
     roadmap: 'Roadmap',
     tools: 'Tools',
+    practice: 'Practice',
     searchPlaceholder: 'Search algorithms… (⌘K)',
     toggleTheme: 'Toggle light/dark mode',
     langLabel: 'EN',
@@ -54,6 +55,7 @@ export const en: Translations = {
       combinatorics: 'Combinatorics',
       'search-problems': '🔍 Search Problems',
       'watch-videos': '🎬 Watch Videos',
+      'icpc-prelims': '🏆 ACM ICPC Prelims',
     },
   },
 
@@ -322,6 +324,23 @@ export const en: Translations = {
     openVideo: 'Open ↗',
     langEs: '🇪🇸 Spanish',
     langEn: '🇬🇧 English',
+  },
+
+  icpcPrelims: {
+    title: 'ACM ICPC Preliminaries',
+    subtitle:
+      'Curated problem-set PDFs from ICPC preliminaries, qualifiers, and sub-regionals — filter by region and download for offline practice.',
+    regionAll: 'All Regions',
+    kindAll: 'All Types',
+    kindPreliminary: 'Preliminary',
+    kindQualifier: 'Qualifier',
+    kindSubregional: 'Sub-Regional',
+    kindRegional: 'Regional',
+    openPdf: 'Open PDF ↗',
+    download: 'Download',
+    noResults: 'No problem sets match these filters.',
+    sourceLabel: 'Source',
+    countFound: '{n} problem sets',
   },
 
   quiz: {

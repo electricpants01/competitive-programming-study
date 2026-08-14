@@ -26,6 +26,8 @@ public/
   algorithms-data-es.js
   videos-data-en.js
   videos-data-es.js
+  icpc-prelims-data.js
+  icpc-prelims/            # vendored ICPC prelim/qualifier PDFs
   favicon.*
 ```
 
@@ -56,4 +58,4 @@ public/
 
 ## Feature isolation
 
-Prefer feature-prefixed CSS classes (`.cf-*`, `.vl-*`) and init functions (`initCfSearch`, `initVideoSearch`) so sections do not leak state.
+Prefer feature-prefixed CSS classes (`.cf-*`, `.vl-*`, `.ip-*`) and init functions (`initCfSearch`, `initVideoSearch`, `initIcpcPrelims`) so sections do not leak state.

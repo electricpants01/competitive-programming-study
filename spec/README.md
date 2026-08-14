@@ -60,6 +60,7 @@ Each shipping feature has its own sub-folder under `spec/features/` with these f
 | Slides presentation UI | [features/slides-presentation/](./features/slides-presentation/) |
 | Codeforces Problem Search | [features/cf-problem-search/](./features/cf-problem-search/) |
 | CP Video Library | [features/video-library/](./features/video-library/) |
+| ACM ICPC Preliminaries (PDF library) | [features/icpc-prelims/](./features/icpc-prelims/) |
 | Algorithms content (data + quizzes) | [features/algorithms-content/](./features/algorithms-content/) |
 | CP slide decks (HTML → PNG) | [features/cp-slide-decks/](./features/cp-slide-decks/) |
 | Video scraper pipeline | [features/video-scraper/](./features/video-scraper/) |

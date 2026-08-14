@@ -52,6 +52,7 @@ export interface Translations {
     algorithms: string;
     roadmap: string;
     tools: string;
+    practice: string;
     searchPlaceholder: string;
     toggleTheme: string;
     langLabel: string;
@@ -190,6 +191,23 @@ export interface Translations {
     openVideo: string;
     langEs: string;
     langEn: string;
+  };
+
+  icpcPrelims: {
+    title: string;
+    subtitle: string;
+    regionAll: string;
+    kindAll: string;
+    kindPreliminary: string;
+    kindQualifier: string;
+    kindSubregional: string;
+    kindRegional: string;
+    openPdf: string;
+    download: string;
+    noResults: string;
+    sourceLabel: string;
+    /** Template with `{n}` */
+    countFound: string;
   };
 
   quiz: {

@@ -21,7 +21,8 @@
 
 ## Sidebar
 
-Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels. PRACTICE is last.
+Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels.
+Practice lives in the top-nav **Practice** dropdown (not the sidebar).
 
 | Key | Items |
 |-----|-------|
@@ -32,7 +33,6 @@ Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels. PRACTICE is 
 | DYNAMIC_PROGRAMMING | dp-1d, dp-2d, knapsack, bitmask-dp |
 | TREES_ADVANCED | segment-tree, fenwick-tree, trie |
 | MATHEMATICS | modular-arithmetic, sieve, combinatorics |
-| PRACTICE | search-problems, watch-videos |
 
 Active item gets highlight (`.active` / equivalent).
 
@@ -47,6 +47,7 @@ Active item gets highlight (`.active` / equivalent).
 | tools | Tooling recommendations |
 | search | CF Problem Search UI |
 | videos | Video Library UI |
+| icpc-prelims | ACM ICPC Preliminaries PDF library |
 
 ## Topic detail
 

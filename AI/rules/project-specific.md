@@ -81,8 +81,9 @@ The guide page (`src/pages/[lang]/guide/index.astro`) renders multiple `<section
 | `roadmap` | nav link |
 | `detail` | clicking an algorithm card |
 | `tools` | nav link |
-| `search` | sidebar item `search-problems` (PRACTICE section) |
-| `videos` | sidebar item `watch-videos` (PRACTICE section) |
+| `search` | top-nav Practice → Search Problems |
+| `videos` | top-nav Practice → Watch Videos |
+| `icpc-prelims` | top-nav Practice → ACM ICPC Prelims |
 
 The **search** section hosts the Codeforces Problem Search feature. See `AI/skills/cf-problem-search.md` for full details.
 The **videos** section hosts the CP Video Library feature. See `AI/skills/video-library.md` for full details.
@@ -100,9 +101,9 @@ The **videos** section hosts the CP Video Library feature. See `AI/skills/video-
 | `DYNAMIC_PROGRAMMING` | dp-1d, dp-2d, knapsack, bitmask-dp |
 | `TREES_ADVANCED` | segment-tree, fenwick-tree, trie |
 | `MATHEMATICS` | modular-arithmetic, sieve, combinatorics |
-| `PRACTICE` | search-problems, watch-videos |
+| `PRACTICE` | _(moved to top-nav Practice dropdown)_ |
 
-The `search-problems` item calls `setActiveSection('search')` instead of opening an algorithm detail panel.
+Practice features (`search`, `videos`, `icpc-prelims`) open from the top-nav **Practice** menu — not the sidebar.
 
 ## GitHub Pages Deployment
 

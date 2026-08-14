@@ -9,6 +9,7 @@ export const es: Translations = {
     algorithms: 'Algoritmos',
     roadmap: 'Hoja de Ruta',
     tools: 'Herramientas',
+    practice: 'Práctica',
     searchPlaceholder: 'Buscar algoritmos… (⌘K)',
     toggleTheme: 'Cambiar modo claro/oscuro',
     langLabel: 'ES',
@@ -54,6 +55,7 @@ export const es: Translations = {
       combinatorics: 'Combinatoria',
       'search-problems': '🔍 Buscar Problemas',
       'watch-videos': '🎬 Ver Videos',
+      'icpc-prelims': '🏆 Prelims ACM ICPC',
     },
   },
 
@@ -323,6 +325,23 @@ export const es: Translations = {
     openVideo: 'Abrir ↗',
     langEs: '🇪🇸 Español',
     langEn: '🇬🇧 Inglés',
+  },
+
+  icpcPrelims: {
+    title: 'Preliminares ACM ICPC',
+    subtitle:
+      'PDFs de problemsets de preliminares, clasificatorios y subregionales del ICPC — filtra por región y descarga para practicar offline.',
+    regionAll: 'Todas las Regiones',
+    kindAll: 'Todos los Tipos',
+    kindPreliminary: 'Preliminar',
+    kindQualifier: 'Clasificatorio',
+    kindSubregional: 'Subregional',
+    kindRegional: 'Regional',
+    openPdf: 'Abrir PDF ↗',
+    download: 'Descargar',
+    noResults: 'Ningún problemset coincide con estos filtros.',
+    sourceLabel: 'Fuente',
+    countFound: '{n} problemsets',
   },
 
   quiz: {

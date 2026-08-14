@@ -56,7 +56,25 @@ Empty `segments` is valid (YouTube 429 during scrape).
 
 ---
 
-## 3. Codeforces API (runtime)
+## 3. ICPC prelims data (`window.icpcPrelimsData`)
+
+Loaded from `public/icpc-prelims-data.js`. PDFs in `public/icpc-prelims/`.
+
+```js
+const icpcPrelimsData = {
+  regions: [{ id, name }],
+  contests: [{
+    id, year, region, kind, // preliminary|qualifier|subregional|regional
+    title, file, source, notes?,
+  }],
+};
+```
+
+Full catalog notes: [features/icpc-prelims/data.md](./features/icpc-prelims/data.md).
+
+---
+
+## 4. Codeforces API (runtime)
 
 ```
 GET https://codeforces.com/api/problemset.problems
@@ -87,7 +105,7 @@ Problem key format: `` `${contestId}-${index}` ``.
 
 ---
 
-## 4. localStorage
+## 5. localStorage
 
 | Key | Shape | Purpose |
 |-----|-------|---------|
@@ -98,7 +116,7 @@ Migration: if favorites load as a legacy `string[]`, reset to `{}` and remove th
 
 ---
 
-## 5. Client translation bridge
+## 6. Client translation bridge
 
 ```js
 window.__CP_LANG__ = 'en' | 'es';
