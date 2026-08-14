@@ -2,7 +2,7 @@
 
 ## Activation
 
-Sidebar `watch-videos` → `setActiveSection('videos')`.
+Sidebar `watch-videos` (PRACTICE section) → `setActiveSection('videos')`.
 
 ## Layout
 

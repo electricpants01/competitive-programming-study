@@ -124,6 +124,7 @@
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
+    { key: 'PRACTICE', items: ['search-problems', 'watch-videos', 'icpc-prelims'] },
     { key: 'OVERVIEW', items: ['introduction', 'learning-path', 'assessment'] },
     { key: 'FUNDAMENTALS', items: ['complexity-analysis', 'arrays-strings', 'stl-guide'] },
     { key: 'ALGORITHMS', items: ['two-pointers', 'sliding-window', 'binary-search', 'sorting'] },
@@ -133,8 +134,15 @@
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
   ];
 
+  // Sidebar item ids that map to a full page-section instead of an algo detail panel
+  const PRACTICE_ITEM_SECTIONS = {
+    'search-problems': 'search',
+    'watch-videos': 'videos',
+    'icpc-prelims': 'icpc-prelims',
+  };
+
   // Items that display a "NEW" badge — remove an id once the feature is no longer new
-  const NEW_ITEMS = new Set([]);
+  const NEW_ITEMS = new Set(['watch-videos', 'search-problems', 'icpc-prelims']);
 
   // ── Build sidebar ─────────────────────────────────────────────
   function buildSidebar() {
@@ -179,7 +187,9 @@
     updateProgress();
     updateActiveSidebarItem(id);
 
-    if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
+    if (PRACTICE_ITEM_SECTIONS[id]) {
+      setActiveSection(PRACTICE_ITEM_SECTIONS[id]);
+    } else if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
       showDetailPanel(id);
     } else {
       setActiveSection("overview");
@@ -190,36 +200,10 @@
 
   // ── Progress ──────────────────────────────────────────────────
   function updateProgress() {
-    const sidebarIds = new Set(
-      sidebarSectionDefs.flatMap((s) => s.items)
-    );
-    const visitedCount = state.visitedItems.filter((id) => sidebarIds.has(id)).length;
-    const total = sidebarIds.size;
-    const pct = total === 0 ? 0 : Math.round((visitedCount / total) * 100);
+    const total = sidebarSectionDefs.reduce((acc, s) => acc + s.items.length, 0);
+    const pct = total === 0 ? 0 : Math.round((state.visitedItems.length / total) * 100);
     progressFill.style.width = pct + "%";
     progressLabel.textContent = fmt(t.sidebar.progress, { pct });
-  }
-
-  const PRACTICE_SECTIONS = new Set(['search', 'videos', 'icpc-prelims']);
-  const practiceRoot = document.getElementById('nav-practice');
-  const practiceToggle = document.getElementById('nav-practice-toggle');
-  const practiceItems = document.querySelectorAll('.nav-practice-item[data-practice-section]');
-
-  function setPracticeMenuOpen(open) {
-    if (!practiceRoot || !practiceToggle) return;
-    practiceRoot.classList.toggle('open', open);
-    practiceToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
-
-  function goToPractice(section, practiceId) {
-    if (!PRACTICE_SECTIONS.has(section)) return;
-    if (practiceId && !state.visitedItems.includes(practiceId)) {
-      state.visitedItems.push(practiceId);
-      localStorage.setItem("cp-visited", JSON.stringify(state.visitedItems));
-    }
-    updateActiveSidebarItem('');
-    setActiveSection(section);
-    setPracticeMenuOpen(false);
   }
 
   // ── Section navigation ────────────────────────────────────────
@@ -231,40 +215,10 @@
     navLinks.forEach((link) => {
       link.classList.toggle("active", link.dataset.section === section);
     });
-    if (practiceToggle) {
-      practiceToggle.classList.toggle('active', PRACTICE_SECTIONS.has(section));
-    }
-    practiceItems.forEach((item) => {
-      item.classList.toggle('active', item.dataset.practiceSection === section);
-    });
   }
 
   navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      setPracticeMenuOpen(false);
-      setActiveSection(link.dataset.section);
-    });
-  });
-
-  if (practiceToggle) {
-    practiceToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      setPracticeMenuOpen(!(practiceRoot && practiceRoot.classList.contains('open')));
-    });
-  }
-
-  practiceItems.forEach((item) => {
-    item.addEventListener('click', () => {
-      goToPractice(item.dataset.practiceSection, item.dataset.practiceId);
-    });
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!practiceRoot) return;
-    if (!practiceRoot.contains(e.target)) setPracticeMenuOpen(false);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setPracticeMenuOpen(false);
+    link.addEventListener("click", () => setActiveSection(link.dataset.section));
   });
 
   document.querySelectorAll("[data-goto]").forEach((el) => {
@@ -1208,9 +1162,9 @@
     ]);
     if (target && valid.has(target)) {
       setActiveSection(target);
-      if (PRACTICE_SECTIONS.has(target)) {
-        updateActiveSidebarItem('');
-      }
+      if (target === 'search') updateActiveSidebarItem('search-problems');
+      else if (target === 'videos') updateActiveSidebarItem('watch-videos');
+      else if (target === 'icpc-prelims') updateActiveSidebarItem('icpc-prelims');
       return;
     }
     setActiveSection('overview');

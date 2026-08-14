@@ -2,7 +2,7 @@
 
 ## Scenario: Open from sidebar
 Given I am on the guide page
-When I click ACM ICPC Preliminaries in PRACTICE
+When I click ACM ICPC Prelims in the PRACTICE sidebar section
 Then the `icpc-prelims` section is active and contest cards render
 
 ## Scenario: Filter by region

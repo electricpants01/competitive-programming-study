@@ -2,7 +2,7 @@
 
 ## Activation
 
-Sidebar `icpc-prelims` → `setActiveSection('icpc-prelims')`.  
+Sidebar `icpc-prelims` (PRACTICE section, first in sidebar) → `setActiveSection('icpc-prelims')`.  
 Deep-link: `?section=icpc-prelims` or `#icpc-prelims`.
 
 ## Layout

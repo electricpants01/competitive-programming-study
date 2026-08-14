@@ -2,7 +2,7 @@
 
 ## Activation
 
-Sidebar `search-problems` → `setActiveSection('search')`.
+Sidebar `search-problems` (PRACTICE section) → `setActiveSection('search')`.
 
 ## Layout
 

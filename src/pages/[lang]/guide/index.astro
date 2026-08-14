@@ -131,63 +131,6 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     }
     .nav-link:hover { color: var(--text-primary); background: var(--bg-hover); }
     .nav-link.active { background: var(--color-primary); color: #fff; }
-    .nav-practice {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .nav-practice-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .nav-practice-chevron {
-      width: 12px;
-      height: 12px;
-      transition: transform var(--transition);
-    }
-    .nav-practice.open .nav-practice-chevron { transform: rotate(180deg); }
-    .nav-practice-menu {
-      display: none;
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      min-width: 220px;
-      padding: 6px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-md);
-      z-index: 120;
-    }
-    .nav-practice.open .nav-practice-menu { display: flex; flex-direction: column; gap: 2px; }
-    .nav-practice-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      width: 100%;
-      padding: 8px 12px;
-      border: none;
-      border-radius: var(--radius-sm);
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 13px;
-      font-weight: 500;
-      text-align: left;
-      cursor: pointer;
-      transition: background var(--transition), color var(--transition);
-    }
-    .nav-practice-item:hover { background: var(--bg-hover); color: var(--text-primary); }
-    .nav-practice-item.active {
-      background: var(--color-primary-light);
-      color: var(--color-primary);
-    }
-    .nav-practice-item .sidebar-new-badge {
-      font-size: 9px;
-      padding: 1px 5px;
-    }
     .nav-right {
       display: flex; align-items: center; gap: 8px; flex-shrink: 0;
     }
@@ -591,11 +534,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .quick-nav-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    @media (max-width: 480px) {
-      .nav-links > .nav-link { display: none; }
-      .nav-links { flex: 0 0 auto; justify-content: flex-start; }
-      .nav-practice-menu { left: 0; transform: none; }
-    }
+    @media (max-width: 480px) { .nav-links { display: none; } }
 
     /* ── Codeforces Problem Search ── */
     .cf-tabs {
@@ -888,34 +827,6 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     <button class="nav-link" data-section="algorithms">{t.nav.algorithms}</button>
     <button class="nav-link" data-section="roadmap">{t.nav.roadmap}</button>
     <button class="nav-link" data-section="tools">{t.nav.tools}</button>
-    <div class="nav-practice" id="nav-practice">
-      <button
-        class="nav-link nav-practice-toggle"
-        id="nav-practice-toggle"
-        type="button"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        {t.nav.practice}
-        <svg class="nav-practice-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      <div class="nav-practice-menu" role="menu" aria-label={t.nav.practice}>
-        <button class="nav-practice-item" type="button" data-practice-section="search" data-practice-id="search-problems" role="menuitem">
-          <span>{t.sidebar.items['search-problems']}</span>
-          <span class="sidebar-new-badge">NEW</span>
-        </button>
-        <button class="nav-practice-item" type="button" data-practice-section="videos" data-practice-id="watch-videos" role="menuitem">
-          <span>{t.sidebar.items['watch-videos']}</span>
-          <span class="sidebar-new-badge">NEW</span>
-        </button>
-        <button class="nav-practice-item" type="button" data-practice-section="icpc-prelims" data-practice-id="icpc-prelims" role="menuitem">
-          <span>{t.sidebar.items['icpc-prelims']}</span>
-          <span class="sidebar-new-badge">NEW</span>
-        </button>
-      </div>
-    </div>
   </div>
 
   <div class="nav-right">

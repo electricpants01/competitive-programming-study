@@ -20,13 +20,13 @@ And the topic title matches algorithms data for the current lang
 
 ## Scenario: Open Practice → Search Problems
 Given I am on the guide
-When I click `search-problems`
+When I click `search-problems` in the PRACTICE sidebar section
 Then the search section is visible
 And CF UI controls are shown
 
 ## Scenario: Open Practice → Watch Videos
 Given I am on the guide
-When I click `watch-videos`
+When I click `watch-videos` in the PRACTICE sidebar section
 Then the videos section is visible
 
 ## Scenario: Deep-link to Practice section

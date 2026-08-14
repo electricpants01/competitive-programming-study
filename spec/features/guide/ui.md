@@ -21,8 +21,7 @@
 
 ## Sidebar
 
-Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels.
-Practice lives in the top-nav **Practice** dropdown (not the sidebar).
+Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels. PRACTICE is first (above OVERVIEW).
 
 | Key | Items |
 |-----|-------|
@@ -32,6 +31,7 @@ Practice lives in the top-nav **Practice** dropdown (not the sidebar).
 | GRAPH_THEORY | bfs, dfs, dijkstra, union-find |
 | DYNAMIC_PROGRAMMING | dp-1d, dp-2d, knapsack, bitmask-dp |
 | TREES_ADVANCED | segment-tree, fenwick-tree, trie |
+| PRACTICE (first) | search-problems, watch-videos, icpc-prelims |
 | MATHEMATICS | modular-arithmetic, sieve, combinatorics |
 
 Active item gets highlight (`.active` / equivalent).
