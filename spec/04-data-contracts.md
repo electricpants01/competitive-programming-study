@@ -105,7 +105,22 @@ window.__CP_LANG__ = 'en' | 'es';
 window.__CP_T__ = /* parsed Translations object */;
 ```
 
-Injected from Astro via `define:vars` + `JSON.stringify` / `JSON.parse`. Functions in translations (e.g. `problemsFound(n)`) must remain callable after parse — prefer serializable forms or rebuild helpers in the client script if needed.
+Injected from Astro via `define:vars` + `JSON.stringify` / `JSON.parse`.
+
+**Important:** `JSON.stringify` cannot serialize functions. Interpolated strings use **templates** with `{placeholders}`:
+
+| Key | Template example |
+|-----|------------------|
+| `sidebar.progress` | `{pct}% Complete` |
+| `search.problemsFound` | `{n} problems found` |
+| `search.pageOf` | `Page {page} of {total}` |
+| `videos.watchAt` | `▶ Watch at {ts}` |
+| `videos.matchesFound` | `{n} transcript matches` |
+| `quiz.score` | `You got {correct} out of {total} correct!` |
+
+Client scripts format these with a small `fmt(template, vars)` helper.
+
+Also: `search.retryBtn` labels the Retry control shown with `errorMsg`.
 
 ---
 

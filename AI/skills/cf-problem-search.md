@@ -70,16 +70,17 @@ All strings used by the feature must be defined in `src/i18n/types.ts` under `se
 | `sortByRating` | `string` | Sort button label (asc) |
 | `sortByRatingDesc` | `string` | Sort button label (desc) |
 | `sortById` | `string` | Sort button label (by ID) |
-| `problemsFound` | `(n: number) => string` | E.g. "42 problems found" |
+| `problemsFound` | `string` | Template `{n}` — e.g. `"42 problems found"` |
 | `noResults` | `string` | Empty state message |
 | `openProblem` | `string` | "Open ↗" link label |
 | `markSolved` | `string` | Mark-solved button label |
 | `solvedLabel` | `string` | Badge text when solved |
 | `ratingLabel` | `string` | "Rating" prefix in meta row |
 | `noFavorites` | `string` | Favorites empty-state message |
+| `retryBtn` | `string` | Retry button on API error |
 | `prevPage` | `string` | "← Prev" pagination button |
 | `nextPage` | `string` | "Next →" pagination button |
-| `pageOf` | `(page: number, total: number) => string` | E.g. "Page 2 of 10" |
+| `pageOf` | `string` | Template `{page}` `{total}` — e.g. `"Page 2 of 10"` |
 
 ---
 

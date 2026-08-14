@@ -59,7 +59,8 @@ export interface Translations {
 
   sidebar: {
     title: string;
-    progress: (pct: number) => string;
+    /** Template with `{pct}` — e.g. `{pct}% Complete` (JSON-safe for client scripts) */
+    progress: string;
     sections: {
       OVERVIEW: string;
       FUNDAMENTALS: string;
@@ -151,17 +152,21 @@ export interface Translations {
     sortByRating: string;
     sortByRatingDesc: string;
     sortById: string;
-    problemsFound: (n: number) => string;
+    /** Template with `{n}` — e.g. `{n} problems found` */
+    problemsFound: string;
     noResults: string;
     noFavorites: string;
     loading: string;
     errorMsg: string;
+    /** Label for retry control shown with errorMsg */
+    retryBtn: string;
     openProblem: string;
     markSolved: string;
     favorite: string;
     unfavorite: string;
     solvedLabel: string;
-    pageOf: (cur: number, total: number) => string;
+    /** Template with `{page}` and `{total}` */
+    pageOf: string;
     prevPage: string;
     nextPage: string;
     ratingLabel: string;
@@ -176,10 +181,12 @@ export interface Translations {
     clearTags: string;
     noResults: string;
     noTranscript: string;
-    watchAt: (ts: string) => string;
+    /** Template with `{ts}` — e.g. `▶ Watch at {ts}` */
+    watchAt: string;
     viewsLabel: string;
     durationLabel: string;
-    matchesFound: (n: number) => string;
+    /** Template with `{n}` */
+    matchesFound: string;
     openVideo: string;
     langEs: string;
     langEn: string;
@@ -190,9 +197,13 @@ export interface Translations {
     learnTab: string;
     submitBtn: string;
     tryAgainBtn: string;
-    score: (correct: number, total: number) => string;
+    /** Template with `{correct}` and `{total}` */
+    score: string;
     noQuiz: string;
     selectAll: string;
+    correctFeedback: string;
+    wrongFeedback: string;
+    missFeedback: string;
   };
 
   slides: {
@@ -203,6 +214,7 @@ export interface Translations {
     fullscreenExit: string;
     slideOf: string;
     guideLink: string;
+    keyboardHint: string;
     items: Slide[];
   };
 }

@@ -133,6 +133,7 @@ export default defineConfig({
     window.__CP_T__ = JSON.parse(translations);
   </script>
   ```
+  Interpolated copy must use **string templates** (`{n}`, `{pct}`, …) — functions are stripped by `JSON.stringify`. Client code formats with `fmt()`.
 - The `search` key in `Translations` holds all strings for the Codeforces Problem Search feature (`t.search.*`). See `AI/skills/cf-problem-search.md` for the full key list.
 - The `videos` key in `Translations` holds all strings for the CP Video Library feature (`t.videos.*`). See `AI/skills/video-library.md` for the full key list.
 

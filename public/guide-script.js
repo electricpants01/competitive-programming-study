@@ -8,6 +8,14 @@
   const t = window.__CP_T__;
   const lang = window.__CP_LANG__ || 'en';
 
+  /** Replace `{key}` placeholders in i18n templates (JSON-safe strings). */
+  function fmt(template, vars) {
+    if (template == null) return '';
+    return String(template).replace(/\{(\w+)\}/g, (_, key) =>
+      vars[key] != null ? String(vars[key]) : ''
+    );
+  }
+
   const visualizersMap = {
     'arrays-strings': [
       { name: 'VisuAlgo', url: 'https://visualgo.net/en/array' },
@@ -115,7 +123,6 @@
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
-    { key: 'PRACTICE', items: ['watch-videos', 'search-problems'] },
     { key: 'OVERVIEW', items: ['introduction', 'learning-path', 'assessment'] },
     { key: 'FUNDAMENTALS', items: ['complexity-analysis', 'arrays-strings', 'stl-guide'] },
     { key: 'ALGORITHMS', items: ['two-pointers', 'sliding-window', 'binary-search', 'sorting'] },
@@ -123,6 +130,7 @@
     { key: 'DYNAMIC_PROGRAMMING', items: ['dp-1d', 'dp-2d', 'knapsack', 'bitmask-dp'] },
     { key: 'TREES_ADVANCED', items: ['segment-tree', 'fenwick-tree', 'trie'] },
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
+    { key: 'PRACTICE', items: ['search-problems', 'watch-videos'] },
   ];
 
   // Items that display a "NEW" badge — remove an id once the feature is no longer new
@@ -189,11 +197,7 @@
     const total = sidebarSectionDefs.reduce((acc, s) => acc + s.items.length, 0);
     const pct = Math.round((state.visitedItems.length / total) * 100);
     progressFill.style.width = pct + "%";
-    if (typeof t.sidebar.progress === 'function') {
-      progressLabel.textContent = t.sidebar.progress(pct);
-    } else {
-      progressLabel.textContent = pct + "% Complete";
-    }
+    progressLabel.textContent = fmt(t.sidebar.progress, { pct });
   }
 
   // ── Section navigation ────────────────────────────────────────
@@ -340,7 +344,7 @@
   // ── Quiz ──────────────────────────────────────────────────────
   function buildQuizHTML(quiz) {
     if (!quiz || quiz.length === 0) return "";
-    const quizTitle = lang === 'es' ? '🧠 Mini Quiz' : '🧠 Mini Quiz';
+    const quizTitle = t.quiz.tab || 'Quiz';
     const qHtml = quiz.map((q, qi) => {
       const opts = q.options.map((opt, oi) => `
         <button class="quiz-option" data-qi="${qi}" data-oi="${oi}">${esc(opt)}</button>
@@ -352,18 +356,15 @@
           <div class="quiz-feedback" style="display:none"></div>
         </div>`;
     }).join("");
-    const scoreLabel = lang === 'es' ? 'Respuestas correctas: ' : 'Score: ';
-    const submitLabel = lang === 'es' ? 'Ver Resultados' : 'See Results';
-    const retryLabel = lang === 'es' ? 'Reintentar' : 'Retry';
     return `
       <div class="modal-section quiz-section" id="quiz-section">
-        <div class="modal-section-title">${quizTitle}</div>
+        <div class="modal-section-title">🧠 ${quizTitle}</div>
         <div class="quiz-body">
           ${qHtml}
           <div class="quiz-footer">
-            <button class="quiz-submit-btn" id="quiz-submit">${submitLabel}</button>
-            <button class="quiz-retry-btn" id="quiz-retry" style="display:none">${retryLabel}</button>
-            <div class="quiz-score" id="quiz-score" style="display:none">${scoreLabel}<span id="quiz-score-val"></span></div>
+            <button class="quiz-submit-btn" id="quiz-submit">${t.quiz.submitBtn}</button>
+            <button class="quiz-retry-btn" id="quiz-retry" style="display:none">${t.quiz.tryAgainBtn}</button>
+            <div class="quiz-score" id="quiz-score" style="display:none"></div>
           </div>
         </div>
       </div>`;
@@ -377,7 +378,6 @@
     const submitBtn = document.getElementById('quiz-submit');
     const retryBtn = document.getElementById('quiz-retry');
     const scoreEl = document.getElementById('quiz-score');
-    const scoreVal = document.getElementById('quiz-score-val');
 
     // Option selection
     section.querySelectorAll('.quiz-option').forEach(btn => {
@@ -391,34 +391,34 @@
     // Submit
     submitBtn.addEventListener('click', () => {
       let correct = 0;
-      section.querySelectorAll('.quiz-question').forEach((qEl, qi) => {
+      section.querySelectorAll('.quiz-question').forEach((qEl) => {
         const answer = parseInt(qEl.dataset.answer, 10);
         const selected = qEl.querySelector('.quiz-option.selected');
         const feedback = qEl.querySelector('.quiz-feedback');
         qEl.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
         if (!selected) {
-          feedback.textContent = lang === 'es' ? '⚠️ Sin respuesta' : '⚠️ No answer selected';
+          feedback.textContent = t.quiz.missFeedback;
           feedback.className = 'quiz-feedback quiz-feedback-miss';
         } else {
           const oi = parseInt(selected.dataset.oi, 10);
           if (oi === answer) {
             correct++;
             selected.classList.add('correct');
-            feedback.textContent = lang === 'es' ? '✅ ¡Correcto!' : '✅ Correct!';
+            feedback.textContent = t.quiz.correctFeedback;
             feedback.className = 'quiz-feedback quiz-feedback-correct';
           } else {
             selected.classList.add('wrong');
             qEl.querySelectorAll('.quiz-option').forEach(b => {
               if (parseInt(b.dataset.oi, 10) === answer) b.classList.add('correct');
             });
-            feedback.textContent = lang === 'es' ? '❌ Incorrecto' : '❌ Incorrect';
+            feedback.textContent = t.quiz.wrongFeedback;
             feedback.className = 'quiz-feedback quiz-feedback-wrong';
           }
         }
         feedback.style.display = 'block';
       });
       const total = quiz.length;
-      scoreVal.textContent = `${correct} / ${total}`;
+      scoreEl.textContent = fmt(t.quiz.score, { correct, total });
       scoreEl.style.display = 'inline-flex';
       submitBtn.style.display = 'none';
       retryBtn.style.display = 'inline-block';
@@ -646,17 +646,20 @@
       showStatus(t.search.loading, false);
       searchBtn.disabled = true;
       try {
-        const resp = await fetch('https://codeforces.com/api/problemset.problems');
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        const data = await resp.json();
-        if (data.status !== 'OK') throw new Error('CF API error');
-        cfState.allProblems = (data.result.problems || []).filter(p => p.rating);
+        // Fetch only when needed (spec: fetch if needed)
+        if (cfState.allProblems.length === 0) {
+          const resp = await fetch('https://codeforces.com/api/problemset.problems');
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          const data = await resp.json();
+          if (data.status !== 'OK') throw new Error('CF API error');
+          cfState.allProblems = (data.result.problems || []).filter(p => p.rating);
+        }
         cfState.page = 1;
         applyFilterSort();
         hideStatus();
         renderPage();
       } catch (_) {
-        showStatus(t.search.errorMsg, true);
+        showStatus(t.search.errorMsg, true, true);
       } finally {
         searchBtn.disabled = false;
       }
@@ -699,10 +702,10 @@
         </div>
         <div class="cf-problem-actions">
           <a class="cf-action-btn" href="${url}" target="_blank" rel="noopener">${t.search.openProblem || 'Open ↗'}</a>
-          <button class="cf-action-btn${isSolved ? ' solved-active' : ''}" data-action="solve" data-key="${key}">
+          <button class="cf-action-btn${isSolved ? ' solved-active' : ''}" data-action="solve" data-key="${key}" title="${esc(t.search.markSolved || 'Solved')}">
             ${isSolved ? '✅' : (t.search.markSolved || 'Solved')}
           </button>
-          <button class="cf-action-btn${isFav ? ' fav-active' : ''}" data-action="fav" data-key="${key}">
+          <button class="cf-action-btn${isFav ? ' fav-active' : ''}" data-action="fav" data-key="${key}" title="${esc(isFav ? (t.search.unfavorite || 'Unfavorite') : (t.search.favorite || 'Favorite'))}">
             ${isFav ? '⭐' : '☆'}
           </button>
         </div>
@@ -753,7 +756,7 @@
 
       sortRow.style.display = total > 0 ? 'flex' : 'none';
       countEl.style.display = total > 0 ? 'block' : 'none';
-      if (typeof t.search.problemsFound === 'function') countEl.textContent = t.search.problemsFound(total);
+      countEl.textContent = fmt(t.search.problemsFound, { n: total });
 
       if (total === 0) {
         resultsList.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">${t.search.noResults}</div>`;
@@ -785,8 +788,8 @@
       for (let i = start; i <= end; i++) {
         html += `<button class="cf-page-btn${i === page ? ' active' : ''}" data-p="${i}">${i}</button>`;
       }
-      if (typeof t.search.pageOf === 'function') {
-        html += `<span style="font-size:12px;color:var(--text-muted);padding:0 6px">${t.search.pageOf(page, totalPages)}</span>`;
+      if (t.search.pageOf) {
+        html += `<span style="font-size:12px;color:var(--text-muted);padding:0 6px">${fmt(t.search.pageOf, { page, total: totalPages })}</span>`;
       }
       html += `<button class="cf-page-btn" id="cf-next" ${page === totalPages ? 'disabled' : ''}>${t.search.nextPage}</button>`;
       paginationEl.innerHTML = html;
@@ -800,12 +803,23 @@
       if (nextBtn) nextBtn.addEventListener('click', () => { if (cfState.page < totalPages) { cfState.page++; renderPage(); } });
     }
 
-    function showStatus(msg, isError) {
-      statusEl.textContent = msg;
+    function showStatus(msg, isError, withRetry) {
       statusEl.className = 'cf-status' + (isError ? ' error' : '');
       statusEl.style.display = 'block';
+      if (withRetry) {
+        statusEl.innerHTML = `${esc(msg)} <button type="button" class="cf-retry-btn" id="cf-retry-btn">${esc(t.search.retryBtn || 'Retry')}</button>`;
+        const retryBtn = document.getElementById('cf-retry-btn');
+        if (retryBtn) {
+          retryBtn.addEventListener('click', () => {
+            cfState.allProblems = []; // force refetch
+            doSearch();
+          });
+        }
+      } else {
+        statusEl.textContent = msg;
+      }
     }
-    function hideStatus() { statusEl.style.display = 'none'; }
+    function hideStatus() { statusEl.style.display = 'none'; statusEl.innerHTML = ''; }
   }
 
   // ── Video Library ─────────────────────────────────────────────
@@ -819,8 +833,10 @@
     // Populate static heading strings
     const titleEl    = document.getElementById('vl-title');
     const subtitleEl = document.getElementById('vl-subtitle');
+    const tagsLabelEl = document.getElementById('vl-tags-label');
     if (titleEl)    titleEl.textContent    = t.videos.title;
     if (subtitleEl) subtitleEl.textContent = t.videos.subtitle;
+    if (tagsLabelEl) tagsLabelEl.textContent = t.videos.tagsLabel;
 
     const queryInput  = document.getElementById('vl-query');
     const resultsEl   = document.getElementById('vl-results');
@@ -942,22 +958,29 @@
 
       resultsEl.innerHTML = filtered.map(v => {
         // Find transcript matches
-        const matchedSegs = q ? (v.segments || []).filter(seg => seg.text.toLowerCase().includes(q)).slice(0, 5) : [];
+        const segs = v.segments || [];
+        const matchedSegs = q ? segs.filter(seg => seg.text.toLowerCase().includes(q)).slice(0, 5) : [];
         const ytBase      = 'https://www.youtube.com/watch?v=' + v.id;
+        const titleMatched = q && v.title.toLowerCase().includes(q);
         const segsHtml    = matchedSegs.length > 0
           ? matchedSegs.map(seg => {
               const ts = fmtTime(seg.t);
               const href = ytBase + '&t=' + seg.t + 's';
               const snippet = esc(seg.text.slice(0, 100));
               return `<a class="vl-segment" href="${href}" target="_blank" rel="noopener">
-                <span class="vl-seg-ts">${typeof t.videos.watchAt === 'function' ? t.videos.watchAt(ts) : '▶ ' + ts}</span>
+                <span class="vl-seg-ts">${fmt(t.videos.watchAt, { ts })}</span>
                 <span class="vl-seg-text">${snippet}…</span>
               </a>`;
             }).join('')
           : '';
 
         const matchCount = matchedSegs.length > 0
-          ? `<span class="vl-match-count">${typeof t.videos.matchesFound === 'function' ? t.videos.matchesFound(matchedSegs.length) : matchedSegs.length + ' matches'}</span>`
+          ? `<span class="vl-match-count">${fmt(t.videos.matchesFound, { n: matchedSegs.length })}</span>`
+          : '';
+
+        // Spec: show noTranscript when title matches but no segment text is available
+        const noTranscriptNote = (q && titleMatched && segs.length === 0)
+          ? `<span class="vl-no-transcript">${esc(t.videos.noTranscript)}</span>`
           : '';
 
         return `<div class="vl-card">
@@ -970,8 +993,10 @@
             <div class="vl-meta">
               <span class="vl-channel">${esc(v.channelName)}</span>
               ${(v.tags || []).slice(0, 4).map(tag => `<span class="vl-badge">${esc(tag)}</span>`).join('')}
+              <a class="vl-open" href="${ytBase}" target="_blank" rel="noopener">${esc(t.videos.openVideo)}</a>
             </div>
             ${matchCount}
+            ${noTranscriptNote}
             ${segsHtml ? `<div class="vl-segments">${segsHtml}</div>` : ''}
           </div>
         </div>`;
@@ -986,7 +1011,24 @@
   buildSidebar();
   buildAlgoGrid();
   updateProgress();
-  setActiveSection("overview");
+
+  // Deep-link: ?section=search|videos|… or #search / #videos (spec G-3)
+  function applySectionFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get('section');
+    const fromHash = (window.location.hash || '').replace(/^#/, '');
+    const target = fromQuery || fromHash;
+    const valid = new Set(['overview', 'algorithms', 'roadmap', 'tools', 'search', 'videos', 'detail']);
+    if (target && valid.has(target)) {
+      setActiveSection(target);
+      if (target === 'search') updateActiveSidebarItem('search-problems');
+      else if (target === 'videos') updateActiveSidebarItem('watch-videos');
+      return;
+    }
+    setActiveSection('overview');
+  }
+  applySectionFromUrl();
+
   initCfSearch();
   initVideoSearch();
 })();
