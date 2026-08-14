@@ -60,6 +60,13 @@ AI/
   agents/             ← Agent definitions
   skills/             ← Skill guides
 
+spec/                 ← Product/engineering SSoT (overview, ADRs, features)
+  README.md
+  00-overview.md … 11-deployment.md
+  adr/
+  features/
+  templates/
+
 Makefile              ← Run `make sync-ai` to regenerate AI tool configs
 ```
 
