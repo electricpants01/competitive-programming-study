@@ -13,10 +13,10 @@ Binary PDFs are stored in **`public/icpc-prelims/`** so Astro / GitHub Pages can
 | `2025-fase-zero-br.pdf` | Maratona SBC Fase Zero 2025 | preliminary | [CF gym](https://codeforces.com/gym/105925) |
 | `2025-brazil-subregional-en.pdf` | Sub-Regional 2025 (EN) | subregional | [maratona.sbc.org.br](https://maratona.sbc.org.br/subbr-2025/maratona_en.pdf) |
 | `2025-brazil-subregional-pt.pdf` | Sub-Regional Brasil 2025 (PT) | subregional | [maratona.sbc.org.br](https://maratona.sbc.org.br/subbr-2025/maratona.pdf) |
-| `2025-latam-regional.pdf` | LatAm Regional 2025 | regional | [scorelatam](https://scorelatam.naquadah.com.br/latam-2025/contest.pdf) |
-| `2024-latam-regional.pdf` | LatAm Regional 2024 | regional | [scorelatam](https://scorelatam.naquadah.com.br/latam-2024/contest.pdf) |
 | `2024-ntu-team-preli.pdf` | NTU Team Preliminary 2024 | preliminary | [CF gym](https://codeforces.com/gym/105292) |
 | `2024-seoul-nationwide.pdf` | Seoul Nationwide Internet 2024 | qualifier | [icpckorea.org](https://icpckorea.org/static/2024_problemset.pdf) |
+
+> Full LatAm regional finals moved to [icpc-regionals](../../icpc-regionals/docs/README.md).
 
 ## Hubs for more years
 

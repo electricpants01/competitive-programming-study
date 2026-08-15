@@ -74,7 +74,25 @@ Full catalog notes: [features/icpc-prelims/data.md](./features/icpc-prelims/data
 
 ---
 
-## 4. Codeforces API (runtime)
+## 4. ICPC regionals data (`window.icpcRegionalsData`)
+
+Loaded from `public/icpc-regionals-data.js`. PDFs in `public/icpc-regionals/`.
+
+```js
+const icpcRegionalsData = {
+  regions: [{ id, name }],
+  contests: [{
+    id, year, region,
+    title, file, source, notes?, editorial?,
+  }],
+};
+```
+
+Full catalog notes: [features/icpc-regionals/data.md](./features/icpc-regionals/data.md).
+
+---
+
+## 5. Codeforces API (runtime)
 
 ```
 GET https://codeforces.com/api/problemset.problems
@@ -105,7 +123,7 @@ Problem key format: `` `${contestId}-${index}` ``.
 
 ---
 
-## 5. localStorage
+## 6. localStorage
 
 | Key | Shape | Purpose |
 |-----|-------|---------|
@@ -116,7 +134,7 @@ Migration: if favorites load as a legacy `string[]`, reset to `{}` and remove th
 
 ---
 
-## 6. Client translation bridge
+## 7. Client translation bridge
 
 ```js
 window.__CP_LANG__ = 'en' | 'es';

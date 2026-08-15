@@ -56,6 +56,7 @@ export const en: Translations = {
       'search-problems': '🔍 Search Problems',
       'watch-videos': '🎬 Watch Videos',
       'icpc-prelims': '🏆 ACM ICPC Prelims',
+      'icpc-regionals': '🌍 ACM ICPC Regionals',
     },
   },
 
@@ -344,6 +345,20 @@ export const en: Translations = {
     keyInsight: 'Key insight',
     solutionAnalysis: 'How to solve it',
     complexity: 'Complexity',
+    noResults: 'No problem sets match these filters.',
+    sourceLabel: 'Source',
+    countFound: '{n} problem sets',
+  },
+
+  icpcRegionals: {
+    title: 'ACM ICPC Regionals',
+    subtitle:
+      'Official problem-set PDFs from ICPC regional finals — NWERC, SWERC, LatAm, Seoul, Amritapuri, and more.',
+    regionAll: 'All Regions',
+    openPdf: 'Open PDF ↗',
+    download: 'Download',
+    editorial: 'Editorial',
+    closeEditorial: 'Close editorial',
     noResults: 'No problem sets match these filters.',
     sourceLabel: 'Source',
     countFound: '{n} problem sets',

@@ -31,7 +31,7 @@ Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels. PRACTICE is 
 | GRAPH_THEORY | bfs, dfs, dijkstra, union-find |
 | DYNAMIC_PROGRAMMING | dp-1d, dp-2d, knapsack, bitmask-dp |
 | TREES_ADVANCED | segment-tree, fenwick-tree, trie |
-| PRACTICE (first) | search-problems, watch-videos, icpc-prelims |
+| PRACTICE (first) | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 | MATHEMATICS | modular-arithmetic, sieve, combinatorics |
 
 Active item gets highlight (`.active` / equivalent).
@@ -48,6 +48,7 @@ Active item gets highlight (`.active` / equivalent).
 | search | CF Problem Search UI |
 | videos | Video Library UI |
 | icpc-prelims | ACM ICPC Preliminaries PDF library |
+| icpc-regionals | ACM ICPC Regionals PDF library |
 
 ## Topic detail
 

@@ -9,7 +9,7 @@ The Guide is the main learning surface: top nav, sidebar roadmap, and multi-sect
 - Navigate the CP curriculum via sidebar sections
 - Open topic detail panels from cards / sidebar items
 - Switch visible page sections without full page reloads
-- Host Practice features (`search`, `videos`, `icpc-prelims`) as sections opened from the first sidebar section
+- Host Practice features (`search`, `videos`, `icpc-prelims`, `icpc-regionals`) as sections opened from the first sidebar section
 
 ## Non-goals
 
@@ -32,5 +32,5 @@ The Guide is the main learning surface: top nav, sidebar roadmap, and multi-sect
 ## Key rules
 
 - Only one `data-section` visible at a time
-- `search-problems` / `watch-videos` / `icpc-prelims` call `setActiveSection` instead of opening algo detail
+- `search-problems` / `watch-videos` / `icpc-prelims` / `icpc-regionals` call `setActiveSection` instead of opening algo detail
 - Sidebar labels from `t.sidebar.*`

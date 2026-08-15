@@ -84,6 +84,7 @@ The guide page (`src/pages/[lang]/guide/index.astro`) renders multiple `<section
 | `search` | sidebar item `search-problems` (PRACTICE section) |
 | `videos` | sidebar item `watch-videos` (PRACTICE section) |
 | `icpc-prelims` | sidebar item `icpc-prelims` (PRACTICE section) |
+| `icpc-regionals` | sidebar item `icpc-regionals` (PRACTICE section) |
 
 The **search** section hosts the Codeforces Problem Search feature. See `AI/skills/cf-problem-search.md` for full details.
 The **videos** section hosts the CP Video Library feature. See `AI/skills/video-library.md` for full details.
@@ -101,9 +102,9 @@ The **videos** section hosts the CP Video Library feature. See `AI/skills/video-
 | `DYNAMIC_PROGRAMMING` | dp-1d, dp-2d, knapsack, bitmask-dp |
 | `TREES_ADVANCED` | segment-tree, fenwick-tree, trie |
 | `MATHEMATICS` | modular-arithmetic, sieve, combinatorics |
-| `PRACTICE` | search-problems, watch-videos, icpc-prelims |
+| `PRACTICE` | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 
-`PRACTICE` is the **first** sidebar section (above `OVERVIEW`). Its items call `setActiveSection('search' | 'videos' | 'icpc-prelims')` instead of opening an algorithm detail panel.
+`PRACTICE` is the **first** sidebar section (above `OVERVIEW`). Its items call `setActiveSection('search' | 'videos' | 'icpc-prelims' | 'icpc-regionals')` instead of opening an algorithm detail panel.
 
 ## GitHub Pages Deployment
 

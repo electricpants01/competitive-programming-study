@@ -28,6 +28,8 @@ public/
   videos-data-es.js
   icpc-prelims-data.js
   icpc-prelims/            # vendored ICPC prelim/qualifier PDFs
+  icpc-regionals-data.js
+  icpc-regionals/          # vendored ICPC regional finals PDFs
   favicon.*
 ```
 
@@ -58,4 +60,4 @@ public/
 
 ## Feature isolation
 
-Prefer feature-prefixed CSS classes (`.cf-*`, `.vl-*`, `.ip-*`) and init functions (`initCfSearch`, `initVideoSearch`, `initIcpcPrelims`) so sections do not leak state.
+Prefer feature-prefixed CSS classes (`.cf-*`, `.vl-*`, `.ip-*`) and init functions (`initCfSearch`, `initVideoSearch`, `initIcpcPrelims`, `initIcpcRegionals`) so sections do not leak state.

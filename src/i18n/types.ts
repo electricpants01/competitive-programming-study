@@ -216,6 +216,20 @@ export interface Translations {
     countFound: string;
   };
 
+  icpcRegionals: {
+    title: string;
+    subtitle: string;
+    regionAll: string;
+    openPdf: string;
+    download: string;
+    editorial: string;
+    closeEditorial: string;
+    noResults: string;
+    sourceLabel: string;
+    /** Template with `{n}` */
+    countFound: string;
+  };
+
   quiz: {
     tab: string;
     learnTab: string;

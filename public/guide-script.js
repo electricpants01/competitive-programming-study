@@ -124,7 +124,7 @@
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
-    { key: 'PRACTICE', items: ['search-problems', 'watch-videos', 'icpc-prelims'] },
+    { key: 'PRACTICE', items: ['search-problems', 'watch-videos', 'icpc-prelims', 'icpc-regionals'] },
     { key: 'OVERVIEW', items: ['introduction', 'learning-path', 'assessment'] },
     { key: 'FUNDAMENTALS', items: ['complexity-analysis', 'arrays-strings', 'stl-guide'] },
     { key: 'ALGORITHMS', items: ['two-pointers', 'sliding-window', 'binary-search', 'sorting'] },
@@ -139,10 +139,11 @@
     'search-problems': 'search',
     'watch-videos': 'videos',
     'icpc-prelims': 'icpc-prelims',
+    'icpc-regionals': 'icpc-regionals',
   };
 
   // Items that display a "NEW" badge — remove an id once the feature is no longer new
-  const NEW_ITEMS = new Set(['watch-videos', 'search-problems', 'icpc-prelims']);
+  const NEW_ITEMS = new Set(['watch-videos', 'search-problems', 'icpc-prelims', 'icpc-regionals']);
 
   // ── Build sidebar ─────────────────────────────────────────────
   function buildSidebar() {
@@ -1245,6 +1246,117 @@
     render();
   }
 
+  // ── ICPC Regionals library ────────────────────────────────────
+  function initIcpcRegionals() {
+    const data = (typeof icpcRegionalsData !== 'undefined') ? icpcRegionalsData : null;
+    const sectionEl = document.querySelector('.page-section[data-section="icpc-regionals"]');
+    if (!sectionEl) return;
+
+    const ir = t.icpcRegionals || {};
+    const titleEl = document.getElementById('ir-title');
+    const subtitleEl = document.getElementById('ir-subtitle');
+    const regionRow = document.getElementById('ir-region-row');
+    const countEl = document.getElementById('ir-count');
+    const resultsEl = document.getElementById('ir-results');
+    if (!resultsEl) return;
+
+    if (titleEl) titleEl.textContent = ir.title || 'ACM ICPC Regionals';
+    if (subtitleEl) subtitleEl.textContent = ir.subtitle || '';
+
+    if (!data || !data.contests || data.contests.length === 0) {
+      resultsEl.innerHTML = `<p class="ip-empty">${ir.noResults || 'No problem sets found.'}</p>`;
+      return;
+    }
+
+    const regionName = (id) => {
+      const r = (data.regions || []).find((x) => x.id === id);
+      return r ? r.name : id;
+    };
+
+    const irState = { region: '' };
+
+    function setActiveButtons(row, activeValue) {
+      if (!row) return;
+      row.querySelectorAll('button').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.value === activeValue);
+      });
+    }
+
+    function buildFilterRow(row, options, allLabel, onPick) {
+      if (!row) return;
+      row.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'ip-filter-btn active';
+      allBtn.dataset.value = '';
+      allBtn.textContent = allLabel;
+      allBtn.addEventListener('click', () => onPick(''));
+      row.appendChild(allBtn);
+      options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = 'ip-filter-btn';
+        btn.dataset.value = opt.value;
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => onPick(opt.value));
+        row.appendChild(btn);
+      });
+    }
+
+    buildFilterRow(
+      regionRow,
+      (data.regions || []).map((r) => ({ value: r.id, label: r.name })),
+      ir.regionAll || 'All Regions',
+      (value) => {
+        irState.region = value;
+        setActiveButtons(regionRow, value);
+        render();
+      }
+    );
+
+    function render() {
+      let list = data.contests.slice();
+      if (irState.region) list = list.filter((c) => c.region === irState.region);
+      list.sort((a, b) => (b.year - a.year) || String(a.title).localeCompare(String(b.title)));
+
+      if (countEl) {
+        countEl.textContent = fmt(ir.countFound || '{n} problem sets', { n: list.length });
+        countEl.style.display = 'block';
+      }
+
+      if (list.length === 0) {
+        resultsEl.innerHTML = `<p class="ip-empty">${ir.noResults || 'No problem sets found.'}</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = list.map((c) => {
+        const href = `${base}icpc-regionals/${c.file}`;
+        const notes = c.notes
+          ? `<div class="ip-notes">${c.notes}</div>`
+          : '';
+        const source = c.source
+          ? `<a class="ip-source" href="${c.source}" target="_blank" rel="noopener noreferrer">${ir.sourceLabel || 'Source'} ↗</a>`
+          : '';
+        return `
+          <div class="ip-card">
+            <div class="ip-year">${c.year}</div>
+            <div class="ip-info">
+              <div class="ip-card-title">${c.title}</div>
+              <div class="ip-meta">
+                <span class="ip-badge">${regionName(c.region)}</span>
+                ${source}
+              </div>
+              ${notes}
+              <div class="ip-actions">
+                <a class="ip-btn ip-btn-primary" href="${href}" target="_blank" rel="noopener noreferrer">${ir.openPdf || 'Open PDF'}</a>
+                <a class="ip-btn" href="${href}" download="${c.file}">${ir.download || 'Download'}</a>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    render();
+  }
+
   // ── Init ──────────────────────────────────────────────────────
   applyTheme(state.theme);
   buildSidebar();
@@ -1258,13 +1370,15 @@
     const fromHash = (window.location.hash || '').replace(/^#/, '');
     const target = fromQuery || fromHash;
     const valid = new Set([
-      'overview', 'algorithms', 'roadmap', 'tools', 'search', 'videos', 'detail', 'icpc-prelims',
+      'overview', 'algorithms', 'roadmap', 'tools', 'search', 'videos', 'detail',
+      'icpc-prelims', 'icpc-regionals',
     ]);
     if (target && valid.has(target)) {
       setActiveSection(target);
       if (target === 'search') updateActiveSidebarItem('search-problems');
       else if (target === 'videos') updateActiveSidebarItem('watch-videos');
       else if (target === 'icpc-prelims') updateActiveSidebarItem('icpc-prelims');
+      else if (target === 'icpc-regionals') updateActiveSidebarItem('icpc-regionals');
       return;
     }
     setActiveSection('overview');
@@ -1274,4 +1388,5 @@
   initCfSearch();
   initVideoSearch();
   initIcpcPrelims();
+  initIcpcRegionals();
 })();

@@ -1221,6 +1221,17 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </div>
     </section>
 
+    <!-- ── ICPC Regionals Section ───────────────────────────── -->
+    <section class="page-section" data-section="icpc-regionals">
+      <div class="section-header">
+        <h2 id="ir-title"></h2>
+        <p id="ir-subtitle" class="section-subtitle"></p>
+      </div>
+      <div id="ir-region-row" class="ip-filter-row"></div>
+      <div id="ir-count" class="ip-count"></div>
+      <div id="ir-results" class="ip-results"></div>
+    </section>
+
   </main>
 </div>
 
@@ -1228,6 +1239,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 <script is:inline src={`${base}videos-data-${lang}.js`}></script>
 <script is:inline src={`${base}icpc-prelims-data.js`}></script>
 <script is:inline src={`${base}icpc-prelims/editorials/2025-dhaka-online-preli.js`}></script>
+<script is:inline src={`${base}icpc-regionals-data.js`}></script>
 <script is:inline src={`${base}guide-script.js`}></script>
 </body>
 </html>

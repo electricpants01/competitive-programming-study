@@ -12,7 +12,7 @@
 
 Sidebar item `id` must match `algorithmsData` keys for topic panels.
 
-Practice IDs (`search-problems`, `watch-videos`, `icpc-prelims`) live in the first sidebar section and do not require algorithmsData entries.
+Practice IDs (`search-problems`, `watch-videos`, `icpc-prelims`, `icpc-regionals`) live in the first sidebar section and do not require algorithmsData entries.
 
 ## Related
 
