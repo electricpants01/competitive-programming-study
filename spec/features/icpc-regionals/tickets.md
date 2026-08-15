@@ -13,5 +13,6 @@ Download curated regional finals PDFs into `public/icpc-regionals/`.
 Keep LatAm 2024/2025 regional PDFs only in the regionals feature (remove from prelims data).
 
 ## IR-4 — Expand Asia / NA regional coverage
-**Status:** Open
-Add more years (Dhaka regional onsite, ECNA / Mid-Atlantic, etc.) as PDFs become public.
+**Status:** Partial  
+Dhaka regional finals 2015–2025 added from CF blog entry 136296. Still open for
+ECNA / Mid-Atlantic / other Asia regionals as PDFs become public.

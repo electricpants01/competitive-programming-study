@@ -19,8 +19,10 @@ Register learning editorials (no C++ in UI) for all catalog contests, with match
 `solutions/icpc-*` C++17 folders. Brazil EN/PT share one editorial.
 
 ## IP-4 — Expand Dhaka archive years
-**Status:** Open  
-Pull additional years from https://codeforces.com/blog/entry/136296 into the catalog.
+**Status:** Done  
+Pulled prelim + regional PDFs for 2015–2025 from https://codeforces.com/blog/entry/136296
+into `public/icpc-prelims/` and `public/icpc-regionals/`. 2023/2024 prelims used Wayback
+mirrors (live bapsoj.org now serves an SPA shell instead of the PDF).
 
 ## IP-5 — Optional: shrink large PDFs
 **Status:** Open  

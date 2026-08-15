@@ -65,6 +65,7 @@
     activeView: "home",
     activeTopicId: null,
     sidebarOpen: false,
+    sidebarCollapsed: false,
     visitedItems: JSON.parse(localStorage.getItem("cp-visited") || "[]"),
   };
 
@@ -140,21 +141,39 @@
     );
   }
 
-  // ── Sidebar open (mobile drawer) ─────────────────────────────
+  // ── Sidebar: mobile drawer + desktop collapse ────────────────
+  const desktopQuery = window.matchMedia("(min-width: 768px)");
+
   function setSidebarOpen(open) {
     state.sidebarOpen = !!open;
     if (sidebarEl) sidebarEl.classList.toggle("is-open", state.sidebarOpen);
     if (sidebarBackdrop) sidebarBackdrop.classList.toggle("is-open", state.sidebarOpen);
   }
 
+  function setSidebarCollapsed(collapsed) {
+    state.sidebarCollapsed = !!collapsed;
+    if (sidebarEl) sidebarEl.classList.toggle("is-collapsed", state.sidebarCollapsed);
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.setAttribute("aria-expanded", String(!state.sidebarCollapsed));
+    }
+    localStorage.setItem("cp-sidebar-collapsed", state.sidebarCollapsed ? "1" : "0");
+  }
+
   if (sidebarToggleBtn) {
-    sidebarToggleBtn.addEventListener("click", () =>
-      setSidebarOpen(!state.sidebarOpen)
-    );
+    sidebarToggleBtn.addEventListener("click", () => {
+      if (desktopQuery.matches) setSidebarCollapsed(!state.sidebarCollapsed);
+      else setSidebarOpen(!state.sidebarOpen);
+    });
   }
   if (sidebarBackdrop) {
     sidebarBackdrop.addEventListener("click", () => setSidebarOpen(false));
   }
+  // The drawer state has no meaning on desktop and would strand the backdrop
+  desktopQuery.addEventListener("change", (event) => {
+    if (event.matches) setSidebarOpen(false);
+  });
+
+  setSidebarCollapsed(localStorage.getItem("cp-sidebar-collapsed") === "1");
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [

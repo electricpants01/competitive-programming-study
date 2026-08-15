@@ -260,6 +260,11 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       background: var(--action-bg); color: var(--action-fg);
     }
 
+    @media (min-width: 768px) {
+      .site-sidebar { transition: width .2s ease; }
+      .site-sidebar.is-collapsed { width: 0; border-right-width: 0; }
+    }
+
     @media (max-width: 767px) {
       .site-sidebar {
         position: fixed; top: var(--header-height); bottom: 0; left: 0;

@@ -19,7 +19,8 @@
 
 ## Header
 
-- Sidebar toggle (mobile drawer + desktop collapse optional)
+- Sidebar toggle: `< 768px` opens the drawer (`.is-open` + backdrop), `≥ 768px` collapses the
+  sidebar to width 0 (`.is-collapsed`, persisted in `cp-sidebar-collapsed`)
 - Logo tile (inverted): white square / black mark in dark theme
 - Brand link → home view
 - Breadcrumb shows current topic or practice label
@@ -32,6 +33,7 @@ Accordion sections (order):
 
 | Key | Items |
 |-----|-------|
+| PRACTICE | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 | OVERVIEW | introduction, learning-path, assessment |
 | FUNDAMENTALS | complexity-analysis, arrays-strings, stl-guide |
 | ALGORITHMS | two-pointers, sliding-window, binary-search, sorting |
@@ -39,9 +41,9 @@ Accordion sections (order):
 | DYNAMIC_PROGRAMMING | dp-1d, dp-2d, knapsack, bitmask-dp |
 | TREES_ADVANCED | segment-tree, fenwick-tree, trie |
 | MATHEMATICS | modular-arithmetic, sieve, combinatorics |
-| PRACTICE | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 
-PRACTICE last. Accordion summaries uppercase 11px tracking.
+PRACTICE first (above OVERVIEW). Accordion summaries uppercase 11px tracking.
+Selecting an item always closes the mobile drawer; the desktop collapsed state survives reload.
 
 ## Views
 

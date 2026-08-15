@@ -95,6 +95,7 @@ The **videos** section hosts the CP Video Library feature. See `AI/skills/video-
 
 | Key | Items |
 |-----|-------|
+| `PRACTICE` | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 | `OVERVIEW` | introduction, learning-path, assessment |
 | `FUNDAMENTALS` | complexity-analysis, arrays-strings, stl-guide |
 | `ALGORITHMS` | two-pointers, sliding-window, binary-search, sorting |
@@ -102,7 +103,6 @@ The **videos** section hosts the CP Video Library feature. See `AI/skills/video-
 | `DYNAMIC_PROGRAMMING` | dp-1d, dp-2d, knapsack, bitmask-dp |
 | `TREES_ADVANCED` | segment-tree, fenwick-tree, trie |
 | `MATHEMATICS` | modular-arithmetic, sieve, combinatorics |
-| `PRACTICE` | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 
 `PRACTICE` is the **first** sidebar section (above `OVERVIEW`). Its items call `setActiveSection('search' | 'videos' | 'icpc-prelims' | 'icpc-regionals')` instead of opening an algorithm detail panel.
 

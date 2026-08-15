@@ -5,6 +5,17 @@ This folder documents provenance.
 
 | Local file | Contest | Upstream |
 |------------|---------|----------|
+| `2025-dhaka-regional.pdf` | Asia Dhaka Regional 2025 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2024-dhaka-regional.pdf` | Asia Dhaka Regional 2024 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2023-dhaka-regional.pdf` | Asia Dhaka Regional 2023 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2022-dhaka-regional.pdf` | Asia Dhaka Regional 2022 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2021-dhaka-regional.pdf` | Asia Dhaka Regional 2021 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2020-dhaka-regional.pdf` | Asia Dhaka Regional 2020 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2019-dhaka-regional.pdf` | Asia Dhaka Regional 2019 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2018-dhaka-regional.pdf` | Asia Dhaka Regional 2018 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2017-dhaka-regional.pdf` | Asia Dhaka Regional 2017 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2016-dhaka-regional.pdf` | Asia Dhaka Regional 2016 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
+| `2015-dhaka-regional.pdf` | Asia Dhaka Regional 2015 | [CF blog 136296](https://codeforces.com/blog/entry/136296) |
 | `2025-nwerc.pdf` | NWERC 2025 | https://2025.nwerc.eu/problem-set.pdf |
 | `2024-nwerc.pdf` | NWERC 2024 | https://2024.nwerc.eu/main/problem-set.pdf |
 | `2024-swerc.pdf` | SWERC 2024 | https://swerc.eu/2024/problemset/main_problemset.pdf |
@@ -16,6 +27,7 @@ This folder documents provenance.
 
 ## Hubs for more years
 
+- Dhaka regionals 2015–2025 (done): https://codeforces.com/blog/entry/136296
 - ICPC Archives: https://icpcarchive.github.io/
 - NWERC: https://nwerc.eu / yearly contest sites
 - SWERC: https://swerc.eu/
