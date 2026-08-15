@@ -4,6 +4,14 @@ A competitive programming learning platform built with [Astro](https://astro.bui
 
 ---
 
+## Spec
+
+Product and engineering documentation lives in [`spec/`](./spec/README.md) (overview, architecture, ADRs, and per-feature specs). Read it before changing behavior; update it when decisions change.
+
+Agent operating rules and skills live separately in [`AI/`](./AI/) and sync into tool-specific configs.
+
+---
+
 ## AI Configuration
 
 This project uses an **AI-agnostic** configuration system. All agent definitions, skills, and rules live in the `AI/` folder. A sync script generates tool-specific config files from that single source.

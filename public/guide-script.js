@@ -7,6 +7,15 @@
 
   const t = window.__CP_T__;
   const lang = window.__CP_LANG__ || 'en';
+  const base = window.__CP_BASE__ || '/';
+
+  /** Replace `{key}` placeholders in i18n templates (JSON-safe strings). */
+  function fmt(template, vars) {
+    if (template == null) return '';
+    return String(template).replace(/\{(\w+)\}/g, (_, key) =>
+      vars[key] != null ? String(vars[key]) : ''
+    );
+  }
 
   const visualizersMap = {
     'arrays-strings': [
@@ -52,8 +61,10 @@
 
   // ── State ───────────────────────────────────────────────────
   const state = {
-    theme: localStorage.getItem("cp-theme") || "light",
-    activeSection: "overview",
+    theme: localStorage.getItem("cp-theme") || "dark",
+    activeView: "home",
+    activeTopicId: null,
+    sidebarOpen: false,
     sidebarCollapsed: false,
     visitedItems: JSON.parse(localStorage.getItem("cp-visited") || "[]"),
   };
@@ -63,9 +74,17 @@
   const themeToggleBtn = document.getElementById("theme-toggle");
   const themeIcon = document.getElementById("theme-icon");
   const sidebarEl = document.getElementById("sidebar");
-  const mainEl = document.getElementById("main");
+  const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+  const mainEl = document.getElementById("main-content") || document.getElementById("main");
   const sidebarToggleBtn = document.getElementById("sidebar-toggle");
   const navLinks = document.querySelectorAll(".nav-link[data-section]");
+  const headerCrumb = document.getElementById("header-crumb");
+  const brandEl =
+    document.getElementById("brand-home") ||
+    document.getElementById("site-brand") ||
+    document.querySelector(".header-brand") ||
+    document.querySelector(".site-brand") ||
+    document.querySelector(".nav-brand");
   const searchInput = document.getElementById("search-input");
   const searchClearBtn = document.getElementById("search-clear");
   const searchOverlay = document.getElementById("search-overlay");
@@ -77,11 +96,31 @@
   const detailPanel = document.getElementById("detail-panel");
   const detailBackBtn = document.getElementById("detail-back");
 
+  const VALID_VIEWS = new Set([
+    "home", "topic", "search", "videos", "icpc-prelims", "icpc-regionals",
+  ]);
+
+  // Legacy data-section → view (during HTML migration)
+  const LEGACY_SECTION_TO_VIEW = {
+    overview: "home",
+    algorithms: "home",
+    roadmap: "home",
+    tools: "home",
+    detail: "topic",
+    search: "search",
+    videos: "videos",
+    "icpc-prelims": "icpc-prelims",
+    "icpc-regionals": "icpc-regionals",
+  };
+
+  const OVERVIEW_ITEMS = new Set(["introduction", "learning-path", "assessment"]);
+
   // ── Theme ────────────────────────────────────────────────────
   function applyTheme(theme) {
     state.theme = theme;
     html.setAttribute("data-theme", theme);
     localStorage.setItem("cp-theme", theme);
+    if (!themeIcon) return;
     themeIcon.innerHTML =
       theme === "dark"
         ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -96,26 +135,49 @@
            </svg>`;
   }
 
-  themeToggleBtn.addEventListener("click", () =>
-    applyTheme(state.theme === "dark" ? "light" : "dark")
-  );
-
-  // ── Sidebar collapse ─────────────────────────────────────────
-  function setSidebarCollapsed(collapsed) {
-    state.sidebarCollapsed = collapsed;
-    sidebarEl.classList.toggle("collapsed", collapsed);
-    mainEl.classList.toggle("sidebar-collapsed", collapsed);
-    const arrow = sidebarToggleBtn.querySelector("svg");
-    if (arrow) arrow.style.transform = collapsed ? "rotate(180deg)" : "rotate(0deg)";
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () =>
+      applyTheme(state.theme === "dark" ? "light" : "dark")
+    );
   }
 
-  sidebarToggleBtn.addEventListener("click", () =>
-    setSidebarCollapsed(!state.sidebarCollapsed)
-  );
+  // ── Sidebar: mobile drawer + desktop collapse ────────────────
+  const desktopQuery = window.matchMedia("(min-width: 768px)");
+
+  function setSidebarOpen(open) {
+    state.sidebarOpen = !!open;
+    if (sidebarEl) sidebarEl.classList.toggle("is-open", state.sidebarOpen);
+    if (sidebarBackdrop) sidebarBackdrop.classList.toggle("is-open", state.sidebarOpen);
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    state.sidebarCollapsed = !!collapsed;
+    if (sidebarEl) sidebarEl.classList.toggle("is-collapsed", state.sidebarCollapsed);
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.setAttribute("aria-expanded", String(!state.sidebarCollapsed));
+    }
+    localStorage.setItem("cp-sidebar-collapsed", state.sidebarCollapsed ? "1" : "0");
+  }
+
+  if (sidebarToggleBtn) {
+    sidebarToggleBtn.addEventListener("click", () => {
+      if (desktopQuery.matches) setSidebarCollapsed(!state.sidebarCollapsed);
+      else setSidebarOpen(!state.sidebarOpen);
+    });
+  }
+  if (sidebarBackdrop) {
+    sidebarBackdrop.addEventListener("click", () => setSidebarOpen(false));
+  }
+  // The drawer state has no meaning on desktop and would strand the backdrop
+  desktopQuery.addEventListener("change", (event) => {
+    if (event.matches) setSidebarOpen(false);
+  });
+
+  setSidebarCollapsed(localStorage.getItem("cp-sidebar-collapsed") === "1");
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
-    { key: 'PRACTICE', items: ['watch-videos', 'search-problems'] },
+    { key: 'PRACTICE', items: ['search-problems', 'watch-videos', 'icpc-prelims', 'icpc-regionals'] },
     { key: 'OVERVIEW', items: ['introduction', 'learning-path', 'assessment'] },
     { key: 'FUNDAMENTALS', items: ['complexity-analysis', 'arrays-strings', 'stl-guide'] },
     { key: 'ALGORITHMS', items: ['two-pointers', 'sliding-window', 'binary-search', 'sorting'] },
@@ -125,20 +187,29 @@
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
   ];
 
-  // Items that display a "NEW" badge — remove an id once the feature is no longer new
-  const NEW_ITEMS = new Set(['watch-videos', 'search-problems']);
+  // Sidebar item ids that map to a full view instead of a topic detail panel
+  const PRACTICE_ITEM_SECTIONS = {
+    'search-problems': 'search',
+    'watch-videos': 'videos',
+    'icpc-prelims': 'icpc-prelims',
+    'icpc-regionals': 'icpc-regionals',
+  };
 
-  // ── Build sidebar ─────────────────────────────────────────────
+  // Items that display a "NEW" badge — remove an id once the feature is no longer new
+  const NEW_ITEMS = new Set(['watch-videos', 'search-problems', 'icpc-prelims', 'icpc-regionals']);
+
+  // ── Build sidebar (accordion) ─────────────────────────────────
   function buildSidebar() {
+    if (!sidebarNav) return;
     sidebarNav.innerHTML = "";
     sidebarSectionDefs.forEach((section) => {
-      const sectionEl = document.createElement("div");
-      sectionEl.className = "sidebar-section";
+      const details = document.createElement("details");
+      details.className = "site-sidebar-section";
+      details.open = true;
 
-      const labelEl = document.createElement("div");
-      labelEl.className = "sidebar-section-label";
-      labelEl.textContent = t.sidebar.sections[section.key] || section.key;
-      sectionEl.appendChild(labelEl);
+      const summary = document.createElement("summary");
+      summary.textContent = t.sidebar.sections[section.key] || section.key;
+      details.appendChild(summary);
 
       section.items.forEach((id) => {
         const itemLabel = t.sidebar.items[id] || id;
@@ -146,20 +217,21 @@
           ? '<span class="sidebar-new-badge">NEW</span>'
           : '';
         const btn = document.createElement("button");
-        btn.className = "sidebar-item";
+        btn.type = "button";
+        btn.className = "site-sidebar-item";
         btn.dataset.id = id;
         btn.innerHTML = `<span class="item-dot"></span>${itemLabel}${newBadge}`;
         btn.addEventListener("click", () => handleSidebarItemClick(id));
-        sectionEl.appendChild(btn);
+        details.appendChild(btn);
       });
 
-      sidebarNav.appendChild(sectionEl);
+      sidebarNav.appendChild(details);
     });
   }
 
   function updateActiveSidebarItem(id) {
-    document.querySelectorAll(".sidebar-item").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.id === id);
+    document.querySelectorAll(".site-sidebar-item, .sidebar-item").forEach((btn) => {
+      btn.classList.toggle("active", id != null && btn.dataset.id === id);
     });
   }
 
@@ -170,61 +242,139 @@
     }
     updateProgress();
     updateActiveSidebarItem(id);
+    setSidebarOpen(false);
 
-    if (id === 'search-problems') {
-      setActiveSection("search");
-    } else if (id === 'watch-videos') {
-      setActiveSection("videos");
+    if (PRACTICE_ITEM_SECTIONS[id]) {
+      setView(PRACTICE_ITEM_SECTIONS[id]);
     } else if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
-      showDetailPanel(id);
-    } else {
-      setActiveSection("overview");
+      showTopic(id);
+    } else if (OVERVIEW_ITEMS.has(id)) {
+      setView("home");
       const anchor = document.getElementById("overview-" + id);
-      if (anchor) anchor.scrollIntoView({ behavior: "smooth" });
+      if (anchor) {
+        requestAnimationFrame(() =>
+          anchor.scrollIntoView({ behavior: "smooth", block: "start" })
+        );
+      }
+    } else {
+      setView("home");
     }
   }
 
   // ── Progress ──────────────────────────────────────────────────
   function updateProgress() {
+    if (!progressFill && !progressLabel) return;
     const total = sidebarSectionDefs.reduce((acc, s) => acc + s.items.length, 0);
-    const pct = Math.round((state.visitedItems.length / total) * 100);
-    progressFill.style.width = pct + "%";
-    if (typeof t.sidebar.progress === 'function') {
-      progressLabel.textContent = t.sidebar.progress(pct);
-    } else {
-      progressLabel.textContent = pct + "% Complete";
+    const pct = total === 0 ? 0 : Math.round((state.visitedItems.length / total) * 100);
+    if (progressFill) progressFill.style.width = pct + "%";
+    if (progressLabel && t.sidebar && t.sidebar.progress) {
+      progressLabel.textContent = fmt(t.sidebar.progress, { pct });
     }
   }
 
-  // ── Section navigation ────────────────────────────────────────
-  function setActiveSection(section) {
-    state.activeSection = section;
-    document.querySelectorAll(".page-section").forEach((el) => {
-      el.classList.toggle("active", el.dataset.section === section);
+  // ── Breadcrumb ────────────────────────────────────────────────
+  function updateBreadcrumb(view, topicId) {
+    if (!headerCrumb) return;
+    if (view === "topic" && topicId && typeof algorithmsData !== "undefined" && algorithmsData[topicId]) {
+      headerCrumb.textContent = algorithmsData[topicId].title;
+      return;
+    }
+    const practiceId = Object.keys(PRACTICE_ITEM_SECTIONS).find(
+      (k) => PRACTICE_ITEM_SECTIONS[k] === view
+    );
+    if (practiceId && t.sidebar && t.sidebar.items && t.sidebar.items[practiceId]) {
+      headerCrumb.textContent = t.sidebar.items[practiceId];
+      return;
+    }
+    if (view === "home") {
+      headerCrumb.textContent = (t.nav && t.nav.overview) || "Home";
+      return;
+    }
+    headerCrumb.textContent = view;
+  }
+
+  // ── View navigation ───────────────────────────────────────────
+  function setView(view) {
+    if (!VALID_VIEWS.has(view)) view = "home";
+    state.activeView = view;
+    if (view !== "topic") state.activeTopicId = null;
+
+    // Toggle [data-view] panels (nested under #main-content is fine)
+    document.querySelectorAll("[data-view]").forEach((el) => {
+      el.classList.toggle("active", el.dataset.view === view);
     });
+
+    // Legacy .page-section[data-section] support during migration
+    const legacyPrimary = {
+      home: "overview",
+      topic: "detail",
+      search: "search",
+      videos: "videos",
+      "icpc-prelims": "icpc-prelims",
+      "icpc-regionals": "icpc-regionals",
+    };
+    const primarySection = legacyPrimary[view];
+    document.querySelectorAll(".page-section[data-section]").forEach((el) => {
+      // Only toggle sections that lack data-view (avoid double-fighting)
+      if (el.dataset.view) return;
+      el.classList.toggle("active", primarySection != null && el.dataset.section === primarySection);
+    });
+
+    if (navLinks && navLinks.length) {
+      navLinks.forEach((link) => {
+        const mapped = LEGACY_SECTION_TO_VIEW[link.dataset.section] || link.dataset.section;
+        link.classList.toggle("active", mapped === view);
+      });
+    }
+
+    updateBreadcrumb(view, state.activeTopicId);
+
+    if (mainEl && typeof mainEl.scrollTo === "function") {
+      mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  if (navLinks && navLinks.length) {
     navLinks.forEach((link) => {
-      link.classList.toggle("active", link.dataset.section === section);
+      link.addEventListener("click", () => {
+        const mapped = LEGACY_SECTION_TO_VIEW[link.dataset.section] || link.dataset.section;
+        setView(VALID_VIEWS.has(mapped) ? mapped : "home");
+      });
     });
   }
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => setActiveSection(link.dataset.section));
-  });
-
   document.querySelectorAll("[data-goto]").forEach((el) => {
-    el.addEventListener("click", () => setActiveSection(el.dataset.goto));
+    el.addEventListener("click", () => {
+      const raw = el.dataset.goto;
+      const mapped = LEGACY_SECTION_TO_VIEW[raw] || raw;
+      if (VALID_VIEWS.has(mapped)) setView(mapped);
+      else if (typeof algorithmsData !== "undefined" && algorithmsData[raw]) showTopic(raw);
+      else setView("home");
+    });
   });
 
-  // ── Back button from detail view ──────────────────────────────
+  if (brandEl) {
+    brandEl.addEventListener("click", (e) => {
+      // Stay on the guide page and show home view (SPA-style)
+      if (brandEl.tagName === "A") e.preventDefault();
+      updateActiveSidebarItem(null);
+      setView("home");
+    });
+  }
+
+  // ── Back button from topic view ───────────────────────────────
   if (detailBackBtn) {
-    detailBackBtn.addEventListener("click", () => setActiveSection("algorithms"));
+    detailBackBtn.addEventListener("click", () => {
+      updateActiveSidebarItem(null);
+      setView("home");
+    });
   }
 
   // ── Build algorithm grid ──────────────────────────────────────
   function diffBadgeClass(d) {
     const dl = (d || "").toLowerCase();
-    if (dl.includes("beginner")) return "badge-beginner";
-    if (dl.includes("advanced")) return "badge-advanced";
+    if (dl.includes("beginner") || dl.includes("principiante")) return "badge-beginner";
+    if (dl.includes("advanced") || dl.includes("avanzado")) return "badge-advanced";
     return "badge-intermediate";
   }
 
@@ -249,22 +399,24 @@
             <span class="algo-meta-item">⚡ ${algo.importance}</span>
           </div>
         </div>`;
-      card.addEventListener("click", () => showDetailPanel(id));
+      card.addEventListener("click", () => showTopic(id));
       algoGrid.appendChild(card);
     });
   }
 
-  // ── Inline detail panel ───────────────────────────────────────
-  function showDetailPanel(id) {
+  // ── Topic detail panel (topic view) ───────────────────────────
+  function showTopic(id) {
     const algo = (typeof algorithmsData !== 'undefined') ? algorithmsData[id] : null;
-    if (!algo) return;
+    if (!algo || !detailPanel) return;
 
     if (!state.visitedItems.includes(id)) {
       state.visitedItems.push(id);
       localStorage.setItem("cp-visited", JSON.stringify(state.visitedItems));
       updateProgress();
     }
+    state.activeTopicId = id;
     updateActiveSidebarItem(id);
+    setSidebarOpen(false);
 
     const examplesHTML = (algo.examples || []).map((ex, i) => `
       <div class="code-example">
@@ -290,6 +442,7 @@
       `<a class="viz-link" href="${ytSearchHref}" target="_blank" rel="noopener noreferrer">YouTube Search ↗</a>`,
     ].join("");
     const vizLabel = lang === 'es' ? '🎬 Visualízalo' : '🎬 Visualize It';
+    const diagramLabel = (t.modal && t.modal.visualDiagram) || 'Visual Diagram';
 
     detailPanel.innerHTML = `
       <div class="detail-card">
@@ -308,7 +461,7 @@
             <div class="modal-section-title">${t.modal.description}</div>
             <div class="modal-desc">${algo.description}</div>
           </div>
-          ${algo.asciiArt ? `<div class="modal-section"><div class="modal-section-title">Visual Diagram</div><pre class="ascii-art">${esc(algo.asciiArt)}</pre></div>` : ""}
+          ${algo.asciiArt ? `<div class="modal-section"><div class="modal-section-title">${diagramLabel}</div><pre class="ascii-art">${renderAsciiArt(algo.asciiArt)}</pre></div>` : ""}
           ${keyTechHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.keyTechniques}</div><div class="tag-list">${keyTechHTML}</div></div>` : ""}
           ${constraintsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.constraints}</div><div class="tag-list">${constraintsHTML}</div></div>` : ""}
           ${benefitsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.whyLearn}</div><ul class="bullet-list">${benefitsHTML}</ul></div>` : ""}
@@ -320,10 +473,13 @@
         </div>
       </div>`;
 
-    setActiveSection("detail");
+    setView("topic");
+    updateBreadcrumb("topic", id);
     attachQuizListeners(algo.quiz || []);
     detailPanel.scrollTop = 0;
-    mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    if (mainEl && typeof mainEl.scrollTo === "function") {
+      mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     detailPanel.querySelectorAll(".code-copy-btn").forEach((btn, i) => {
       btn.addEventListener("click", () => {
@@ -337,10 +493,15 @@
     });
   }
 
+  /** @deprecated Prefer showTopic — kept as alias for any leftover callers */
+  function showDetailPanel(id) {
+    showTopic(id);
+  }
+
   // ── Quiz ──────────────────────────────────────────────────────
   function buildQuizHTML(quiz) {
     if (!quiz || quiz.length === 0) return "";
-    const quizTitle = lang === 'es' ? '🧠 Mini Quiz' : '🧠 Mini Quiz';
+    const quizTitle = t.quiz.tab || 'Quiz';
     const qHtml = quiz.map((q, qi) => {
       const opts = q.options.map((opt, oi) => `
         <button class="quiz-option" data-qi="${qi}" data-oi="${oi}">${esc(opt)}</button>
@@ -352,18 +513,15 @@
           <div class="quiz-feedback" style="display:none"></div>
         </div>`;
     }).join("");
-    const scoreLabel = lang === 'es' ? 'Respuestas correctas: ' : 'Score: ';
-    const submitLabel = lang === 'es' ? 'Ver Resultados' : 'See Results';
-    const retryLabel = lang === 'es' ? 'Reintentar' : 'Retry';
     return `
       <div class="modal-section quiz-section" id="quiz-section">
-        <div class="modal-section-title">${quizTitle}</div>
+        <div class="modal-section-title">🧠 ${quizTitle}</div>
         <div class="quiz-body">
           ${qHtml}
           <div class="quiz-footer">
-            <button class="quiz-submit-btn" id="quiz-submit">${submitLabel}</button>
-            <button class="quiz-retry-btn" id="quiz-retry" style="display:none">${retryLabel}</button>
-            <div class="quiz-score" id="quiz-score" style="display:none">${scoreLabel}<span id="quiz-score-val"></span></div>
+            <button class="quiz-submit-btn" id="quiz-submit">${t.quiz.submitBtn}</button>
+            <button class="quiz-retry-btn" id="quiz-retry" style="display:none">${t.quiz.tryAgainBtn}</button>
+            <div class="quiz-score" id="quiz-score" style="display:none"></div>
           </div>
         </div>
       </div>`;
@@ -377,7 +535,6 @@
     const submitBtn = document.getElementById('quiz-submit');
     const retryBtn = document.getElementById('quiz-retry');
     const scoreEl = document.getElementById('quiz-score');
-    const scoreVal = document.getElementById('quiz-score-val');
 
     // Option selection
     section.querySelectorAll('.quiz-option').forEach(btn => {
@@ -391,34 +548,34 @@
     // Submit
     submitBtn.addEventListener('click', () => {
       let correct = 0;
-      section.querySelectorAll('.quiz-question').forEach((qEl, qi) => {
+      section.querySelectorAll('.quiz-question').forEach((qEl) => {
         const answer = parseInt(qEl.dataset.answer, 10);
         const selected = qEl.querySelector('.quiz-option.selected');
         const feedback = qEl.querySelector('.quiz-feedback');
         qEl.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
         if (!selected) {
-          feedback.textContent = lang === 'es' ? '⚠️ Sin respuesta' : '⚠️ No answer selected';
+          feedback.textContent = t.quiz.missFeedback;
           feedback.className = 'quiz-feedback quiz-feedback-miss';
         } else {
           const oi = parseInt(selected.dataset.oi, 10);
           if (oi === answer) {
             correct++;
             selected.classList.add('correct');
-            feedback.textContent = lang === 'es' ? '✅ ¡Correcto!' : '✅ Correct!';
+            feedback.textContent = t.quiz.correctFeedback;
             feedback.className = 'quiz-feedback quiz-feedback-correct';
           } else {
             selected.classList.add('wrong');
             qEl.querySelectorAll('.quiz-option').forEach(b => {
               if (parseInt(b.dataset.oi, 10) === answer) b.classList.add('correct');
             });
-            feedback.textContent = lang === 'es' ? '❌ Incorrecto' : '❌ Incorrect';
+            feedback.textContent = t.quiz.wrongFeedback;
             feedback.className = 'quiz-feedback quiz-feedback-wrong';
           }
         }
         feedback.style.display = 'block';
       });
       const total = quiz.length;
-      scoreVal.textContent = `${correct} / ${total}`;
+      scoreEl.textContent = fmt(t.quiz.score, { correct, total });
       scoreEl.style.display = 'inline-flex';
       submitBtn.style.display = 'none';
       retryBtn.style.display = 'inline-block';
@@ -470,6 +627,7 @@
   }
 
   function renderSearchResults(results, query) {
+    if (!searchResultsContainer || !searchOverlay) return;
     searchResultsContainer.innerHTML = "";
     if (!query.trim()) { searchOverlay.classList.remove("visible"); return; }
     searchOverlay.classList.add("visible");
@@ -491,30 +649,58 @@
   }
 
   function closeSearch() {
-    searchOverlay.classList.remove("visible");
-    searchInput.value = "";
-    searchClearBtn.classList.remove("visible");
+    if (searchOverlay) searchOverlay.classList.remove("visible");
+    if (searchInput) searchInput.value = "";
+    if (searchClearBtn) searchClearBtn.classList.remove("visible");
   }
 
   let debounce = null;
-  searchInput.addEventListener("input", (e) => {
-    const q = e.target.value;
-    searchClearBtn.classList.toggle("visible", q.length > 0);
-    clearTimeout(debounce);
-    debounce = setTimeout(() => renderSearchResults(runSearch(q), q), 180);
-  });
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const q = e.target.value;
+      if (searchClearBtn) searchClearBtn.classList.toggle("visible", q.length > 0);
+      clearTimeout(debounce);
+      debounce = setTimeout(() => renderSearchResults(runSearch(q), q), 180);
+    });
+  }
 
-  searchClearBtn.addEventListener("click", closeSearch);
-  searchOverlay.addEventListener("click", (e) => { if (e.target === searchOverlay) closeSearch(); });
+  if (searchClearBtn) searchClearBtn.addEventListener("click", closeSearch);
+  if (searchOverlay) {
+    searchOverlay.addEventListener("click", (e) => { if (e.target === searchOverlay) closeSearch(); });
+  }
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && searchOverlay.classList.contains("visible")) closeSearch();
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); searchInput.focus(); }
+    if (e.key === "Escape") {
+      if (searchOverlay && searchOverlay.classList.contains("visible")) closeSearch();
+      if (state.sidebarOpen) setSidebarOpen(false);
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "k" && searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
   });
 
   // ── Util ──────────────────────────────────────────────────────
   function esc(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  /**
+   * Escape an asciiArt diagram and tint its structural glyphs so the plain-text
+   * drawing reads as a chart: filled blocks = accent, box rules = muted,
+   * pass/fail markers = success/danger. Colouring is purely presentational —
+   * the underlying text is still copy-pasteable.
+   */
+  function renderAsciiArt(art) {
+    return esc(art)
+      .replace(/[█▓▒]+/g, (m) => `<span class="ascii-bar">${m}</span>`)
+      .replace(/░+/g, (m) => `<span class="ascii-track">${m}</span>`)
+      .replace(/[─│┌┐└┘├┤┬┴┼╭╮╰╯═║╔╗╚╝]+/g, (m) => `<span class="ascii-rule">${m}</span>`)
+      .replace(/(✓|✔|\bOK\b)/g, (m) => `<span class="ascii-ok">${m}</span>`)
+      .replace(/(✗|✘|\bTLE\b|\bMLE\b)/g, (m) => `<span class="ascii-bad">${m}</span>`)
+      // Caption lines (`Prefix Sum:`) act as diagram headings — skip rows that
+      // already contain markup from the tints above.
+      .replace(/^(?!.*<span)([^\n]*?:)[ \t]*$/gm, (_, line) => `<span class="ascii-head">${line}</span>`);
   }
 
   // ── Codeforces Problem Search ──────────────────────────────────
@@ -646,17 +832,20 @@
       showStatus(t.search.loading, false);
       searchBtn.disabled = true;
       try {
-        const resp = await fetch('https://codeforces.com/api/problemset.problems');
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        const data = await resp.json();
-        if (data.status !== 'OK') throw new Error('CF API error');
-        cfState.allProblems = (data.result.problems || []).filter(p => p.rating);
+        // Fetch only when needed (spec: fetch if needed)
+        if (cfState.allProblems.length === 0) {
+          const resp = await fetch('https://codeforces.com/api/problemset.problems');
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          const data = await resp.json();
+          if (data.status !== 'OK') throw new Error('CF API error');
+          cfState.allProblems = (data.result.problems || []).filter(p => p.rating);
+        }
         cfState.page = 1;
         applyFilterSort();
         hideStatus();
         renderPage();
       } catch (_) {
-        showStatus(t.search.errorMsg, true);
+        showStatus(t.search.errorMsg, true, true);
       } finally {
         searchBtn.disabled = false;
       }
@@ -699,10 +888,10 @@
         </div>
         <div class="cf-problem-actions">
           <a class="cf-action-btn" href="${url}" target="_blank" rel="noopener">${t.search.openProblem || 'Open ↗'}</a>
-          <button class="cf-action-btn${isSolved ? ' solved-active' : ''}" data-action="solve" data-key="${key}">
+          <button class="cf-action-btn${isSolved ? ' solved-active' : ''}" data-action="solve" data-key="${key}" title="${esc(t.search.markSolved || 'Solved')}">
             ${isSolved ? '✅' : (t.search.markSolved || 'Solved')}
           </button>
-          <button class="cf-action-btn${isFav ? ' fav-active' : ''}" data-action="fav" data-key="${key}">
+          <button class="cf-action-btn${isFav ? ' fav-active' : ''}" data-action="fav" data-key="${key}" title="${esc(isFav ? (t.search.unfavorite || 'Unfavorite') : (t.search.favorite || 'Favorite'))}">
             ${isFav ? '⭐' : '☆'}
           </button>
         </div>
@@ -753,7 +942,7 @@
 
       sortRow.style.display = total > 0 ? 'flex' : 'none';
       countEl.style.display = total > 0 ? 'block' : 'none';
-      if (typeof t.search.problemsFound === 'function') countEl.textContent = t.search.problemsFound(total);
+      countEl.textContent = fmt(t.search.problemsFound, { n: total });
 
       if (total === 0) {
         resultsList.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">${t.search.noResults}</div>`;
@@ -785,8 +974,8 @@
       for (let i = start; i <= end; i++) {
         html += `<button class="cf-page-btn${i === page ? ' active' : ''}" data-p="${i}">${i}</button>`;
       }
-      if (typeof t.search.pageOf === 'function') {
-        html += `<span style="font-size:12px;color:var(--text-muted);padding:0 6px">${t.search.pageOf(page, totalPages)}</span>`;
+      if (t.search.pageOf) {
+        html += `<span style="font-size:12px;color:var(--text-muted);padding:0 6px">${fmt(t.search.pageOf, { page, total: totalPages })}</span>`;
       }
       html += `<button class="cf-page-btn" id="cf-next" ${page === totalPages ? 'disabled' : ''}>${t.search.nextPage}</button>`;
       paginationEl.innerHTML = html;
@@ -800,12 +989,23 @@
       if (nextBtn) nextBtn.addEventListener('click', () => { if (cfState.page < totalPages) { cfState.page++; renderPage(); } });
     }
 
-    function showStatus(msg, isError) {
-      statusEl.textContent = msg;
+    function showStatus(msg, isError, withRetry) {
       statusEl.className = 'cf-status' + (isError ? ' error' : '');
       statusEl.style.display = 'block';
+      if (withRetry) {
+        statusEl.innerHTML = `${esc(msg)} <button type="button" class="cf-retry-btn" id="cf-retry-btn">${esc(t.search.retryBtn || 'Retry')}</button>`;
+        const retryBtn = document.getElementById('cf-retry-btn');
+        if (retryBtn) {
+          retryBtn.addEventListener('click', () => {
+            cfState.allProblems = []; // force refetch
+            doSearch();
+          });
+        }
+      } else {
+        statusEl.textContent = msg;
+      }
     }
-    function hideStatus() { statusEl.style.display = 'none'; }
+    function hideStatus() { statusEl.style.display = 'none'; statusEl.innerHTML = ''; }
   }
 
   // ── Video Library ─────────────────────────────────────────────
@@ -813,14 +1013,17 @@
     // Data is loaded by videos-data-{lang}.js → window.videosData
     const data = (typeof videosData !== 'undefined') ? videosData : null;
 
-    const sectionEl    = document.querySelector('.page-section[data-section="videos"]');
+    const sectionEl    = document.querySelector('[data-view="videos"]')
+      || document.querySelector('.page-section[data-section="videos"]');
     if (!sectionEl) return;
 
     // Populate static heading strings
     const titleEl    = document.getElementById('vl-title');
     const subtitleEl = document.getElementById('vl-subtitle');
+    const tagsLabelEl = document.getElementById('vl-tags-label');
     if (titleEl)    titleEl.textContent    = t.videos.title;
     if (subtitleEl) subtitleEl.textContent = t.videos.subtitle;
+    if (tagsLabelEl) tagsLabelEl.textContent = t.videos.tagsLabel;
 
     const queryInput  = document.getElementById('vl-query');
     const resultsEl   = document.getElementById('vl-results');
@@ -942,22 +1145,29 @@
 
       resultsEl.innerHTML = filtered.map(v => {
         // Find transcript matches
-        const matchedSegs = q ? (v.segments || []).filter(seg => seg.text.toLowerCase().includes(q)).slice(0, 5) : [];
+        const segs = v.segments || [];
+        const matchedSegs = q ? segs.filter(seg => seg.text.toLowerCase().includes(q)).slice(0, 5) : [];
         const ytBase      = 'https://www.youtube.com/watch?v=' + v.id;
+        const titleMatched = q && v.title.toLowerCase().includes(q);
         const segsHtml    = matchedSegs.length > 0
           ? matchedSegs.map(seg => {
               const ts = fmtTime(seg.t);
               const href = ytBase + '&t=' + seg.t + 's';
               const snippet = esc(seg.text.slice(0, 100));
               return `<a class="vl-segment" href="${href}" target="_blank" rel="noopener">
-                <span class="vl-seg-ts">${typeof t.videos.watchAt === 'function' ? t.videos.watchAt(ts) : '▶ ' + ts}</span>
+                <span class="vl-seg-ts">${fmt(t.videos.watchAt, { ts })}</span>
                 <span class="vl-seg-text">${snippet}…</span>
               </a>`;
             }).join('')
           : '';
 
         const matchCount = matchedSegs.length > 0
-          ? `<span class="vl-match-count">${typeof t.videos.matchesFound === 'function' ? t.videos.matchesFound(matchedSegs.length) : matchedSegs.length + ' matches'}</span>`
+          ? `<span class="vl-match-count">${fmt(t.videos.matchesFound, { n: matchedSegs.length })}</span>`
+          : '';
+
+        // Spec: show noTranscript when title matches but no segment text is available
+        const noTranscriptNote = (q && titleMatched && segs.length === 0)
+          ? `<span class="vl-no-transcript">${esc(t.videos.noTranscript)}</span>`
           : '';
 
         return `<div class="vl-card">
@@ -970,8 +1180,10 @@
             <div class="vl-meta">
               <span class="vl-channel">${esc(v.channelName)}</span>
               ${(v.tags || []).slice(0, 4).map(tag => `<span class="vl-badge">${esc(tag)}</span>`).join('')}
+              <a class="vl-open" href="${ytBase}" target="_blank" rel="noopener">${esc(t.videos.openVideo)}</a>
             </div>
             ${matchCount}
+            ${noTranscriptNote}
             ${segsHtml ? `<div class="vl-segments">${segsHtml}</div>` : ''}
           </div>
         </div>`;
@@ -981,12 +1193,426 @@
     render(); // initial render shows all videos
   }
 
+  // ── ICPC Preliminaries library ────────────────────────────────
+  function initIcpcPrelims() {
+    const data = (typeof icpcPrelimsData !== 'undefined') ? icpcPrelimsData : null;
+    const sectionEl = document.querySelector('[data-view="icpc-prelims"]')
+      || document.querySelector('.page-section[data-section="icpc-prelims"]');
+    if (!sectionEl) return;
+
+    const ip = t.icpcPrelims || {};
+    const titleEl = document.getElementById('ip-title');
+    const subtitleEl = document.getElementById('ip-subtitle');
+    const regionRow = document.getElementById('ip-region-row');
+    const kindRow = document.getElementById('ip-kind-row');
+    const countEl = document.getElementById('ip-count');
+    const resultsEl = document.getElementById('ip-results');
+    const editorialOverlay = document.getElementById('ip-editorial-overlay');
+    const editorialTitle = document.getElementById('ip-editorial-title');
+    const editorialNote = document.getElementById('ip-editorial-note');
+    const editorialList = document.getElementById('ip-editorial-list');
+    const editorialClose = document.getElementById('ip-editorial-close');
+    if (!resultsEl) return;
+
+    if (titleEl) titleEl.textContent = ip.title || 'ACM ICPC Preliminaries';
+    if (subtitleEl) subtitleEl.textContent = ip.subtitle || '';
+
+    if (!data || !data.contests || data.contests.length === 0) {
+      resultsEl.innerHTML = `<p class="ip-empty">${ip.noResults || 'No problem sets found.'}</p>`;
+      return;
+    }
+
+    const kindLabels = {
+      preliminary: ip.kindPreliminary || 'Preliminary',
+      qualifier: ip.kindQualifier || 'Qualifier',
+      subregional: ip.kindSubregional || 'Sub-Regional',
+      regional: ip.kindRegional || 'Regional',
+    };
+
+    const regionName = (id) => {
+      const r = (data.regions || []).find((x) => x.id === id);
+      return r ? r.name : id;
+    };
+
+    const ipState = { region: '', kind: '' };
+    let editorialTrigger = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getEditorial(editorialId) {
+      if (!editorialId) return null;
+      const registry = window.__CP_ICPC_EDITORIALS__;
+      const editorial = registry && registry[editorialId];
+      return editorial && Array.isArray(editorial.problems) ? editorial : null;
+    }
+
+    function closeEditorial() {
+      if (!editorialOverlay) return;
+      editorialOverlay.hidden = true;
+      document.body.style.overflow = '';
+      if (editorialTrigger) editorialTrigger.focus();
+      editorialTrigger = null;
+    }
+
+    function openEditorial(editorialId, trigger) {
+      const editorial = getEditorial(editorialId);
+      if (!editorial || !editorialOverlay || !editorialList) return;
+
+      editorialTrigger = trigger;
+      if (editorialTitle) editorialTitle.textContent = editorial.title;
+      if (editorialNote) editorialNote.textContent = editorial.difficultyNote || '';
+      if (editorialClose) {
+        editorialClose.setAttribute('aria-label', ip.closeEditorial || 'Close editorial');
+      }
+
+      editorialList.innerHTML = editorial.problems.map((problem) => {
+        const topics = (problem.topics || [])
+          .map((topic) => `<span class="ip-badge">${escapeHtml(topic)}</span>`)
+          .join('');
+        const steps = (problem.analysis || [])
+          .map((step) => `<li>${escapeHtml(step)}</li>`)
+          .join('');
+        return `
+          <article class="ip-editorial-problem">
+            <div class="ip-editorial-problem-head">
+              <h4 class="ip-editorial-problem-title">
+                ${escapeHtml(problem.id)}. ${escapeHtml(problem.title)}
+              </h4>
+              <span class="ip-difficulty">
+                ${escapeHtml(ip.difficulty || 'Difficulty')}: ${escapeHtml(problem.difficulty)}
+                · ~${escapeHtml(problem.rating)}
+              </span>
+            </div>
+            <div class="ip-topic-row">${topics}</div>
+            <pre class="ip-ascii">${escapeHtml(problem.ascii)}</pre>
+            <h5 class="ip-editorial-section-title">${escapeHtml(ip.keyInsight || 'Key insight')}</h5>
+            <div class="ip-insight">${escapeHtml(problem.insight)}</div>
+            <h5 class="ip-editorial-section-title">${escapeHtml(ip.solutionAnalysis || 'How to solve it')}</h5>
+            <ol class="ip-analysis">${steps}</ol>
+            <h5 class="ip-editorial-section-title">${escapeHtml(ip.complexity || 'Complexity')}</h5>
+            <div class="ip-complexity">${escapeHtml(problem.complexity)}</div>
+          </article>`;
+      }).join('');
+
+      editorialOverlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+      if (editorialClose) editorialClose.focus();
+    }
+
+    if (editorialClose) editorialClose.addEventListener('click', closeEditorial);
+    if (editorialOverlay) {
+      editorialOverlay.addEventListener('click', (event) => {
+        if (event.target === editorialOverlay) closeEditorial();
+      });
+    }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && editorialOverlay && !editorialOverlay.hidden) {
+        closeEditorial();
+      }
+    });
+
+    function setActiveButtons(row, activeValue) {
+      if (!row) return;
+      row.querySelectorAll('button').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.value === activeValue);
+      });
+    }
+
+    function buildFilterRow(row, options, allLabel, onPick) {
+      if (!row) return;
+      row.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'ip-filter-btn active';
+      allBtn.dataset.value = '';
+      allBtn.textContent = allLabel;
+      allBtn.addEventListener('click', () => onPick(''));
+      row.appendChild(allBtn);
+      options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = 'ip-filter-btn';
+        btn.dataset.value = opt.value;
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => onPick(opt.value));
+        row.appendChild(btn);
+      });
+    }
+
+    buildFilterRow(
+      regionRow,
+      (data.regions || []).map((r) => ({ value: r.id, label: r.name })),
+      ip.regionAll || 'All Regions',
+      (value) => {
+        ipState.region = value;
+        setActiveButtons(regionRow, value);
+        render();
+      }
+    );
+
+    buildFilterRow(
+      kindRow,
+      Object.keys(kindLabels).map((k) => ({ value: k, label: kindLabels[k] })),
+      ip.kindAll || 'All Types',
+      (value) => {
+        ipState.kind = value;
+        setActiveButtons(kindRow, value);
+        render();
+      }
+    );
+
+    function render() {
+      let list = data.contests.slice();
+      if (ipState.region) list = list.filter((c) => c.region === ipState.region);
+      if (ipState.kind) list = list.filter((c) => c.kind === ipState.kind);
+      list.sort((a, b) => (b.year - a.year) || String(a.title).localeCompare(String(b.title)));
+
+      if (countEl) {
+        countEl.textContent = fmt(ip.countFound || '{n} problem sets', { n: list.length });
+        countEl.style.display = 'block';
+      }
+
+      if (list.length === 0) {
+        resultsEl.innerHTML = `<p class="ip-empty">${ip.noResults || 'No problem sets found.'}</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = list.map((c) => {
+        const href = `${base}icpc-prelims/${c.file}`;
+        const kindLabel = kindLabels[c.kind] || c.kind;
+        const notes = c.notes
+          ? `<div class="ip-notes">${c.notes}</div>`
+          : '';
+        const source = c.source
+          ? `<a class="ip-source" href="${c.source}" target="_blank" rel="noopener noreferrer">${ip.sourceLabel || 'Source'} ↗</a>`
+          : '';
+        const editorialButton = c.editorial && getEditorial(c.editorial)
+          ? `<button class="ip-btn ip-editorial-btn" type="button" data-editorial="${c.editorial}">${ip.editorial || 'Editorial'}</button>`
+          : '';
+        return `
+          <div class="ip-card">
+            <div class="ip-year">${c.year}</div>
+            <div class="ip-info">
+              <div class="ip-card-title">${c.title}</div>
+              <div class="ip-meta">
+                <span class="ip-badge">${regionName(c.region)}</span>
+                <span class="ip-badge ip-badge-kind">${kindLabel}</span>
+                ${source}
+              </div>
+              ${notes}
+              <div class="ip-actions">
+                <a class="ip-btn ip-btn-primary" href="${href}" target="_blank" rel="noopener noreferrer">${ip.openPdf || 'Open PDF'}</a>
+                <a class="ip-btn" href="${href}" download="${c.file}">${ip.download || 'Download'}</a>
+                ${editorialButton}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      resultsEl.querySelectorAll('.ip-editorial-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          openEditorial(button.dataset.editorial, button);
+        });
+      });
+    }
+
+    render();
+  }
+
+  // ── ICPC Regionals library ────────────────────────────────────
+  function initIcpcRegionals() {
+    const data = (typeof icpcRegionalsData !== 'undefined') ? icpcRegionalsData : null;
+    const sectionEl = document.querySelector('[data-view="icpc-regionals"]')
+      || document.querySelector('.page-section[data-section="icpc-regionals"]');
+    if (!sectionEl) return;
+
+    const ir = t.icpcRegionals || {};
+    const titleEl = document.getElementById('ir-title');
+    const subtitleEl = document.getElementById('ir-subtitle');
+    const regionRow = document.getElementById('ir-region-row');
+    const countEl = document.getElementById('ir-count');
+    const resultsEl = document.getElementById('ir-results');
+    if (!resultsEl) return;
+
+    if (titleEl) titleEl.textContent = ir.title || 'ACM ICPC Regionals';
+    if (subtitleEl) subtitleEl.textContent = ir.subtitle || '';
+
+    if (!data || !data.contests || data.contests.length === 0) {
+      resultsEl.innerHTML = `<p class="ip-empty">${ir.noResults || 'No problem sets found.'}</p>`;
+      return;
+    }
+
+    const regionName = (id) => {
+      const r = (data.regions || []).find((x) => x.id === id);
+      return r ? r.name : id;
+    };
+
+    const irState = { region: '' };
+
+    function setActiveButtons(row, activeValue) {
+      if (!row) return;
+      row.querySelectorAll('button').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.value === activeValue);
+      });
+    }
+
+    function buildFilterRow(row, options, allLabel, onPick) {
+      if (!row) return;
+      row.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'ip-filter-btn active';
+      allBtn.dataset.value = '';
+      allBtn.textContent = allLabel;
+      allBtn.addEventListener('click', () => onPick(''));
+      row.appendChild(allBtn);
+      options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = 'ip-filter-btn';
+        btn.dataset.value = opt.value;
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => onPick(opt.value));
+        row.appendChild(btn);
+      });
+    }
+
+    buildFilterRow(
+      regionRow,
+      (data.regions || []).map((r) => ({ value: r.id, label: r.name })),
+      ir.regionAll || 'All Regions',
+      (value) => {
+        irState.region = value;
+        setActiveButtons(regionRow, value);
+        render();
+      }
+    );
+
+    function render() {
+      let list = data.contests.slice();
+      if (irState.region) list = list.filter((c) => c.region === irState.region);
+      list.sort((a, b) => (b.year - a.year) || String(a.title).localeCompare(String(b.title)));
+
+      if (countEl) {
+        countEl.textContent = fmt(ir.countFound || '{n} problem sets', { n: list.length });
+        countEl.style.display = 'block';
+      }
+
+      if (list.length === 0) {
+        resultsEl.innerHTML = `<p class="ip-empty">${ir.noResults || 'No problem sets found.'}</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = list.map((c) => {
+        const href = `${base}icpc-regionals/${c.file}`;
+        const notes = c.notes
+          ? `<div class="ip-notes">${c.notes}</div>`
+          : '';
+        const source = c.source
+          ? `<a class="ip-source" href="${c.source}" target="_blank" rel="noopener noreferrer">${ir.sourceLabel || 'Source'} ↗</a>`
+          : '';
+        return `
+          <div class="ip-card">
+            <div class="ip-year">${c.year}</div>
+            <div class="ip-info">
+              <div class="ip-card-title">${c.title}</div>
+              <div class="ip-meta">
+                <span class="ip-badge">${regionName(c.region)}</span>
+                ${source}
+              </div>
+              ${notes}
+              <div class="ip-actions">
+                <a class="ip-btn ip-btn-primary" href="${href}" target="_blank" rel="noopener noreferrer">${ir.openPdf || 'Open PDF'}</a>
+                <a class="ip-btn" href="${href}" download="${c.file}">${ir.download || 'Download'}</a>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    render();
+  }
+
   // ── Init ──────────────────────────────────────────────────────
   applyTheme(state.theme);
   buildSidebar();
   buildAlgoGrid();
   updateProgress();
-  setActiveSection("overview");
+
+  const homeCta = document.getElementById("home-cta-browse");
+  if (homeCta) {
+    homeCta.addEventListener("click", () => {
+      const grid = document.getElementById("algo-grid");
+      if (grid) grid.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstTopic = document.querySelector(".site-sidebar-item[data-id]");
+      // Prefer focusing FUNDAMENTALS/ALGORITHMS: open first real topic if available
+      if (typeof algorithmsData !== "undefined") {
+        const firstId = Object.keys(algorithmsData)[0];
+        if (firstId) {
+          const btn = document.querySelector(`.site-sidebar-item[data-id="${firstId}"]`);
+          if (btn) btn.focus();
+        }
+      }
+    });
+  }
+
+  // Deep-link: ?topic=id | ?section=search|videos|… | #search / #videos
+  function applyUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const topicId = params.get("topic");
+    if (topicId && typeof algorithmsData !== "undefined" && algorithmsData[topicId]) {
+      showTopic(topicId);
+      return;
+    }
+
+    const fromQuery = params.get("section");
+    const fromHash = (window.location.hash || "").replace(/^#/, "");
+    let target = fromQuery || fromHash;
+    if (!target) {
+      setView("home");
+      return;
+    }
+
+    // Hash may be overview-introduction etc.
+    if (target.startsWith("overview-")) {
+      const overviewId = target.slice("overview-".length);
+      setView("home");
+      if (OVERVIEW_ITEMS.has(overviewId)) updateActiveSidebarItem(overviewId);
+      const anchor = document.getElementById(target);
+      if (anchor) {
+        requestAnimationFrame(() =>
+          anchor.scrollIntoView({ behavior: "smooth", block: "start" })
+        );
+      }
+      return;
+    }
+
+    if (LEGACY_SECTION_TO_VIEW[target]) target = LEGACY_SECTION_TO_VIEW[target];
+
+    if (VALID_VIEWS.has(target) && target !== "topic") {
+      setView(target);
+      if (target === "search") updateActiveSidebarItem("search-problems");
+      else if (target === "videos") updateActiveSidebarItem("watch-videos");
+      else if (target === "icpc-prelims") updateActiveSidebarItem("icpc-prelims");
+      else if (target === "icpc-regionals") updateActiveSidebarItem("icpc-regionals");
+      return;
+    }
+
+    // section/hash is a topic id
+    if (typeof algorithmsData !== "undefined" && algorithmsData[target]) {
+      showTopic(target);
+      return;
+    }
+
+    setView("home");
+  }
+  applyUrl();
+
   initCfSearch();
   initVideoSearch();
+  initIcpcPrelims();
+  initIcpcRegionals();
 })();

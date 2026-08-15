@@ -163,10 +163,10 @@ When a keyword matches, up to 5 matching segments are shown per card as deep-lin
 | `clearTags` | `string` | "Clear all" button text |
 | `noResults` | `string` | Empty-state message |
 | `noTranscript` | `string` | Shown when a video has no segments |
-| `watchAt` | `(ts: string) => string` | e.g. `"▶ Watch at 12:34"` |
+| `watchAt` | `string` | Template `{ts}` — e.g. `"▶ Watch at 12:34"` |
 | `viewsLabel` | `string` | "views" suffix |
 | `durationLabel` | `string` | "Duration" prefix |
-| `matchesFound` | `(n: number) => string` | e.g. `"3 transcript matches"` |
+| `matchesFound` | `string` | Template `{n}` — e.g. `"3 transcript matches"` |
 | `openVideo` | `string` | "Open ↗" link label |
 | `langEs` | `string` | "🇪🇸 Spanish" channel badge |
 | `langEn` | `string` | "🇬🇧 English" channel badge |

@@ -9,6 +9,7 @@ export const es: Translations = {
     algorithms: 'Algoritmos',
     roadmap: 'Hoja de Ruta',
     tools: 'Herramientas',
+    practice: 'Práctica',
     searchPlaceholder: 'Buscar algoritmos… (⌘K)',
     toggleTheme: 'Cambiar modo claro/oscuro',
     langLabel: 'ES',
@@ -16,7 +17,7 @@ export const es: Translations = {
 
   sidebar: {
     title: 'Navegación',
-    progress: (pct: number) => `${pct}% Completado`,
+    progress: '{pct}% Completado',
     sections: {
       OVERVIEW: 'INICIO',
       FUNDAMENTALS: 'FUNDAMENTOS',
@@ -54,6 +55,8 @@ export const es: Translations = {
       combinatorics: 'Combinatoria',
       'search-problems': '🔍 Buscar Problemas',
       'watch-videos': '🎬 Ver Videos',
+      'icpc-prelims': '🏆 Prelims ACM ICPC',
+      'icpc-regionals': '🌍 Regionales ACM ICPC',
     },
   },
 
@@ -126,6 +129,7 @@ export const es: Translations = {
 
   modal: {
     description: 'Descripción',
+    visualDiagram: 'Diagrama Visual',
     keyTechniques: 'Técnicas Clave',
     constraints: 'Restricciones Típicas',
     whyLearn: 'Por Qué Aprender Esto',
@@ -290,17 +294,18 @@ export const es: Translations = {
     sortByRating: 'Rating ↑',
     sortByRatingDesc: 'Rating ↓',
     sortById: 'ID del Problema',
-    problemsFound: (n: number) => `${n} problema${n !== 1 ? 's' : ''} encontrado${n !== 1 ? 's' : ''}`,
+    problemsFound: '{n} problemas encontrados',
     noResults: 'No se encontraron problemas. Prueba con otras etiquetas o un rango de dificultad más amplio.',
     noFavorites: 'Sin favoritos aún. Marca problemas con estrella desde la pestaña de búsqueda para guardarlos aquí.',
     loading: 'Obteniendo problemas de Codeforces…',
     errorMsg: 'No se pudo conectar con la API de Codeforces. Por favor intenta de nuevo.',
+    retryBtn: 'Reintentar',
     openProblem: 'Abrir ↗',
     markSolved: 'Marcar como resuelto',
     favorite: 'Agregar a favoritos',
     unfavorite: 'Quitar de favoritos',
     solvedLabel: 'Resuelto',
-    pageOf: (cur: number, total: number) => `Página ${cur} de ${total}`,
+    pageOf: 'Página {page} de {total}',
     prevPage: '← Anterior',
     nextPage: 'Siguiente →',
     ratingLabel: 'Rating',
@@ -315,13 +320,50 @@ export const es: Translations = {
     clearTags: 'Limpiar todo',
     noResults: 'No se encontraron videos. Prueba otra palabra clave o quita algunos filtros.',
     noTranscript: 'No hay transcripción disponible para este video.',
-    watchAt: (ts: string) => `▶ Ver en ${ts}`,
+    watchAt: '▶ Ver en {ts}',
     viewsLabel: 'vistas',
     durationLabel: 'Duración',
-    matchesFound: (n: number) => `${n} coincidencia${n !== 1 ? 's' : ''} en transcripción`,
+    matchesFound: '{n} coincidencias en transcripción',
     openVideo: 'Abrir ↗',
     langEs: '🇪🇸 Español',
     langEn: '🇬🇧 Inglés',
+  },
+
+  icpcPrelims: {
+    title: 'Preliminares ACM ICPC',
+    subtitle:
+      'PDFs de problemsets de preliminares, clasificatorios y subregionales del ICPC — filtra por región y descarga para practicar offline.',
+    regionAll: 'Todas las Regiones',
+    kindAll: 'Todos los Tipos',
+    kindPreliminary: 'Preliminar',
+    kindQualifier: 'Clasificatorio',
+    kindSubregional: 'Subregional',
+    kindRegional: 'Regional',
+    openPdf: 'Abrir PDF ↗',
+    download: 'Descargar',
+    editorial: 'Editorial',
+    closeEditorial: 'Cerrar editorial',
+    difficulty: 'Dificultad',
+    keyInsight: 'Idea clave',
+    solutionAnalysis: 'Cómo resolverlo',
+    complexity: 'Complejidad',
+    noResults: 'Ningún problemset coincide con estos filtros.',
+    sourceLabel: 'Fuente',
+    countFound: '{n} problemsets',
+  },
+
+  icpcRegionals: {
+    title: 'Regionales ACM ICPC',
+    subtitle:
+      'PDFs oficiales de finales regionales del ICPC — NWERC, SWERC, LatAm, Seúl, Amritapuri y más.',
+    regionAll: 'Todas las Regiones',
+    openPdf: 'Abrir PDF ↗',
+    download: 'Descargar',
+    editorial: 'Editorial',
+    closeEditorial: 'Cerrar editorial',
+    noResults: 'Ningún problemset coincide con estos filtros.',
+    sourceLabel: 'Fuente',
+    countFound: '{n} problemsets',
   },
 
   quiz: {
@@ -329,9 +371,12 @@ export const es: Translations = {
     learnTab: 'Aprender',
     submitBtn: 'Enviar Respuestas',
     tryAgainBtn: 'Intentar de Nuevo',
-    score: (correct: number, total: number) => `¡Obtuviste ${correct} de ${total} correctas!`,
+    score: '¡Obtuviste {correct} de {total} correctas!',
     noQuiz: 'No hay examen disponible para este tema todavía.',
     selectAll: 'Por favor responde todas las preguntas antes de enviar.',
+    correctFeedback: '✅ ¡Correcto!',
+    wrongFeedback: '❌ Incorrecto',
+    missFeedback: '⚠️ Sin respuesta',
   },
 
   slides: {
@@ -342,6 +387,7 @@ export const es: Translations = {
     fullscreenExit: 'Salir de pantalla completa',
     slideOf: 'de',
     guideLink: 'Guía de Estudio',
+    keyboardHint: '← → flechas para navegar · desliza en móvil',
     items: [
       {
         type: 'title',

@@ -8,18 +8,27 @@ const algorithmsData = {
     importance: "Esencial",
     description:
       "La notación Big-O describe cómo escala el tiempo de ejecución o la memoria a medida que crece la entrada. Dominar el análisis de complejidad es la base de todas las decisiones de diseño de algoritmos.",
-    asciiArt: `Comparación de tasas de crecimiento (menor = más rápido):
+    asciiArt: `Operaciones con n = 100,000:
+ largo de barra ~ log10(operaciones)  ·  límite ~1e8 por segundo
 
- n = 10⁶      O(1)  O(log n) O(n)    O(n log n) O(n²)
- Operaciones:   1       20   10⁶       2×10⁷     10¹²
-                ✓        ✓     ✓           ✓        ✗
+ O(1)        █░░░░░░░░░░░░░░░░░░░░░░░  1             OK
+ O(log n)    ██░░░░░░░░░░░░░░░░░░░░░░  17            OK
+ O(n)        ██████████░░░░░░░░░░░░░░  1e5           OK
+ O(n log n)  ████████████░░░░░░░░░░░░  1.7e6         OK
+ O(n raíz n) ███████████████░░░░░░░░░  3.2e7         OK, justo
+ O(n^2)      ████████████████████░░░░  1e10          TLE
+ O(2^n)      ████████████████████████  astronómico   TLE
 
- O(1) ────────────────────────────────── constante
- O(log n) ─────────────────────────╮    muy rápido
- O(n) ───────────────────────╮          lineal
- O(n log n) ───────────╮               aceptable
- O(n²) ──────╮                          lento
- O(2ⁿ) ─╮                              ¡evitar!`,
+Deducir la complejidad objetivo a partir de n:
+ la restricción te dice qué algoritmo está permitido
+
+ n <= 10      O(n!)              permutaciones, fuerza bruta
+ n <= 20      O(2^n)             DP de bitmask, meet in the middle
+ n <= 500     O(n^3)             Floyd-Warshall, DP de intervalos
+ n <= 5e3     O(n^2)             DP por pares, tablas 2D
+ n <= 1e6     O(n log n)         ordenar, heaps, divide y conquista
+ n <= 1e7     O(n)               dos punteros, sumas prefijas
+ n  > 1e9     O(log n), O(1)     búsqueda binaria, matemática`,
     keyTechniques: [
       "Notación Big-O / Big-Θ / Big-Ω",
       "Análisis amortizado",

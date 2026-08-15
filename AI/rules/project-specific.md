@@ -60,6 +60,13 @@ AI/
   agents/             ← Agent definitions
   skills/             ← Skill guides
 
+spec/                 ← Product/engineering SSoT (overview, ADRs, features)
+  README.md
+  00-overview.md … 11-deployment.md
+  adr/
+  features/
+  templates/
+
 Makefile              ← Run `make sync-ai` to regenerate AI tool configs
 ```
 
@@ -76,6 +83,8 @@ The guide page (`src/pages/[lang]/guide/index.astro`) renders multiple `<section
 | `tools` | nav link |
 | `search` | sidebar item `search-problems` (PRACTICE section) |
 | `videos` | sidebar item `watch-videos` (PRACTICE section) |
+| `icpc-prelims` | sidebar item `icpc-prelims` (PRACTICE section) |
+| `icpc-regionals` | sidebar item `icpc-regionals` (PRACTICE section) |
 
 The **search** section hosts the Codeforces Problem Search feature. See `AI/skills/cf-problem-search.md` for full details.
 The **videos** section hosts the CP Video Library feature. See `AI/skills/video-library.md` for full details.
@@ -86,6 +95,7 @@ The **videos** section hosts the CP Video Library feature. See `AI/skills/video-
 
 | Key | Items |
 |-----|-------|
+| `PRACTICE` | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 | `OVERVIEW` | introduction, learning-path, assessment |
 | `FUNDAMENTALS` | complexity-analysis, arrays-strings, stl-guide |
 | `ALGORITHMS` | two-pointers, sliding-window, binary-search, sorting |
@@ -93,9 +103,8 @@ The **videos** section hosts the CP Video Library feature. See `AI/skills/video-
 | `DYNAMIC_PROGRAMMING` | dp-1d, dp-2d, knapsack, bitmask-dp |
 | `TREES_ADVANCED` | segment-tree, fenwick-tree, trie |
 | `MATHEMATICS` | modular-arithmetic, sieve, combinatorics |
-| `PRACTICE` | search-problems, watch-videos |
 
-The `search-problems` item calls `setActiveSection('search')` instead of opening an algorithm detail panel.
+`PRACTICE` is the **first** sidebar section (above `OVERVIEW`). Its items call `setActiveSection('search' | 'videos' | 'icpc-prelims' | 'icpc-regionals')` instead of opening an algorithm detail panel.
 
 ## GitHub Pages Deployment
 
@@ -126,6 +135,7 @@ export default defineConfig({
     window.__CP_T__ = JSON.parse(translations);
   </script>
   ```
+  Interpolated copy must use **string templates** (`{n}`, `{pct}`, …) — functions are stripped by `JSON.stringify`. Client code formats with `fmt()`.
 - The `search` key in `Translations` holds all strings for the Codeforces Problem Search feature (`t.search.*`). See `AI/skills/cf-problem-search.md` for the full key list.
 - The `videos` key in `Translations` holds all strings for the CP Video Library feature (`t.videos.*`). See `AI/skills/video-library.md` for the full key list.
 

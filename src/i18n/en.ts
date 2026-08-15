@@ -9,6 +9,7 @@ export const en: Translations = {
     algorithms: 'Algorithms',
     roadmap: 'Roadmap',
     tools: 'Tools',
+    practice: 'Practice',
     searchPlaceholder: 'Search algorithms… (⌘K)',
     toggleTheme: 'Toggle light/dark mode',
     langLabel: 'EN',
@@ -16,7 +17,7 @@ export const en: Translations = {
 
   sidebar: {
     title: 'Navigation',
-    progress: (pct) => `${pct}% Complete`,
+    progress: '{pct}% Complete',
     sections: {
       OVERVIEW: 'OVERVIEW',
       FUNDAMENTALS: 'FUNDAMENTALS',
@@ -54,6 +55,8 @@ export const en: Translations = {
       combinatorics: 'Combinatorics',
       'search-problems': '🔍 Search Problems',
       'watch-videos': '🎬 Watch Videos',
+      'icpc-prelims': '🏆 ACM ICPC Prelims',
+      'icpc-regionals': '🌍 ACM ICPC Regionals',
     },
   },
 
@@ -125,6 +128,7 @@ export const en: Translations = {
 
   modal: {
     description: 'Description',
+    visualDiagram: 'Visual Diagram',
     keyTechniques: 'Key Techniques',
     constraints: 'Typical Constraints',
     whyLearn: 'Why Learn This',
@@ -289,17 +293,18 @@ export const en: Translations = {
     sortByRating: 'Rating ↑',
     sortByRatingDesc: 'Rating ↓',
     sortById: 'Problem ID',
-    problemsFound: (n) => `${n} problem${n !== 1 ? 's' : ''} found`,
+    problemsFound: '{n} problems found',
     noResults: 'No problems found. Try different tags or a wider difficulty range.',
     noFavorites: 'No favorites yet. Star problems from the Search tab to save them here.',
     loading: 'Fetching problems from Codeforces…',
     errorMsg: 'Could not reach Codeforces API. Please try again.',
+    retryBtn: 'Retry',
     openProblem: 'Open ↗',
     markSolved: 'Mark solved',
     favorite: 'Add to favorites',
     unfavorite: 'Remove from favorites',
     solvedLabel: 'Solved',
-    pageOf: (cur, total) => `Page ${cur} of ${total}`,
+    pageOf: 'Page {page} of {total}',
     prevPage: '← Prev',
     nextPage: 'Next →',
     ratingLabel: 'Rating',
@@ -314,13 +319,50 @@ export const en: Translations = {
     clearTags: 'Clear all',
     noResults: 'No videos found. Try a different keyword or remove some filters.',
     noTranscript: 'No transcript available for this video.',
-    watchAt: (ts) => `▶ Watch at ${ts}`,
+    watchAt: '▶ Watch at {ts}',
     viewsLabel: 'views',
     durationLabel: 'Duration',
-    matchesFound: (n) => `${n} transcript match${n !== 1 ? 'es' : ''}`,
+    matchesFound: '{n} transcript matches',
     openVideo: 'Open ↗',
     langEs: '🇪🇸 Spanish',
     langEn: '🇬🇧 English',
+  },
+
+  icpcPrelims: {
+    title: 'ACM ICPC Preliminaries',
+    subtitle:
+      'Curated problem-set PDFs from ICPC preliminaries, qualifiers, and sub-regionals — filter by region and download for offline practice.',
+    regionAll: 'All Regions',
+    kindAll: 'All Types',
+    kindPreliminary: 'Preliminary',
+    kindQualifier: 'Qualifier',
+    kindSubregional: 'Sub-Regional',
+    kindRegional: 'Regional',
+    openPdf: 'Open PDF ↗',
+    download: 'Download',
+    editorial: 'Editorial',
+    closeEditorial: 'Close editorial',
+    difficulty: 'Difficulty',
+    keyInsight: 'Key insight',
+    solutionAnalysis: 'How to solve it',
+    complexity: 'Complexity',
+    noResults: 'No problem sets match these filters.',
+    sourceLabel: 'Source',
+    countFound: '{n} problem sets',
+  },
+
+  icpcRegionals: {
+    title: 'ACM ICPC Regionals',
+    subtitle:
+      'Official problem-set PDFs from ICPC regional finals — NWERC, SWERC, LatAm, Seoul, Amritapuri, and more.',
+    regionAll: 'All Regions',
+    openPdf: 'Open PDF ↗',
+    download: 'Download',
+    editorial: 'Editorial',
+    closeEditorial: 'Close editorial',
+    noResults: 'No problem sets match these filters.',
+    sourceLabel: 'Source',
+    countFound: '{n} problem sets',
   },
 
   quiz: {
@@ -328,9 +370,12 @@ export const en: Translations = {
     learnTab: 'Learn',
     submitBtn: 'Submit Answers',
     tryAgainBtn: 'Try Again',
-    score: (correct, total) => `You got ${correct} out of ${total} correct!`,
+    score: 'You got {correct} out of {total} correct!',
     noQuiz: 'No quiz available for this topic yet.',
     selectAll: 'Please answer all questions before submitting.',
+    correctFeedback: '✅ Correct!',
+    wrongFeedback: '❌ Incorrect',
+    missFeedback: '⚠️ No answer selected',
   },
 
   slides: {
@@ -341,6 +386,7 @@ export const en: Translations = {
     fullscreenExit: 'Exit fullscreen',
     slideOf: 'of',
     guideLink: 'Study Guide',
+    keyboardHint: '← → arrow keys to navigate · swipe on mobile',
     items: [
       {
         type: 'title',
