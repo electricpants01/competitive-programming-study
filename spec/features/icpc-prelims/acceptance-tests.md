@@ -17,6 +17,18 @@ Then only contests with `kind: 'preliminary'` show
 When I click Open PDF on a card
 Then the browser opens `${BASE_URL}icpc-prelims/<file>` in a new tab
 
+## Scenario: Open Dhaka 2025 editorial
+Given the Dhaka 2025 contest card is visible
+When I click Editorial
+Then a modal lists Problems A–H ordered by estimated difficulty
+And every problem has an ASCII visual, insight, analysis, and complexity
+And no C++ source code is displayed
+
+## Scenario: Editorial button is conditional
+Given a contest has no `editorial` field
+When its card renders
+Then it has no Editorial button
+
 ## Scenario: Missing data
 Given `icpcPrelimsData` is undefined
 When I open the section

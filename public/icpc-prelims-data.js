@@ -19,6 +19,7 @@ const icpcPrelimsData = {
       kind: 'preliminary',
       title: 'ICPC Asia Dhaka Online Preliminary 2025',
       file: '2025-dhaka-online-preli.pdf',
+      editorial: 'dhaka2025Editorial',
       source: 'https://github.com/Hazrat-Ali9/ICPC-Asia-Dhaka-Regional-Contest',
       notes: 'Official online preliminary for Dhaka regional.',
     },

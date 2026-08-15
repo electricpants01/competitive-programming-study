@@ -9,6 +9,7 @@ Guide section that lists curated **ICPC preliminary / qualifier / sub-regional**
 - Sidebar entry under PRACTICE: `icpc-prelims`
 - Browse contests by region and kind
 - Open / download local PDFs (no scrape at runtime)
+- Read visual, difficulty-sorted editorials when available
 - EN / ES i18n for UI chrome
 
 ## Non-goals

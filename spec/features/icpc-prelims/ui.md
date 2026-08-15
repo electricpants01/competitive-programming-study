@@ -16,9 +16,20 @@ Kinds: [All] [Preliminary] [Qualifier] [Subregional] [Regional]
 
 ┌ year badge │ title
 │            │ region · kind · notes
-│            │ [ Open PDF ↗ ]  [ Download ]
+│            │ [ Open PDF ↗ ]  [ Download ]  [ Editorial? ]
 └────────────┴────────────────────────────
 ```
+
+`Editorial` appears only when the contest catalog entry has editorial data. For Dhaka 2025 it
+opens a modal containing all eight problems sorted from easiest to hardest:
+
+- estimated difficulty and topic tags;
+- ASCII visualization;
+- key insight;
+- numbered solution analysis;
+- time and space complexity.
+
+C++ code is intentionally not rendered in the modal.
 
 ## Filter logic
 

@@ -204,6 +204,12 @@ export interface Translations {
     kindRegional: string;
     openPdf: string;
     download: string;
+    editorial: string;
+    closeEditorial: string;
+    difficulty: string;
+    keyInsight: string;
+    solutionAnalysis: string;
+    complexity: string;
     noResults: string;
     sourceLabel: string;
     /** Template with `{n}` */

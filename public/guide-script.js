@@ -1025,6 +1025,11 @@
     const kindRow = document.getElementById('ip-kind-row');
     const countEl = document.getElementById('ip-count');
     const resultsEl = document.getElementById('ip-results');
+    const editorialOverlay = document.getElementById('ip-editorial-overlay');
+    const editorialTitle = document.getElementById('ip-editorial-title');
+    const editorialNote = document.getElementById('ip-editorial-note');
+    const editorialList = document.getElementById('ip-editorial-list');
+    const editorialClose = document.getElementById('ip-editorial-close');
     if (!resultsEl) return;
 
     if (titleEl) titleEl.textContent = ip.title || 'ACM ICPC Preliminaries';
@@ -1048,6 +1053,91 @@
     };
 
     const ipState = { region: '', kind: '' };
+    let editorialTrigger = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getEditorial(editorialId) {
+      if (
+        editorialId === 'dhaka2025Editorial' &&
+        typeof dhaka2025Editorial !== 'undefined'
+      ) {
+        return dhaka2025Editorial;
+      }
+      return null;
+    }
+
+    function closeEditorial() {
+      if (!editorialOverlay) return;
+      editorialOverlay.hidden = true;
+      document.body.style.overflow = '';
+      if (editorialTrigger) editorialTrigger.focus();
+      editorialTrigger = null;
+    }
+
+    function openEditorial(editorialId, trigger) {
+      const editorial = getEditorial(editorialId);
+      if (!editorial || !editorialOverlay || !editorialList) return;
+
+      editorialTrigger = trigger;
+      if (editorialTitle) editorialTitle.textContent = editorial.title;
+      if (editorialNote) editorialNote.textContent = editorial.difficultyNote || '';
+      if (editorialClose) {
+        editorialClose.setAttribute('aria-label', ip.closeEditorial || 'Close editorial');
+      }
+
+      editorialList.innerHTML = editorial.problems.map((problem) => {
+        const topics = (problem.topics || [])
+          .map((topic) => `<span class="ip-badge">${escapeHtml(topic)}</span>`)
+          .join('');
+        const steps = (problem.analysis || [])
+          .map((step) => `<li>${escapeHtml(step)}</li>`)
+          .join('');
+        return `
+          <article class="ip-editorial-problem">
+            <div class="ip-editorial-problem-head">
+              <h4 class="ip-editorial-problem-title">
+                ${escapeHtml(problem.id)}. ${escapeHtml(problem.title)}
+              </h4>
+              <span class="ip-difficulty">
+                ${escapeHtml(ip.difficulty || 'Difficulty')}: ${escapeHtml(problem.difficulty)}
+                · ~${escapeHtml(problem.rating)}
+              </span>
+            </div>
+            <div class="ip-topic-row">${topics}</div>
+            <pre class="ip-ascii">${escapeHtml(problem.ascii)}</pre>
+            <h5 class="ip-editorial-section-title">${escapeHtml(ip.keyInsight || 'Key insight')}</h5>
+            <div class="ip-insight">${escapeHtml(problem.insight)}</div>
+            <h5 class="ip-editorial-section-title">${escapeHtml(ip.solutionAnalysis || 'How to solve it')}</h5>
+            <ol class="ip-analysis">${steps}</ol>
+            <h5 class="ip-editorial-section-title">${escapeHtml(ip.complexity || 'Complexity')}</h5>
+            <div class="ip-complexity">${escapeHtml(problem.complexity)}</div>
+          </article>`;
+      }).join('');
+
+      editorialOverlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+      if (editorialClose) editorialClose.focus();
+    }
+
+    if (editorialClose) editorialClose.addEventListener('click', closeEditorial);
+    if (editorialOverlay) {
+      editorialOverlay.addEventListener('click', (event) => {
+        if (event.target === editorialOverlay) closeEditorial();
+      });
+    }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && editorialOverlay && !editorialOverlay.hidden) {
+        closeEditorial();
+      }
+    });
 
     function setActiveButtons(row, activeValue) {
       if (!row) return;
@@ -1122,6 +1212,9 @@
         const source = c.source
           ? `<a class="ip-source" href="${c.source}" target="_blank" rel="noopener noreferrer">${ip.sourceLabel || 'Source'} ↗</a>`
           : '';
+        const editorialButton = c.editorial && getEditorial(c.editorial)
+          ? `<button class="ip-btn ip-editorial-btn" type="button" data-editorial="${c.editorial}">${ip.editorial || 'Editorial'}</button>`
+          : '';
         return `
           <div class="ip-card">
             <div class="ip-year">${c.year}</div>
@@ -1136,10 +1229,17 @@
               <div class="ip-actions">
                 <a class="ip-btn ip-btn-primary" href="${href}" target="_blank" rel="noopener noreferrer">${ip.openPdf || 'Open PDF'}</a>
                 <a class="ip-btn" href="${href}" download="${c.file}">${ip.download || 'Download'}</a>
+                ${editorialButton}
               </div>
             </div>
           </div>`;
       }).join('');
+
+      resultsEl.querySelectorAll('.ip-editorial-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          openEditorial(button.dataset.editorial, button);
+        });
+      });
     }
 
     render();
