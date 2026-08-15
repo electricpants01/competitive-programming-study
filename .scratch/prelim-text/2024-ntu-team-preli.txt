@@ -1,0 +1,1175 @@
+  2024 NTU ICPC Team Preliminary
+                           National Taiwan University
+
+                                    2024/08/10
+
+
+
+      Language    Version        Compile Flags                 Extensions
+      C           gcc 12.2.10    -O2 -std=c11 -static -lm      .c
+      C++         g++ 12.2.10    -O2 -std=c++20 -static        .cc, .cpp
+      Python3     pypy3 3.11.2   None                          .py
+
+
+
+Problem   Problem Name                                  Time Limit   Memory Limit
+   A      Akari                                            1s          2048 MB
+   B      Beautiful Strings                                2s          2048 MB
+   C      Crystal Mining                                   2s          2048 MB
+   D      Differencing                                     1s          2048 MB
+   E      Employees Selection                              5s          2048 MB
+   F      Forever on a Bicycle                             2s          2048 MB
+   G      Graph Problem                                    1s          2048 MB
+   H      HW0.514                                          1s          2048 MB
+   I      Image Matching                                   2s          2048 MB
+   J      Just Do it!                                      1s          2048 MB
+   K      King Game                                        3s          2048 MB
+   L      Ltf’s Board Game                                 1s          2048 MB
+   M      Melting                                          3s          2048 MB
+
+
+
+
+                                        1
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        2
+National Taiwan University                                      2024 NTU ICPC Team Preliminary
+
+                                           A. Akari
+                                        Problem ID: akari
+
+   Akari, also known as Light Up, is a logic puzzle played on a rectangular grid. The player
+places light bulbs in empty cells until the entire grid is illuminated.
+
+    A light bulb lights up its own cell and all cells along the horizontal and vertical directions
+until its light hits an obstacle or the edge of the grid. No two light bulbs should be illuminated
+by each other. There are clue cells in the original rules indicating exactly how many bulbs must
+be placed in adjacent cells. However, determining whether a puzzle is solvable has been proven
+to be NP-complete.
+
+
+
+
+                              L             .          L       #     .
+
+
+                        (a)                      (b)
+
+Figure A.1: Directions of the light. (a) The light illuminates all cells in the same row or column.
+(b) The light is blocked by '#' and no longer lights up the '.' cell.
+
+
+
+
+                                       L                   L
+
+
+                                  Figure A.2: Invalid placement.
+
+    In this problem, a puzzle without clue cells will be provided for each test case. Please find a
+solution to the puzzle.
+
+
+Input
+
+    The first line of the input contains two integers N and M — the number of rows and columns
+in the puzzle.
+
+                                                3
+National Taiwan University                                     2024 NTU ICPC Team Preliminary
+
+    The following N lines contain the description of the puzzle. Each line contains a string of
+length M , consisting of characters '.' and '#'. The character '.' denotes an empty cell and
+the character '#' denotes an obstacle that blocks the light.
+
+
+  • 1 ≤ N, M ≤ 2000
+
+
+Output
+
+    Mark the light bulbs you placed with the letter 'L' and output the final configuration in the
+same format as the given puzzle in the input. If there are multiple solutions, print any of them.
+It is guaranteed that at least one solution exists for the given input.
+
+
+ Sample Input 1                                    Sample Output 1
+ 3 3                                               L..
+ ...                                               .#.
+ .#.                                               ..L
+ ...
+
+
+ Sample Input 2                                    Sample Output 2
+ 3 3                                               .L.
+ ...                                               L#L
+ .#.                                               .L.
+ ...
+
+
+ Sample Input 3                                    Sample Output 3
+ 4 5                                               .L#L.
+ ..#..                                             L###L
+ .###.                                             .L#L.
+ ..#..                                             .#L#.
+ .#.#.
+
+
+
+
+                                               4
+National Taiwan University                                        2024 NTU ICPC Team Preliminary
+
+                                B. Beautiful Strings
+                                      Problem ID: beautiful
+
+
+    Let’s define that a string s is considered better than another string t if and only if both of the
+following conditions are met:
+
+
+   • s is not a prefix of t
+   • s is lexicographically smaller than t
+
+
+    Alice has a string s of length N . She wants to split the string into K continuous substrings
+s[1 : p1 ], s[p1 + 1 : p2 ], . . . , s[pK−1 + 1 : pK ] such that:
+
+
+   • Define p0 = 0
+   • For every 1 ≤ i < K, the substring s[pi−1 + 1 : pi ] is better than the substring s[pi + 1 : N ]
+   • pK = N
+
+
+Input
+
+   The first line of input contains a single integer T denoting the number of test cases.
+
+   Each test case consists of a single line containing a lowercase letter string s.
+
+
+   • 1 ≤ T ≤ 2 × 105
+   • 1 ≤ |s| ≤ 2 × 105
+   • The total length of all strings across all test cases will not exceed 2 × 105 characters.
+
+
+Output
+
+   For each test case, output the maximum possible value of K.
+
+
+ Sample Input 1                                       Sample Output 1
+ 2                                                    2
+ abababa                                              4
+ aababaddb
+
+                                                  5
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        6
+National Taiwan University                                       2024 NTU ICPC Team Preliminary
+
+                                 C. Crystal Mining
+                                       Problem ID: crystal
+
+    Maggie discovers a large magical crystal deep within the cave. The crystal has a regular
+hexagonal shape, which is seen as a symbol of balance. In this world, there are 999 types of magic
+particles. When these particles are arranged in a hexagonal pattern, a crystal is formed. However,
+if a crystal contains more than one type of particle, it is considered impure and may explode if
+someone attempts to release its power.
+
+   Maggie decides to extract a pure crystal, where all the magic particles are of the same type.
+For each potential center of the new crystal, help Maggie determine the side length of the largest
+pure crystal that can be extracted.
+
+
+
+
+          (a) Side length: 1.            (b) Side length: 2.            (c) Not a crystal.
+
+
+
+
+Input
+
+   The first line of the input contains a single integer N — the side length of the crystal.
+
+    The following 2N − 1 lines contain the description of the crystal. Each line contains multiple
+integers ar,c — the type of the magic particle at the corresponding position.
+
+  • 1 ≤ N ≤ 999
+  • 1 ≤ ar,c ≤ 999
+
+
+Output
+
+   For each position (r, c) as the center, output the side length of the largest pure crystal.
+
+                                                  7
+National Taiwan University                                    2024 NTU ICPC Team Preliminary
+
+    Arrange the output in the same format as the given input, and do not output any leading and
+trailing spaces.
+
+
+ Sample Input 1                                   Sample Output 1
+ 2                                                1 1
+ 1 1                                              1 2 1
+ 1 1 1                                            1 1
+ 1 1
+
+
+ Sample Input 2                                   Sample Output 2
+ 3                                                1 1 1
+ 2 1 2                                            1 1 1 1
+ 2 1 2 1                                          1 1 1 1 1
+ 2 1 1 1 1                                        1 2 2 1
+ 1 1 1 1                                          1 1 1
+ 1 1 1
+
+
+ Sample Input 3                                   Sample Output 3
+ 5                                                1 1 1 1 1
+ 2 8 1 6 2                                        1 1 1 1 1 1
+ 8 8 8 1 4 1                                      1 2 2 1 1 1 1
+ 8 8 8 8 4 9 1                                    1 1 1 2 1 1 1 1
+ 8 8 8 8 8 2 2 3                                  1 1 1 1 2 1 1 1 1
+ 8 7 7 8 8 8 2 2 999                              1 2 1 1 2 1 1 1
+ 7 7 7 8 8 8 2 2                                  1 1 1 2 1 1 1
+ 7 7 8 8 8 2 2                                    1 1 2 1 1 1
+ 8 8 8 8 2 2                                      1 1 1 1 1
+ 8 8 8 2 2
+
+
+
+
+                                              8
+National Taiwan University                                              2024 NTU ICPC Team Preliminary
+
+                                       D. Differencing
+                                       Problem ID: differencing
+
+
+   Given a set P of the smallest n primes p1 = 2 ≤ p2 = 3 ≤ · · · ≤ pn . Partition the primes into
+two subsets A and B (which can be empty), such that the difference between the sums of two
+subsets is minimized.
+
+
+Example
+
+    If N = 9, the set P is {2, 3, 5, 7, 11, 13, 17, 19, 23}. The table below demonstrates an optimal
+solution:
+
+
+                             p1   p2    p3   p4   p5       p6   p7 p8   p9   sum
+                        A    2          5    7                  17 19         50
+                        B         3               11 13                 23    50
+
+
+Input
+
+    Each test contains multiple test cases. The first line contains a single integer T — the number
+of test cases. The description of the test cases follows.
+
+   Each test case contains a single integer N — P is the set of the smallest N prime numbers.
+
+
+  • 1 ≤ T ≤ 4 × 105
+  • 1 ≤ N ≤ 4 × 105
+  • It is guaranteed that the sum of N over all test cases does not exceed 2 × 106 .
+
+
+Output
+
+   For each test case, print a string S of length N consisting of characters A and B, representing
+the optimal partition. If the k-th smallest prime, pk , belongs to A in your solution, the k-th
+character of S must be A, and it must be B otherwise. If there are multiple such partitions, print
+any of them.
+
+
+                                                       9
+National Taiwan University                 2024 NTU ICPC Team Preliminary
+
+ Sample Input 1               Sample Output 1
+ 5                            AAB
+ 3                            ABBA
+ 4                            BAAB
+ 4                            ABAABBAAB
+ 9                            ABBABABAAB
+ 10
+
+
+
+
+                             10
+National Taiwan University                                        2024 NTU ICPC Team Preliminary
+
+                             E. Employees Selection
+                                     Problem ID: employees
+
+
+    ICPC Company has N employees, with employee 1 being the boss of the company. Each of
+the employees numbered 2 through N has a direct supervisor si , where 1 ≤ si < i. For employee
+i, all employees si , ssi , . . . , 1 are considered to be supervisors of employee i.
+
+    Now, ICPC Company has a major project that requires sending some employees on a business
+trip. It is known that selecting the i-th employee will bring a profit of pi million dollars (if this
+value is negative, it means sending that employee on the trip will incur a loss).
+
+    However, selecting employees for the trip is not as simple as just choosing those with positive
+profits. Each employee also has a capability value ai , where all capability values form a permu-
+tation of 1 to N . For each employee i sent on the business trip, if any of their supervisors is
+not sent, employee i will need to handle that supervisor’s tasks. But if there exists an unsent
+supervisor’s capability value is higher than theirs, employee i will feel pressure and cause a loss of
+ci million dollars, no matter how many unsent supervisors with higher capability value
+there are.
+
+    Additionally, there is another way losses can occur: for every 1 ≤ i < N , if the employee with
+capability values i + 1 is selected for the trip but the employee with capability values i is not,
+a further loss of di million dollars will occur.
+
+    But wait! Before ICPC Company decides on the personnel to dispatch, they need to quickly
+inform the client whether they will accept the project. For this reason, ICPC Company has
+commissioned you, with your algorithmic expertise, to help them evaluate the maximum potential
+profit they could achieve.
+
+    However, ICPC Company knows an obvious upper bound: the total profit cannot exceed
+     ∑
+T = N   i=1 max(pi , 0) million dollars. After careful evaluation, ICPC Company has decided that if
+the maximum profit from this business trip is less than T −20 million dollars, they will immediately
+reject the project; otherwise, they will begin planning for the trip.
+
+   Can you help ICPC Company determine whether they should take on the project? If they
+decide to take on the project, please also output the exact maximum profit that ICPC Company
+can achieve.
+
+
+
+
+                                                 11
+National Taiwan University                                            2024 NTU ICPC Team Preliminary
+
+Input
+
+  The input first contains a positive integer N , representing the number of employees in ICPC
+Company.
+
+    The next line contains N − 1 integers s2 , s3 , . . . , sN , where si represents the direct supervisor
+of the i-th employee.
+
+    The third line contains N integers p1 , p2 , . . . , pN , representing the profit the i-th employee can
+bring.
+
+  The fourth line contains N integers a1 , a2 , . . . , aN , representing the capability value of the i-th
+employee.
+
+  The fifth line contains N integers c1 , c2 , . . . , cN , representing the loss parameter of the i-th
+employee.
+
+   The sixth line contains N −1 integers d1 , d2 , . . . , dN −1 , representing the loss parameter between
+the employees with capability values i and i + 1.
+
+
+   • 1 ≤ N ≤ 5 × 104
+   • 1 ≤ si < i
+   • −50 ≤ pi ≤ 50
+   • a1 , a2 , . . . , aN form a permutation of the numbers 1 to N .
+   • 0 ≤ ci , di ≤ 50
+
+
+Output
+
+   If the maximum profit is less than T − 20 million dollars, output Fail! on a single line. Oth-
+erwise, output a single integer representing the maximum profit that ICPC Company can achieve
+under the optimal strategy for selecting employees to send on the business trip.
+
+
+
+
+                                                    12
+National Taiwan University              2024 NTU ICPC Team Preliminary
+
+ Sample Input 1               Sample Output 1
+ 4                            13
+ 1 2 2
+ 10 -6 6 2
+ 4 3 2 1
+ 1 1 1 5
+ 1 1 1
+
+
+ Sample Input 2               Sample Output 2
+ 6                            9
+ 1 2 2 4 4
+ -3 -10 9 -1 4 7
+ 1 4 3 6 5 2
+ 0 1 8 1 3 1
+ 1 5 0 0 2
+
+
+ Sample Input 3               Sample Output 3
+ 2                            Fail!
+ 1
+ -42 21
+ 2 1
+ 0 42
+ 0
+
+
+
+
+                             13
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        14
+National Taiwan University                                         2024 NTU ICPC Team Preliminary
+
+                             F. Forever on a Bicycle
+                                        Problem ID: forever
+
+
+    National Taiwan University’s campus is quite large, and as a commuting student, Wiwiho
+doesn’t want to walk 15 minutes to her department after a long commute. Therefore, she decides
+to use the Ubike facilities scattered around the campus.
+
+    However, there’s a significant flaw she often overlooks. After successfully borrowing a Ubike
+from a station, she frequently finds that the stations near her department have no available slots
+when she arrives, forcing her to cycle to a more distant station and then walk a longer distance
+to her destination, defeating the purpose.
+
+     As a competitive programming contestant, Wiwiho decides to plan an optimal route to reach
+her department as quickly as possible. She selects N stations on the NTU campus, numbered
+from 1 to N , and plans M routes between these stations. Each route is defined by three numbers
+ui , vi , wi , representing a route between station ui and vi with a cycling time of wi , regardless of
+direction.
+
+      Because returning a bike depends on luck, for each station, Wiwiho has estimated parameters
+pi , qi , di through statistical data. Initially, all stations are in an “unknown state”. When she
+arrives at station i which is in an unknown state, she can try to observe the station and use
+the following strategy:
+
+
+   • Whenever Wiwiho observes at station i, there’s a probability pi that the station has an
+     available slot.
+   • If there’s an available slot, she can return the bike and walk to her department in di time.
+   • If there’s no available slot, Wiwiho can choose to cycle away immediately. After this, she
+     will turn that station into a “full state”.
+   • If there’s no available slot but Wiwiho chooses not to cycle away, she can wait an expected qi
+     time for a slot to become available, then walk to her department in di time. Note that during
+     this qi time, Wiwiho cannot leave the station because returning a bike requires queuing.
+
+
+   Besides, when Wiwiho arrives at station i which is in a full state, she can still choose not
+to cycle away, and wait an expected qi time for a slot to become available, then walk to her
+department in di time.
+
+   Note that Wiwiho can choose not to observe a station when she passes through it.
+
+
+                                                  15
+National Taiwan University                                          2024 NTU ICPC Team Preliminary
+
+    To simplify the problem, assume that the probabilities and expected values for each station
+are independent, meaning stations do not influence each other’s parameters.
+
+    Can you help Wiwiho find the minimum expected time to successfully return a bike and walk
+to her department if she borrows a Ubike from station 1? Note that although Wiwiho can choose
+to return the bike at station 1, she must follow the aforementioned rules, meaning she only has a
+probability p1 of immediately returning the bike there.
+
+
+Input
+
+    The first line contains two integers N, M , representing the number of stations, and the number
+of routes Wiwiho selected.
+
+    The second line contains N floating-point numbers p1 , p2 , . . . , pN , representing the probability
+of finding an available slot at station i when Wiwiho arrives.
+
+   The third line contains N floating-point numbers q1 , q2 , . . . , qN , representing the expected
+queuing time at station i if no slot is available upon arrival.
+
+   The fourth line contains N floating-point numbers d1 , d2 , . . . , dN , representing the time re-
+quired to walk from station i to her department.
+
+   The next M lines each contain two integers and one floating-point number ui , vi , wi , repre-
+senting a route connecting station ui and station vi , with a cycling time wi between them.
+
+
+   • 1 ≤ N ≤ 18
+   • 0 ≤ M ≤ N ×(N    2
+                        −1)
+
+   • 0 ≤ di , wi , qi ≤ 1000
+   • 0 ≤ pi ≤ 1
+   • All floating-point numbers will be given to three decimal places.
+   • No two routes connect the same pair of stations.
+
+
+Output
+
+    Output a single floating-point number representing the minimum expected time for Wiwiho
+to successfully return a bike and walk to her department after borrowing a Ubike from station 1.
+
+
+
+                                                   16
+National Taiwan University                                        2024 NTU ICPC Team Preliminary
+
+   Your answer will be accepted if the absolute or relative error does not exceed 10−6 . Formally, let
+                                                                                       |a−b|
+your answer be a, and the jury’s answer be b. Your answer is considered correct if max(1,|b|) ≤ 10−6 .
+
+
+
+ Sample Input 1                                     Sample Output 1
+ 4 4                                                8.785600000000
+ 0.800 0.500 0.200 0.600
+ 3.000 3.000 5.000 2.000
+ 15.000 5.000 1.000 2.000
+ 1 2 3.141
+ 2 3 2.718
+ 1 3 7.654
+ 3 4 1.414
+
+
+ Sample Input 2
+ 11 13
+ 0.800 0.800 0.900 0.900 0.400 0.200 0.200 0.200 0.250 0.400 0.400
+ 1.000 2.000 2.000 2.000 3.000 4.000 4.000 4.000 2.000 1.000 1.000
+ 15.000 12.000 11.000 9.000 3.000 0.000 0.000 0.000 2.000 5.000 4.000
+ 1 2 1.000
+ 1 4 2.333
+ 2 3 0.333
+ 3 4 0.666
+ 4 5 2.000
+ 5 6 1.000
+ 5 10 1.666
+ 6 7 0.333
+ 6 8 0.333
+ 6 9 0.666
+ 7 8 0.333
+ 9 10 1.000
+ 9 11 0.666
+
+
+ Sample Output 2
+ 7.315512000000
+
+
+
+
+                                                 17
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        18
+National Taiwan University                                        2024 NTU ICPC Team Preliminary
+
+                                  G. Graph Problem
+                                        Problem ID: graph
+
+    There is a classic graph theory problem: given an undirected graph, find the largest subset of
+vertices such that the vertices form a clique. A clique is defined as a subset of vertices such that
+every two distinct vertices are adjacent in the given graph.
+
+    However, constructing the graph is troublesome. Now, for the N vertices in the graph, we
+assign to the i-th vertex an interval [l, r], representing a circular interval [l, r].
+
+    What is a circular interval? Suppose the entire circle has a size of 2N , which we can represent
+as coordinates 0 to 2N − 1. A circular interval [l, r] covers the coordinates:
+                                  {
+                                    l∼r                    if l < r
+                                   0 ∼ r ∪ l ∼ 2N − 1      if l > r
+
+   where 0 ≤ l, r < 2N, l ̸= r.
+
+    Given these intervals, we let there be an edge between any two vertices if and only if their
+intervals overlap at some coordinate.
+
+   Find any maximum clique.
+
+
+Input
+
+   The first line of input contains a positive integer N , representing the number of intervals.
+
+    The next N lines each contain two integers li , ri , representing the coordinates of the interval
+for the i-th vertex. The intervals are numbered from 0 to N − 1.
+
+   • 1 ≤ N ≤ 2000
+   • 0 ≤ li , ri < 2N
+   • It is guaranteed that all given coordinates are distinct.
+
+
+Output
+
+   Output a single integer k in the first line, representing the size of the maximum clique.
+
+                                                 19
+National Taiwan University                                           2024 NTU ICPC Team Preliminary
+
+    In the second line, output k integers c0 , c1 , . . . , ck−1 separated by single spaces, where ci rep-
+resents the index of the intervals included in the maximum clique.
+
+   If there are multiple valid solutions, output any one of them.
+
+
+ Sample Input 1                                       Sample Output 1
+ 3                                                    3
+ 0 3                                                  0 1 2
+ 2 5
+ 4 1
+
+
+ Sample Input 2                                       Sample Output 2
+ 5                                                    3
+ 0 6                                                  0 3 4
+ 9 1
+ 3 4
+ 5 8
+ 2 7
+
+
+
+
+                                                   20
+National Taiwan University                                      2024 NTU ICPC Team Preliminary
+
+                                      H. HW0.514
+                                      Problem ID: hw0514
+
+
+    Boluteshih and 2qbingquan are preparing the problems for Homework 0.514. Boluteshih
+selected N problems, while 2qbingquan selected M problems for the homework.
+
+    To make it harder to identify which problems were prepared by whom, Boluteshih wrote a
+Python script to shuffle the order of these problems randomly. As a coincidence, Boluteshih
+discovered that after shuffling, the problems chosen by 2qbingquan formed a contiguous subarray
+within the shuffled list.
+
+    Just out of curiosity, you are asked to answer the probability that the problems chosen by
+2qbingquan just formed k contiguous subarray within the shuffled list, for each k from 1 to M .
+All (N + M )! permutations of the N + M problems are considered equiprobable during the shuffle.
+
+   As usual, you are asked to output the answer modulo 998244353 (see output section).
+
+
+Input
+
+   The input only contains one line with two space-separated integers N, M .
+
+
+  • 1 ≤ N, M ≤ 106 .
+
+
+Output
+
+   Print M space-separated integers, where the i-th is the probability of that the problems chosen
+by 2qbingquan just formed k contiguous subarray, modulo 998244353.
+                                                                      P
+   For each k, it can be shown that the probability is in the form of Q where P and Q are
+non-negative integers and Q ̸= 0, gcd(P, Q) = 1. By modulo 998244353 it means P · Q−1
+(mod 998244353), which should be an integer in [0, 998244353).
+
+
+ Sample Input 1                                   Sample Output 1
+ 1 2                                              665496236 332748118
+
+
+
+                                               21
+National Taiwan University                       2024 NTU ICPC Team Preliminary
+
+ Sample Input 2                       Sample Output 2
+ 2 5                                  855638017 427819009 713031681 0 0
+
+
+ Sample Input 3
+ 37 9
+
+
+ Sample Output 3
+ 773088076 617179006 965409427 423633148 606148699 470916699 791168354
+    947239560 394683150
+
+
+
+
+                                    22
+National Taiwan University                                            2024 NTU ICPC Team Preliminary
+
+                                   I. Image Matching
+                                       Problem ID: image
+
+
+   It’s Cody’s birthday! This year, instead of giving him a long string or an integer array with
+special properties, his friends surprised him with an interesting picture. Cody suspects that the
+image was cropped from a scene in a video he recently watched, but he can’t remember the exact
+timestamp of the frame.
+
+   Cody has extracted all the frames in the video by FFmpeg, but he knows little about image
+matching. You, a helpful coder, decide to handle the task to earn an AC in return. Because
+the picture is stored in a lossy compression format, it is possible that an exact match cannot be
+found. The goal is to find a position with the smallest sum of squared difference (SSD) for the
+best match.
+
+   If the size of an image I is W × H and the size of a (smaller) template image T is N × M ,
+the SSD value of the position (x, y) is defined as:
+
+                                       ∑
+                                       N    ∑
+                                         −1 M −1
+                         SSD(x, y) =               (I(x + i, y + j) − T (i, j))2
+                                       i=0 j=0
+
+
+
+
+                   14 59 EF A0
+                   83 3E AE 94                3E A8 94                 0     6     0
+                   06 AA 0C 87                A7 0C 87                 3     0     0
+                             (a)                       (b)                  (c)
+
+            Figure I.1: (a) I. (b) T . (c) Image difference. SSD(1, 1) = 32 + 62 = 45.
+
+
+Input
+
+   The first line of the input contains two integers W and H — the width and the height of a
+frame from the video.
+
+   The following H lines contain the description of the image I. Each line contains W double-digit
+hexadecimal numbers — the pixels of the corresponding positions.
+
+                                                    23
+National Taiwan University                                    2024 NTU ICPC Team Preliminary
+
+   The next line of the input contains two integers N and M — the width and the height of the
+cropped image.
+
+    The following M lines contain the description of the image T . Each line contains N double-
+digit hexadecimal numbers — the pixels of the corresponding positions.
+
+  • 1 ≤ W ≤ 1024
+  • 1 ≤ H ≤ 768
+  • 0 ≤ I(x, y) ≤ 255
+  • 1≤N ≤W
+  • 1≤M ≤H
+  • 0 ≤ T (x, y) ≤ 255
+
+
+Output
+
+   The best matching position (x, y) (0 ≤ x ≤ W − N, 0 ≤ y ≤ H − M ).
+
+   If there are multiple such positions, print any of them.
+
+
+ Sample Input 1                                  Sample Output 1
+ 3 2                                             1 0
+ 00 FF 12
+ AA BB 34
+ 2 1
+ FF 11
+
+
+ Sample Input 2                                  Sample Output 2
+ 4 5                                             1 0
+ 89 4E 72 C6
+ C7 E9 EA 8F
+ 6E B1 FD E4
+ 7C 22 6C D0
+ 93 FB DB E5
+ 3 3
+ 79 C0 51
+ B9 98 37
+ BB 64 7F
+
+                                               24
+National Taiwan University              2024 NTU ICPC Team Preliminary
+
+ Sample Input 3               Sample Output 3
+ 4 3                          1 1
+ 14 59 EF A0
+ 83 3E AE 94
+ 06 AA 0C 87
+ 3 2
+ 3E A8 94
+ A7 0C 87
+
+
+
+
+                             25
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        26
+National Taiwan University                                        2024 NTU ICPC Team Preliminary
+
+                                        J. Just Do it!
+                                         Problem ID: just
+
+
+    There is too much work to be done! The ICPC class now has an overwhelming amount of tasks
+that need to be handled. Each task requires a team of two people to complete. The ICPC class
+has N people, and there are M pairs of people who can work together (assigning incompatible
+pairs would cause awkwardness and complicate the tasks). Each pair can handle at most one
+task.
+
+    But if you think that means we can handle M tasks, you are too naive! Each person also has
+their own workload limit. It is known that the i-th person is willing to handle at most ai tasks.
+This means that if the number of tasks assigned to the i-th person exceeds ai , that person will
+refuse to do any work.
+
+   Can you help the ICPC class find the maximum number of task-handling pairs, such that no
+one exceeds their workload limit?
+
+
+Input
+
+   The first line contains two positive integers N and M , representing the number of people in
+the ICPC class and the number of pairs who can work together, respectively.
+
+    The second line contains N integers a1 , a2 , . . . , aN , where ai represents the maximum number
+of tasks the i-th person is willing to handle.
+
+   The next M lines each contain two integers ui and vi , representing that the ui -th person and
+the vi -th person can work together. The pairs are numbered from 1 to m.
+
+
+   • 1 ≤ N ≤ 100
+   • 1 ≤ M ≤ 150
+   • 1 ≤ ai ≤ M
+   • 1 ≤ ui < v i ≤ N
+   • ∀i < j, (ui , vi ) ̸= (uj , vj )
+
+
+
+
+                                                 27
+National Taiwan University                                          2024 NTU ICPC Team Preliminary
+
+Output
+
+    The first line should output an integer k, representing the maximum number of task-handling
+pairs.
+
+   The second line should output k integers w1 , w2 , . . . , wk separated by single spaces, representing
+an optimal set of pairs that handled k tasks, where wi represents the pair numbered wi in your
+optimal solution.
+
+   If there are multiple optimal solutions, any of them will be considered correct.
+
+
+ Sample Input 1                                      Sample Output 1
+ 4 4                                                 3
+ 2 1 3 4                                             1 2 4
+ 1 2
+ 1 3
+ 2 3
+ 3 4
+
+
+ Sample Input 2                                      Sample Output 2
+ 6 8                                                 6
+ 2 2 3 2 3 1                                         1 2 4 5 6 8
+ 1 2
+ 1 3
+ 1 5
+ 3 5
+ 3 4
+ 4 5
+ 4 6
+ 5 6
+
+
+
+
+                                                   28
+National Taiwan University                                          2024 NTU ICPC Team Preliminary
+
+                                       K. King Game
+                                       Problem ID: kinggame
+
+
+    Alice and Bob are playing a cool new game called “King Game.” The King Game consists
+of a 300 × 300 board and two pieces that can be placed on certain positions on the board. For
+convenience, we use 2D coordinates (x, y) to represent the positions where pieces are placed, where
+1 ≤ x, y ≤ 300.
+
+   The rules of the King Game are as follows:
+
+
+   • At the start of the game, the two pieces are placed on different positions: (x1 , y1 ) and
+     (x2 , y2 ).
+   • The players take turns to move, and each turn, the player must choose one of the pieces.
+     Suppose the position of the chosen piece is (x, y), the player can move it to any position
+     (p, q) such that 1 ≤ p ≤ x and 1 ≤ q ≤ y. However, the new position (p, q) cannot be (x, y)
+     or coincide with another piece.
+   • The player who cannot make a move loses.
+
+
+   Alice and Bob are going to play T games, and they have already planned the starting coordi-
+nates for each game. Can you tell them, for each game, how many winning first moves the “first
+player” has under the condition that both players play optimally?
+
+
+Input
+
+   The first line contains a positive integer T , representing the number of games.
+
+    The next T lines each contain four integers x1 , y1 , x2 , y2 , representing the starting coordinates
+of the pieces for one game.
+
+
+   • 1 ≤ T ≤ 105
+   • 1 ≤ x1 , y1 , x2 , y2 ≤ 300
+   • It is guaranteed that for each game, x1 ̸= y1 or x2 ̸= y2 .
+
+
+
+
+                                                   29
+National Taiwan University                                    2024 NTU ICPC Team Preliminary
+
+Output
+
+  For each game, output a single integer on a new line representing the number of winning first
+moves the first player has.
+
+
+ Sample Input 1                                 Sample Output 1
+ 5                                              1
+ 1 2 3 4                                        2
+ 3 1 4 2                                        2
+ 6 6 2 2                                        0
+ 3 2 2 3                                        0
+ 1 12 3 9
+
+
+
+
+                                              30
+National Taiwan University                                         2024 NTU ICPC Team Preliminary
+
+                                L. Ltf’s Board Game
+                                           Problem ID: ltf
+
+
+   Ltf proposed an interesting board game, which is played on an N × N board by two players
+who take turns placing pieces on the board. The unique rule of the game is that each player,
+when placing a piece, must ensure that no two pieces are orthogonally adjacent, meaning that no
+two pieces can share a side. The player who cannot place a piece on their turn loses the game.
+
+   Ltf invited Ian to play this game with him, and Ltf will go first. Given the size of the board,
+determine who will win if both players play optimally.
+
+
+
+
+Input
+
+   The input consists of a single line containing a positive integer N , representing the size of the
+board.
+
+
+     • 1 ≤ N ≤ 105
+
+
+Output
+
+     If Ltf has a winning strategy, output Ltf on a single line; otherwise, output Ian.
+
+
+ Sample Input 1                                     Sample Output 1
+ 2                                                  Ian
+
+
+ Sample Input 2                                     Sample Output 2
+ 3                                                  Ltf
+
+
+
+
+                                                  31
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        32
+National Taiwan University                                          2024 NTU ICPC Team Preliminary
+
+                                          M. Melting
+                                        Problem ID: melting
+
+
+   It’s so hot this summer!
+
+   Vasya is walking along the street, which can be viewed as an infinite two-dimensional plane.
+He is currently at the point S = (sx , sy ), while an ice cream truck is stationed at the point
+T = (tx , ty ).
+
+    Despite his eagerness to get some ice cream, the intense sunshine makes the journey uncom-
+fortable. Fortunately, there are N shaded areas created by trees and buildings blocking the sun,
+providing some cooler spots. For the purpose of this problem, these shaded areas are considered
+as convex polygons.
+
+   Vasya aims to find a path to the ice cream truck that minimizes the distance traveled outside
+these shaded areas. Please determine the minimum length Vasya needs to walk without shade.
+
+
+Input
+
+    The first line is an integer N , denoting the number of shade areas. Then there will be N
+sections, each describing a convex polygon.
+
+    The i-th section starts with an integer ki , which is the number of vertices in the i-th shade.
+Each of the next ki lines will be two space-separated integers xij , yij , denoting the coordinate of
+the vertices of the convex polygon. In total, there will be ki + 1 lines in the i-th section. The
+vertices will be given in counterclockwise order.
+
+   Finally, there will be two lines, each consists of two space-separated integers, sx , sy and tx , ty ,
+denoting the coordinate of the starting point and the goal.
+
+
+   • 1 ≤ N ≤ 500.
+   • ki ≥ 3.
+     ∑N
+        i=1 ki ≤ 10 .
+                   5
+   •
+   • −109 ≤ xij , yij , sx , sy , tx , ty ≤ 109 .
+   • Each shade area is guaranteed to be a strict convex polygon. By strict, it means that no
+     three consecutive vertices lie on the same line and no two points coincide. Also, the vertices
+     will be given in counterclockwise order.
+
+
+                                                   33
+National Taiwan University                                        2024 NTU ICPC Team Preliminary
+
+Output
+
+   Print the desired minimum length.
+
+   Your answer will be accepted if the absolute or relative error does not exceed 10−6 . Formally, let
+                                                                                       |a−b|
+your answer be a, and the jury’s answer be b. Your answer is considered correct if max(1,|b|) ≤ 10−6 .
+
+
+
+ Sample Input 1                                     Sample Output 1
+ 3                                                  34.14213562373095101066
+ 3
+ 10 10
+ 20 10
+ 20 50
+ 3
+ 30 50
+ 90 50
+ 70 60
+ 3
+ 90 10
+ 100 10
+ 90 60
+ 0 0
+ 100 0
+
+
+
+
+                                                 34
+National Taiwan University                                    2024 NTU ICPC Team Preliminary
+
+
+
+
+                       Figure M.1: Illustration of sample 1 and sample 2
+
+ Sample Input 2                                 Sample Output 2
+ 3                                              39.40285000290663219857
+ 4
+ -80 0
+ -70 -20
+ -50 -25
+ -60 20
+ 5
+ 70 -40
+ 90 40
+ 70 30
+ 60 20
+ 50 -10
+ 3
+ -80 -20
+ 100 20
+ 0 20
+ -100 0
+ 100 0
+
+
+Note
+                                                        √
+   The exact answer of sample 1 and sample 2 are 20 + 10 2 and 20 + √8017 , respectively.
+
+
+
+
+                                              35
+National Taiwan University                          2024 NTU ICPC Team Preliminary
+
+
+
+
+                      This page is intentionally left blank.
+
+
+
+
+                                        36
+

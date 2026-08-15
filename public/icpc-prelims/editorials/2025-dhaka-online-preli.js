@@ -221,3 +221,6 @@ Beauty = sum over threshold levels.`,
     },
   ],
 };
+
+window.__CP_ICPC_EDITORIALS__ = window.__CP_ICPC_EDITORIALS__ || {};
+window.__CP_ICPC_EDITORIALS__.dhaka2025Editorial = dhaka2025Editorial;

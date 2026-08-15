@@ -1066,13 +1066,17 @@
     }
 
     function getEditorial(editorialId) {
-      if (
-        editorialId === 'dhaka2025Editorial' &&
-        typeof dhaka2025Editorial !== 'undefined'
-      ) {
-        return dhaka2025Editorial;
+      if (!editorialId) return null;
+      const registry = window.__CP_ICPC_EDITORIALS__;
+      if (registry && registry[editorialId]) return registry[editorialId];
+      // Legacy: bare global from older editorial scripts (const/var in classic scripts)
+      try {
+        // eslint-disable-next-line no-new-func
+        const value = Function(`"use strict"; return (typeof ${editorialId} !== "undefined") ? ${editorialId} : null;`)();
+        return value && Array.isArray(value.problems) ? value : null;
+      } catch (_) {
+        return null;
       }
-      return null;
     }
 
     function closeEditorial() {

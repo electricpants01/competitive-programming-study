@@ -1,0 +1,839 @@
+     ICPC SOUTH PACIFIC
+PRELIMINARY CONTEST LEVEL B
+             AUGUST 31, 2024
+
+
+         Contest Problems
+
+        A: An Introduction
+        B: Birthday Wizard
+        C: Contest Strategy
+        D: Delightful Stick Arrangements
+        E : Efficient Elevators
+        F : Falling Blocks
+        G: Grouping Words
+        H: Human Resources
+        I : Iguana Gift
+        J : Jimothy the Monster Hunter
+        K: King John IV the Builder
+        L : LLM
+                                   This contest contains twelve problems. Good luck.
+
+
+
+    For problems that state “Your answer should have an absolute or relative error of less than 10 9 ”, your
+answer, x, will be compared to the correct answer, y. If |x y| < 10 9 or |x|y|y| < 10 9 , then your answer will
+be considered correct.
+
+
+
+Definition 1
+For problems that ask for a result modulo m:
+If the correct answer to the problem is the integer b, then you should display the unique value a such that:
+
+    • 0a<m
+         and
+    • (a b) is a multiple of m.
+
+
+
+
+Definition 2
+A string s1 s2 · · · sn is lexicographically smaller than t1 t2 · · · t` if
+
+    • there exists k  min(n, `) such that si = ti for all 1  i < k and sk < tk
+           or
+    • si = ti for all 1  i  min(n, `) and n < `.
+
+
+
+
+Definition 3
+    • Uppercase letters are the uppercase English letters (A, B, . . . , Z).
+    • Lowercase letters are the lowercase English letters (a, b, . . . , z).
+
+
+
+
+Definition 4
+Unless otherwise specified, the distance between two points (x0 , y0 ) and (x1 , y1 ) is defined as its Euclidean
+distance:                                p
+                                           (x0 x1 )2 + (y0 y1 )2 .
+
+
+
+
+SP Preliminaries 2024 (Level B)                                                                                2
+                                            Problem A
+                                        An Introduction
+                                       Time limit: 1 second
+    This problem is intended to be an easy problem to get you familiar with the judging system.
+    All input and output (in all problems) is given via stdin and stdout. So you should use input()/print()
+in Python, std::cin/std::cout in C++, and Scanner/System.out.println() in Java to read
+and write to our system. Good luck!
+    Janine’s favourite game involves rolling a 100-sided die, with the
+numbers 1 through 100 each appearing on exactly one of the faces. Each
+face has a 1% chance of being rolled. Janine’s friend James just rolled
+their die. Janine wants to know what the probability is of rolling a
+higher number than James’ roll. For example, if James rolled a 50, then
+Janine has a 50% chance of rolling a 51 or higher. And if James rolled
+a 100, then Janine has a 0% chance of rolling higher, since no face is
+larger than 100.
+    Given James’ roll, what is Janine’s probability of rolling a higher
+number?
+
+Input
+The input consists of a single line containing a single integer R (1 
+R  100), which is the value of James’ roll.
+
+Output
+Display the probability (as an integer percentage) of Janine rolling a
+higher number than James.
+
+ Sample Input 1                                          Sample Output 1
+ 50                                                      50
+
+ Sample Input 2                                          Sample Output 2
+ 100                                                     0
+
+ Sample Input 3                                          Sample Output 3
+ 1                                                       99
+
+ Sample Input 4                                          Sample Output 4
+ 23                                                      77
+
+ Sample Input 5                                          Sample Output 5
+ 75                                                      25
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem A: An Introduction                                          3
+This page is intentionally left (almost) blank.
+                                               Problem B
+                                           Birthday Wizard
+                                          Time limit: 1 second
+    Nathan is a wizard, who is turning N years old today. He is very lonely and awkward, so each year he
+celebrates his birthday alone.
+    Last year, he turned N 1 years old, so he decorated his birthday
+cake with N 1 candles. However, he felt that this was a waste of
+candles, and started thinking of more concise ways to represent his age.
+Eventually, using his wizard powers, he recognised that the traditional
+system represents his age in unary (base 1). This year, he plans to save
+candles by expressing his age in a different base.
+    For example, suppose Nathan turns five this year.
+
+     • The traditional unary representation is 11111, with each digit
+       represented by an individual candle, using five candles in total.
+     • If he instead uses ternary (base 3), his age could be written as 12.
+       He could represent this with one candle for the 1, and a cluster of
+       two candles for the 2, for a total of three candles.
+     • Binary (base 2) is even better; in this system his age is 101. He
+       can place one candle for the first digit, leave a gap to represent
+       the 0, and place the second and final candle to represent the third
+       digit.
+
+     • The best of all is base 5, where his age is 10, requiring only one
+       candle.
+As Nathan always celebrates his birthday alone, he is not concerned with ambiguity. In particular, it does not
+matter that 101 could be misinterpreted as 11 or 1001, or that 12 might be read as 21 from the other side of the
+cake.
+    Nathan would like to use as few candles as possible, by choosing an appropriate base between 2 and 10
+inclusive. Help Nathan determine the smallest number of candles to use.
+
+Input
+The input consists of a single line containing a single integer N (1  N  1018 ), the age to be represented on
+Nathan’s cake this year.
+
+Output
+Display the smallest number of candles that Nathan can use.
+
+ Sample Input 1                                              Sample Output 1
+ 5                                                           1
+
+ Sample Input 2                                              Sample Output 2
+ 51                                                          3
+
+ Sample Input 3                                              Sample Output 3
+ 1000000000000                                               1
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem B: Birthday Wizard                                                    5
+This page is intentionally left (almost) blank.
+                                              Problem C
+                                         Contest Strategy
+                                         Time limit: 1 second
+    In ICPC-style competitions, determining the difficulty of problems is crucial for contestants. The scoreboard
+gives a lot of information about a problem’s difficulty. You can often determine if it is easy, medium, or hard just
+based on how many teams solve it. The more teams that solve it, the easier it likely is.
+    You can also determine if it is tricky. Tricky problems are ones that
+have a non-obvious corner case or where the obvious solution is too
+slow (remember: a Time Limit Exceeded verdict normally means that
+your algorithm is too slow, not that your implementation is too slow).
+Tricky problems often appear on the scoreboard as lots of incorrect sub-
+missions.
+    Jenna has the following strategy for classifying a problem’s diffi-
+culty:
+
+   1. A problem is easy if more than half of the teams in the contest
+      have solved it.
+   2. A problem is hard if fewer than 20% of teams have solved it.
+   3. A problem is tricky if the number of incorrect submissions is
+      more than twice the number of correct submissions.
+   4. A problem is medium if none of the above apply.
+
+     If a problem satisfies multiple classifications, then classify it as the
+first in the list (that is, prefer easy, then hard, then tricky, then medium).
+     Given the current state of the scoreboard for a particular problem, classify the difficulty of that problem.
+
+Input
+The first line of input contains a single integer n (1  n  100), which is the number of teams in the contest.
+    The next line contains n integers s1 , s2 , . . . , sn ( 100  si  100), which is the current scoreboard for each
+of the n teams. If si is negative, then team i has made si incorrect submissions for this problem. If si is positive,
+then team i has made si submissions for this problem, si 1 of them are incorrect and one of them is correct. If
+si is 0, then team i has made no submissions for this problem.
+    The sample input is the scoreboard from problems A-D in the 2023 South Pacific Regional Finals.
+
+Output
+Display the difficulty of the problem.
+
+ Sample Input 1                                              Sample Output 1
+ 12                                                          tricky
+ 2 5 0 -1 0 0 3 -2 0 0 0 0
+
+ Sample Input 2                                              Sample Output 2
+ 12                                                          easy
+ 1 1 3 2 2 1 2 1 2 1 1 4
+
+ Sample Input 3                                              Sample Output 3
+ 12                                                          hard
+ 2 2 -7 -6 0 0 0 0 0 0 0 0
+
+
+SP Preliminaries 2024 (Level B) Problem C: Contest Strategy                                                         7
+Sample Input 4                                        Sample Output 4
+12                                                    medium
+2 2 1 2 1 3 0 -2 0 0 0 0
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem C: Contest Strategy             8
+                                              Problem D
+                            Delightful Stick Arrangements
+                                        Time limit: 2 seconds
+    Janine has a collection of sticks, each with a unique length. She wants to arrange these sticks in such a way that
+for any three consecutive sticks, the median length of the three is not the middle stick. This specific arrangement
+is called a delightful order.
+    For instance, if Janine has sticks with lengths 2, 3, 5, 7, 11, 13,
+and 17, she can order them as follows: 13, 5, 7, 2, 17, 3, 11. In this
+arrangement, the medians of each triplet (13, 5, 7), (5, 7, 2), (7, 2, 17),
+(2, 17, 3), and (17, 3, 11) are 7, 5, 7, 3, and 11 respectively, and none of
+these medians are the middle stick of the triplet, so this is a delightful
+order.
+    Janine has proven that a delightful ordering is always possible, but is
+having a hard time finding one. Given the lengths of the sticks, arrange
+them in a delightful order.
+
+Input
+The first line of input contains a single integer n (3  n  2 000),
+which is the number of sticks.
+   The next line contains n distinct integers si (1  si  100 000),
+which are the lengths of the n sticks.
+
+Output
+Display a delightful ordering. If there are multiple correct solutions,
+any will be accepted.
+
+ Sample Input 1                                             Sample Output 1
+ 7                                                          13 5 7 2 17 3 11
+ 2 3 5 7 11 13 17
+
+ Sample Input 2                                             Sample Output 2
+ 4                                                          1000 1 100 10
+ 10 100 1 1000
+
+ Sample Input 3                                             Sample Output 3
+ 8                                                          1 6 4 8 5 7 2 3
+ 1 3 5 7 2 4 6 8
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem D: Delightful Stick Arrangements                                            9
+This page is intentionally left (almost) blank.
+                                               Problem E
+                                        Efficient Elevators
+                                         Time limit: 4 seconds
+    Jeremy lives in a large skyscraper with efficient elevators that travel at 1 floor per second and hold an unlimited
+number of passengers. The elevators require so much power that they need to recharge every day after being used.
+So each day, each elevator starts at the ground floor and immediately goes up to some floor. Then, each elevator
+waits for some time. Finally, each elevator goes all the way down to the ground floor, and then cannot be used
+again until tomorrow. Note that the elevators might go up to different floors to wait and might go back to ground
+floor at different times.
+    Every morning, all tenants need to travel from their respective floors
+to the ground floor (floor 0). Tenants are impatient and require immedi-
+ate access to an elevator when they request it. It takes no time to enter
+the elevator, and the elevators do not slow down as they pick up pas-
+sengers. Elevators do not collect tenants on their way up, only on the
+way down to ground floor. This is because the elevators power on and
+go to their waiting position before any tenants wake up. Tenants only
+use elevators in the morning; they all take the stairs in the evening when
+they come home.
+    For example, if Betty requests an elevator on floor 4 at time 5 and
+Charlie requests an elevator on floor 3 at time 6, then they can share the
+same elevator (since the elevator is on floor 4 at time 5, floor 3 at time
+6, floor 2 at time 7, floor 1 at time 8, and the ground floor at time 9).
+Anyone who requests an elevator at any of these times on those floors
+may also share the same elevator. Similarly, someone on floor 7 at time
+2 could share this elevator. Someone on floor 1 at time 10 cannot use
+this same elevator since the elevator needs to recharge until tomorrow after reaching the ground floor.
+    Your goal is to minimise the number of elevators while ensuring all tenants can board without delay. Given
+the floor and time each tenant requests an elevator, compute the minimum number of elevators needed.
+
+Input
+The first line of input contains a single integer n (1  n  500 000), which is the number of tenants.
+    The next n lines describe the tenants. Each of these lines contains two integers r (1  r  109 ), which is the
+time in seconds that this tenant requested the elevator, and f (1  f  109 ), which is the floor they are on when
+they request the elevator.
+
+Output
+Display the minimum number of elevators needed.
+
+ Sample Input 1                                              Sample Output 1
+ 2                                                           1
+ 5 4
+ 6 3
+
+ Sample Input 2                                              Sample Output 2
+ 3                                                           2
+ 1 4
+ 2 3
+ 3 4
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem E: Efficient Elevators                                                      11
+Sample Input 3                                          Sample Output 3
+3                                                       3
+1 1
+1 2
+1 3
+
+Sample Input 4                                          Sample Output 4
+3                                                       1
+1 1
+1 1
+1 1
+
+Sample Input 5                                          Sample Output 5
+3                                                       3
+3 3
+2 2
+1 1
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem E: Efficient Elevators            12
+                                             Problem F
+                                           Falling Blocks
+                                       Time limit: 4 seconds
+    There is a hot new platform game. It is called Marizzo and features a plumber who fixes skibidi toilets. The
+game is very popular and Mary has pitched a new startup to venture capital investors. Her startup idea is simple,
+use AI to play the game so that impressive speed-runs can be generated automatically and uploaded as NFTs to
+TouYube to collect ad revenue. Unfortunately, the deep learning methods Mary planned to use are not working
+well on Marizzo. You have been hired to develop an algorithm that can play the game optimally.
+    The game is played in a 2D space with width W and unlimited
+height. A sequence of N blocks fall from the sky one after the other.
+The game lasts a total of N + 1 seconds. During the ith second, a block
+with a width and height of 1 falls from above. The ith block falls at lo-
+cation li and falls directly down vertically. Each block will collide with
+either the ground or another block at the end of the ith second. Once it
+collides with anything, it stops there for the remainder of the game. No
+block falls in the final second of the game (the N + 1-th second).
+    The player controls Marizzo and can move him left or right. Ma-
+rizzo has a height and width of 1 and can move very fast completing as
+many steps as needed between falling blocks. He can climb up or down
+to an adjacent block so long as the height difference between his current
+location is at most 1. Formally, Marizzo can step from location x to lo-
+cation y only if |x y| = 1 and |Hx Hy |  1 where Hx denotes the
+height of location x. If a block falls on Marizzo, he will be crushed and
+the game is over. The goal of the game is to survive as long as possible
+so the score is the number of seconds survived. Note that if Marizzo can survive until the end of the game, that
+gets a score of N + 1.
+
+Input
+The first line of input contains two integers, N (1  N  200, 000) and W (1  W  200, 000). The next line
+contains N integer describing the sequence of falling blocks. The ith integer is the location of the ith block, li
+(1  l  W ).
+
+Output
+Display the maximum possible score.
+
+ Sample Input 1                                           Sample Output 1
+ 4 4                                                      5
+ 1 2 3 4
+
+ Sample Input 2                                           Sample Output 2
+ 4 2                                                      3
+ 1 1 2 2
+
+ Sample Input 3                                           Sample Output 3
+ 6 2                                                      4
+ 1 1 1 2 2 2
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem F: Falling Blocks                                                      13
+This page is intentionally left (almost) blank.
+                                               Problem G
+                                          Grouping Words
+                                          Time limit: 1 second
+    The puzzle club at your university is working on a new word association game. The game consists of nine
+words, arranged in a three-by-three grid. To win the game, a player has to categorise the words into three groups
+of three words each, so that each pair of words in the same group is related.
+    Consider the example below.
+
+                                      PACIFIC              NEW               FIJI
+                                 PROGRAMMING            ZEALAND         CPLUSPLUS
+                                     PYTHON               SOUTH             JAVA
+
+   A player would be expected to know of many related words:
+    • all pairs of words in “South Pacific Competitive Programming Association”,
+
+    • all pairs of words in country names (Australia, New Zealand, South Africa, and Fiji) are related to each
+      other, and
+    • all pairs of programming languages (C++, Python, and Java) are related to each other.
+   There is only one way to group these words into three groups of three:
+
+                                      PACIFIC               NEW              FIJI
+                                PROGRAMMING              ZEALAND        CPLUSPLUS
+                                      PYTHON              SOUTH             JAVA
+
+     The club needs your help to check whether a given puzzle can be solved or not! Given a grid of words, and a
+list of pairs of related words from the grid, report whether the puzzle can be solved, and if so, find a valid grouping.
+
+Input
+The first three lines of input each contain three words, and each word comprises up to 15 uppercase letters. All
+nine words are distinct.
+    The next line contains a single integer m (9  m  36), which is the number of pairs of related words.
+    The next m lines each represent a pair of related words. Each such line contains two distinct words out of the
+nine listed in the first three lines. No pair of related words appears more than once (in either ordering). So if a b
+appears, then b a does not.
+
+Output
+If there is no valid grouping, display Impossible.
+     Otherwise, display Possible, then three lines each containing three words. Each of these lines must cor-
+respond to a group, so the first three words must be pairwise related, as well as the next three, and the final
+three.
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem G: Grouping Words                                                            15
+Sample Input 1                                       Sample Output 1
+CCC A AAA                                            Possible
+DDD DDDD BB                                          CCC DDD DDDD
+DD BBB D                                             A AAA D
+18                                                   BB DD BBB
+BBB DDD
+DDDD CCC
+A DD
+A D
+DD DDDD
+CCC DDD
+BB BBB
+BB DD
+DDD DDDD
+AAA D
+D BBB
+DDD D
+DD DDD
+DD D
+AAA A
+DDDD D
+DD BBB
+A DDDD
+
+Sample Input 2                                       Sample Output 2
+PACIFIC NEW FIJI                                     Possible
+PROGRAMMING ZEALAND CPLUSPLUS                        PACIFIC PROGRAMMING SOUTH
+PYTHON SOUTH JAVA                                    NEW FIJI ZEALAND
+12                                                   CPLUSPLUS PYTHON JAVA
+SOUTH PACIFIC
+SOUTH PROGRAMMING
+PROGRAMMING PACIFIC
+SOUTH ZEALAND
+SOUTH FIJI
+NEW ZEALAND
+NEW FIJI
+NEW SOUTH
+FIJI ZEALAND
+CPLUSPLUS JAVA
+CPLUSPLUS PYTHON
+JAVA PYTHON
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem G: Grouping Words                        16
+Sample Input 3                                       Sample Output 3
+A AA AAA                                             Impossible
+B BB BBB
+C CC CCC
+12
+A AA
+AA AAA
+B BB
+BB BBB
+C CC
+CC CCC
+A B
+AA BB
+AAA BBB
+A C
+AA CC
+AAA CCC
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem G: Grouping Words              17
+This page is intentionally left (almost) blank.
+                                             Problem H
+                                      Human Resources
+                                        Time limit: 1 second
+    James works at MegaCorp, where every employee except the CEO has exactly one manager. An employee’s
+reporting chain includes themselves, their manager, their manager’s manager, and so on. The CEO is at the top
+of everyone’s reporting chain. MegaCorp needs to train some employees so that each employee can communicate
+with a trained manager.
+    The distance between an employee and someone in their reporting chain is defined as the number of managers
+between them, plus one. For example, an employee’s direct manager is at distance 1, their manager’s manager is
+at distance 2, and so forth. The distance from am employee to themself is 0. MegaCorp’s policy dictates that for
+every employee (including the CEO), the distance to the nearest trained manager in their reporting chain (including
+themself) must be at most K.
+    Consider the following employee structure:
+
+
+
+
+    If K = 5, training the CEO alone suffices because everyone is within a distance of 5 from them. However,
+if K = 2, at least one additional manager needs training because some employees are at a distance of 3 from the
+CEO. Training the CEO, Morgan, and Tarzan is enough to satisfy the requirements.
+    Given the manager for each employee, determine the minimum number of managers that MegaCorp needs to
+train to ensure that every employee is within at most distance K from a trained manager in their reporting chain.
+
+Input
+The first line of input contains two integers n (2  n  300), which is the number of employees, and K (1 
+K  n), which is the maximum distance from an employee to the nearest trained manager.
+   The next line contains n 1 integers m2 , m3 , . . . , mn (1  mi < i), which indicates that the manager of
+employee i is mi . The CEO is employee 1.
+
+Output
+Display the minimum number of managers that MegaCorp needs to train.
+
+ Sample Input 1                                            Sample Output 1
+ 10 5                                                      1
+ 1 1 1 2 4 4 5 5 7
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem H: Human Resources                                                      19
+Sample Input 2                                      Sample Output 2
+10 2                                                3
+1 1 1 2 4 4 5 5 7
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem H: Human Resources            20
+                                                Problem I
+                                               Iguana Gift
+                                          Time limit: 1 second
+    The legendary iguanas Izzy and Iggy have been married for almost two years now! Izzy said that as an
+anniversary gift she wants a really nice palindrome. A palindrome is a string that is the same forwards and
+backwards.
+    Iggy wants to give Izzy the perfect palindrome, but he unfortunately
+procrastinated. Iggy currently has a string (which may or may not al-
+ready be a palindrome). Iggy and Izzy’s anniversary date is in just a
+few minutes so Iggy needs your help making a palindrome from what
+he has so far as quick as possible. However, Iggy likes what he has so
+far so the resulting palindrome must start with his original string.
+    What is the minimum number of characters Iggy must add to the
+end of his string to create a palindrome?
+
+Input
+The first and only line of input contains a single string consisting of at
+least 1 and at most 20 lowercase letters. This is the string Iggy currently
+has.
+
+Output
+Display the minimum number of letters Iggy needs to add to the end of
+his string to form a palindrome that starts with his original string.
+
+ Sample Input 1                                              Sample Output 1
+ iloveyou                                                    7
+
+ Sample Input 2                                              Sample Output 2
+ xoxoxoxoxoxoxoxoxoxo                                        1
+
+ Sample Input 3                                              Sample Output 3
+ icpc                                                        1
+
+ Sample Input 4                                              Sample Output 4
+ tacocat                                                     0
+
+ Sample Input 5                                              Sample Output 5
+ x                                                           0
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem I: Iguana Gift                                                  21
+This page is intentionally left (almost) blank.
+                                              Problem J
+                              Jimothy the Monster Hunter
+                                        Time limit: 1 second
+    Jimothy is facing the final boss in his favourite game, Monster Hunter. The boss has h hit points (HP), and
+Jimothy possesses potions and swords to diminish the boss’s HP. Potions reduce the boss’s HP by a percentage
+equal to the potion’s potency, while swords reduce the boss’s HP by a flat amount equal to their strength.
+    Items may be used in any order. For example, if Jimothy has a
+potion with 30 potency and a sword with 20 strength against a boss
+with 50HP, using the potion first would leave the boss with 35HP
+(30% off 50HP = 35HP), and using the sword afterward would fur-
+ther reduce it to 15HP (35HP 20HP = 15HP). Alternatively, using
+the sword first and then the potion would leave the boss with 21HP
+(50HP 20HP = 30HP and 30% off 30HP = 21HP). Potion percent-
+ages are calculated based on the boss’s current HP, so if Jimothy had
+two potions with 50 potency each, using them would reduce the boss to
+25% of its original HP (the first potion removes 50%, then the second
+potion removes 50% of the remaining, leaving 25% of the original HP).
+    The boss’s HP can even drop below zero, though potions have no
+effect when the boss’s HP is negative (swords still reduce the boss’s
+HP). So if the boss has 10HP, then potions have no effect, and a sword
+with 5 strength would reduce the boss’s HP to 15HP.
+    Each item can only be used once, and Jimothy has a limit, L, on the
+total number of items he can use. For instance, if the limit is 2 items, he could use 2 swords and 0 potions, 2
+potions and 0 swords, or 1 of each. Jimothy aims to minimise the boss’s remaining HP after using the items.
+    Given the potencies of the potions, strengths of the swords, and a restriction on the number of items Jimothy
+can use, determine the minimum HP the boss can have after using up to the allowed number of items.
+
+Input
+The first line of input contains four integers h (1  h  100 000), which is the initial HP of the boss, n (1  n 
+1 000), which is the number of potions Jimothy has, m (1  m  1 000), which is the number of swords Jimothy
+has, and L (1  L  n + m), which is the limit on the number of items they can use.
+    The second line contains n integers p1 , p2 , . . . , pn (1  pi  99), which are the potencies of the potions.
+    The third line contains m integers s1 , s2 , . . . , sm (1  si  100), which are the strengths of the swords.
+
+Output
+Display the minimum HP the boss can have after using up to the allowed number of items. Your answer should
+have an absolute or relative error of less than 10 4 .
+
+ Sample Input 1                                            Sample Output 1
+ 50 1 1 1                                                  30.0000000000
+ 30
+ 20
+
+ Sample Input 2                                            Sample Output 2
+ 50 1 1 2                                                  15.0000000000
+ 30
+ 20
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem J: Jimothy the Monster Hunter                                           23
+Sample Input 3                                        Sample Output 3
+100 2 1 2                                             25.0000000000
+50 50
+10
+
+Sample Input 4                                        Sample Output 4
+100 2 1 2                                             5.0000000000
+50 90
+1
+
+Sample Input 5                                        Sample Output 5
+100 2 2 2                                             25.0000000000
+10 50
+5 25
+
+Sample Input 6                                        Sample Output 6
+5 2 1 2                                               -5.5000000000
+10 5
+10
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem J: Jimothy the Monster Hunter   24
+                                               Problem K
+                                  King John IV the Builder
+                                          Time limit: 1 second
+    King John has been tasked with building a wall that must contain at least K bricks. The bricks need to be
+distributed evenly across several layers. If the wall is ` layers tall, then John must place the same number of bricks
+on layers 1 through ` (and no bricks on any other layer). The cost of a brick varies depending on the layer it is
+placed on.
+    For example, suppose John needs to build a wall with at least 10 bricks, and the costs per brick for layers 1
+through 5 are $10, $10, $2, $48, and $20, respectively. One option is to place all 10 bricks on layer 1, costing
+a total of $100. He could also place 2 bricks on each of the five layers costing a total of $180. But by using 12
+bricks instead, he could distribute 4 bricks each on layers 1, 2, and 3, resulting in a total cost of $88.
+
+
+
+
+    Given the minimum number of bricks in the wall and the cost per brick for each layer, what is the minimum
+cost required to build a wall that satisfies the constraints?
+
+Input
+The first line of input contains two integers K (1  K  1 000), which is the minimum number of bricks needed
+in the wall, and M (1  M  K), which is the maximum height of the wall.
+    The next line contains M integers c1 , c2 , . . . , cM (1  ci  1 000 000), which is the cost of placing a brick on
+the ith layer.
+
+Output
+Display the minimum cost required to build a wall that satisfies the constraints.
+
+ Sample Input 1                                              Sample Output 1
+ 10 5                                                        88
+ 10 10 2 48 20
+
+ Sample Input 2                                              Sample Output 2
+ 3 3                                                         9
+ 5 3 1
+
+ Sample Input 3                                              Sample Output 3
+ 2 2                                                         2
+ 1 5
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem K: King John IV the Builder                                                  25
+This page is intentionally left (almost) blank.
+                                               Problem L
+                                                       LLM
+                                          Time limit: 1 second
+     Large Language Models (LLMs) are super popular these days. However, you need tons of compute power
+in order to use them. As complex as they seem, the basics of LLMs are pretty straight forward: given previous
+context, generate the next word/token/letter using some predetermined formulas. Janet wants to build a simplified
+version of this. This simplified LLM is called JanetBot. JanetBot can only generate 27 letters: the 26 lowercase
+letters and the stop token (described below).
+     JanetBot works by generating one letter at a time. To determine which letter to generate next, JanetBot looks at
+the last letter in the already generated text, computes a probability distribution, and then randomly selects a letter
+to append to the text from that probability distribution. The process then repeats for the next letter, and the next,
+and the next, until JanetBot generates the stop token, which is a special letter telling JanetBot to stop generating.
+The stop token is not appended to the text.
+     How do we compute that probability distribution? We train JanetBot! We give JanetBot many examples (called
+training data) of real text so that it can adjust its probabilities so that it generates reasonable text. Say `0 was the
+most recently generated letter, then the probability of generating some letter `1 (`1 may or may not be the stop
+token) is
+                              # of times the substring ‘`0 `1 ’ appears in the training data
+                                                                                             .
+                                       # of times ‘`0 ’ appears in the training data
+If `0 does not appear in the training data, then JanetBot will always generate the stop token as the next letter. There
+is a stop token at the end of each word in the training data.
+     For example, if the training data consists of 4 words: international, collegiate, programming,
+and contest, and the existing text is test, then the probability distribution for the next letter depends on the
+t’s in the input and is as follows:
+
+                               Next Letter    e    i    Stop Token     Everything Else
+                               Probability    3
+                                              5
+                                                   1
+                                                   5
+                                                              1
+                                                              5
+                                                                               0
+                                                                               5
+
+    Thus, there is a 60% chance the e is selected (making the text teste) and generation continues with the
+probability distribution described by the e’s in the input. There is a 20% chance the i is selected (making the text
+testi) and the generation continues. And there is a 20% chance the stop token is selected and the final text is
+test. On the other hand, if the original text was xyz, then JanetBot is guaranteed to generate the stop token next
+since z does not appear in the training data.
+    So if JanetBot wants to generate the full word test (with t as the original text), then there is a 60% chance to
+generate an e following a t, 25% to generate an s following an e, 100% chance of generating a t following an s,
+and a 20% chance to generate the stop token after a t. Since these chances are independent, the total probability
+is 60% ⇥ 25% ⇥ 100% ⇥ 20% = 3%.
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem L: LLM                                                                       27
+    Janet is validating that JanetBot works properly. She has a target text she is attempting to generate. The text
+starts as the first letter of the target text. Given the training data and a target text, what is the probability that
+JanetBot generates the remainder of the target text?
+
+Input
+The first line of input contains a single string T , which is the target string (T consists of only lowercase letters and
+has a length between 1 and 20, inclusive).
+    The second line of input contains a single integer n (1  n  100), which is the number of words in the
+training data.
+    The next n lines describe the training data. Each of these lines contains a single string S, which is a word in
+the training data (S consists of only lowercase letters and has a length between 1 and 20, inclusive).
+
+Output
+Display the probability that JanetBot generates T , given that it has already generated the first letter of T . The
+probability is a value between 0 and 1 inclusive. Your answer will be considered correct if it has an absolute or
+relative error of less than 10 9 .
+
+ Sample Input 1                                               Sample Output 1
+
+ test                                                         0.030000000000
+ 4
+ international
+ collegiate
+ programming
+ contest
+
+ Sample Input 2                                               Sample Output 2
+
+ ab                                                           0.500000000000
+ 2
+ jab
+ table
+
+ Sample Input 3                                               Sample Output 3
+
+ x                                                            0.333333333333
+ 3
+ x
+ xy
+ xyz
+
+ Sample Input 4                                               Sample Output 4
+
+ abc                                                          0.000000000000
+ 1
+ ab
+
+ Sample Input 5                                               Sample Output 5
+
+ aa                                                           0.250000000000
+ 1
+ aa
+
+
+
+SP Preliminaries 2024 (Level B) Problem L: LLM                                                                        28
+Sample Input 6                                   Sample Output 6
+
+a                                                0.750000000000
+3
+a
+a
+aa
+
+
+
+
+SP Preliminaries 2024 (Level B) Problem L: LLM                     29
+This page is intentionally left (almost) blank.
+
