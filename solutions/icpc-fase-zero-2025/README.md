@@ -28,5 +28,5 @@ They are intentionally separate from the browser editorial. The editorial expose
 
 Notes:
 
-- Problem A prints Portuguese phrases matching the official samples (`vivo` / `morto` / `vivo e morto`).
+- Problem A prints Portuguese phrases matching the official samples (`vivo` / `morto` / `vivo e morto`), even in the English problem set.
 - `K.cpp` uses a top-K DP over increasing-subsequence endings. It is correct and fine for small/medium `n`, but the full contest limits intend an Eppstein K-shortest approach on a sparsified DAG (see editorial).

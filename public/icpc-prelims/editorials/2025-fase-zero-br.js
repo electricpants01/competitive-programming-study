@@ -22,12 +22,13 @@ const faseZero2025Editorial = {
 C = 1  →  superposition → "vivo e morto"
 C = 0  →  observe G    → "vivo" or "morto"`,
       insight:
-        'While the box is closed the cat is unobservable, so the answer is always the superposition phrase. Opening the box collapses the state to the given bit G.',
+        'While the box is closed the cat is unobservable, so the answer is always the superposition phrase. Opening the box collapses the state to the given bit G. The English booklet still requires the Portuguese output strings.',
       analysis: [
         'Read two bits C and G.',
         'If C = 1, print "vivo e morto" regardless of G.',
         'If C = 0, print "vivo" when G = 1 and "morto" when G = 0.',
         'The privileged G value is only meaningful after the box opens.',
+        'Do not translate the answers: the official EN samples use vivo / morto / vivo e morto.',
       ],
       complexity: 'O(1) time and O(1) memory.',
     },
