@@ -104,6 +104,7 @@ export interface Translations {
 
   modal: {
     description: string;
+    visualDiagram: string;
     keyTechniques: string;
     constraints: string;
     whyLearn: string;

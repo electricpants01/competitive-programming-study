@@ -129,6 +129,7 @@ export const es: Translations = {
 
   modal: {
     description: 'Descripción',
+    visualDiagram: 'Diagrama Visual',
     keyTechniques: 'Técnicas Clave',
     constraints: 'Restricciones Típicas',
     whyLearn: 'Por Qué Aprender Esto',

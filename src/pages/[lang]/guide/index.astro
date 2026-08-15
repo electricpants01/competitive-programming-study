@@ -101,6 +101,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       --shadow-sm: none;
       --shadow-md: none;
       --nav-height: var(--header-height);
+      --ascii-track: rgba(255, 255, 255, 0.14);
     }
     [data-theme="light"] {
       --surface: #fff;
@@ -119,6 +120,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       --bg-surface: #fafafa;
       --bg-code: #f5f5f5;
       --color-primary-light: #00000009;
+      --ascii-track: rgba(0, 0, 0, 0.14);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
@@ -390,9 +392,104 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     .code-block {
       padding: 14px 16px; overflow-x: auto; font-size: 12px; line-height: 1.55; color: var(--foreground);
     }
-    .modal-section-title {
-      font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 20px 0 10px;
+
+    /* ── ASCII diagram panel (topic asciiArt) ── */
+    .ascii-art {
+      margin: 0; padding: 18px 20px; overflow-x: auto;
+      background: var(--bg-code); border: 1px solid var(--border); border-radius: var(--radius-md);
+      font-family: var(--font-mono) !important;
+      font-size: 12px; line-height: 1.7; white-space: pre;
+      color: var(--muted-strong);
+      -webkit-font-smoothing: antialiased;
     }
+    /* Caption rows inside a diagram (lines ending in ':') */
+    .ascii-art .ascii-head {
+      color: var(--foreground); font-weight: 600; letter-spacing: .04em;
+    }
+    .ascii-art .ascii-bar { color: var(--accent); }
+    .ascii-art .ascii-track { color: var(--ascii-track); }
+    .ascii-art .ascii-rule { color: var(--muted); }
+    .ascii-art .ascii-ok { color: var(--success); }
+    .ascii-art .ascii-bad { color: var(--danger); }
+    /* ── Topic detail workspace ── */
+    .detail-card { overflow: hidden; }
+    .modal-header {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+      padding: 20px 22px 16px; border-bottom: 1px solid var(--border);
+      background: var(--subtle);
+    }
+    .modal-title {
+      font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+      color: var(--foreground); margin-bottom: 10px;
+    }
+    .algo-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .modal-body { padding: 4px 22px 24px; }
+    .modal-section { margin-top: 4px; }
+    .modal-section-title {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 24px 0 10px;
+    }
+    .modal-desc {
+      font-size: 13.5px; line-height: 1.65; color: var(--muted-strong);
+      padding-left: 12px; border-left: 2px solid var(--border);
+    }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag, .problem-chip {
+      display: inline-flex; align-items: center; padding: 4px 9px;
+      border-radius: var(--radius-sm); font-size: 12px; line-height: 1.4;
+    }
+    .problem-chip { font-family: var(--font-mono); font-size: 11.5px; }
+    .problems-list, .visualizer-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .bullet-list { margin: 0; padding: 0; list-style: none; }
+    .bullet-list li {
+      position: relative; padding: 4px 0 4px 18px;
+      font-size: 13px; line-height: 1.6; color: var(--muted-strong);
+    }
+    .bullet-list li::before {
+      content: ""; position: absolute; left: 4px; top: 12px;
+      width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+    }
+    .viz-link {
+      padding: 5px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--subtle); color: var(--muted-strong);
+      font-size: 12px; text-decoration: none; transition: color var(--transition), background var(--transition);
+    }
+    .viz-link:hover { color: var(--foreground); background: var(--subtle-hover); }
+    .code-example-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 9px 14px; border-bottom: 1px solid var(--border); background: var(--subtle);
+    }
+    .code-example-title { font-size: 12.5px; font-weight: 600; color: var(--foreground); }
+    .code-copy-btn {
+      border: 1px solid var(--border); background: transparent; color: var(--muted-strong);
+      padding: 3px 9px; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 11px; cursor: pointer;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .code-copy-btn:hover { color: var(--foreground); border-color: var(--muted); }
+    .code-copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    /* ── Quiz ── */
+    .quiz-body { display: flex; flex-direction: column; gap: 16px; }
+    .quiz-question {
+      padding: 14px 16px; border: 1px solid var(--border);
+      border-radius: var(--radius-md); background: var(--subtle);
+    }
+    .quiz-q-text { font-size: 13px; font-weight: 600; color: var(--foreground); margin-bottom: 10px; }
+    .quiz-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+    .quiz-option {
+      text-align: left; padding: 9px 12px; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 12.5px; cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .quiz-option:hover { background: var(--subtle-hover); }
+    .quiz-feedback { margin-top: 10px; font-size: 12.5px; color: var(--muted-strong); }
+    .quiz-footer { display: flex; align-items: center; gap: 10px; }
+    .quiz-retry-btn {
+      border: 1px solid var(--border); background: transparent; color: var(--muted-strong);
+      padding: 8px 14px; border-radius: var(--radius-sm); font-family: inherit; cursor: pointer;
+    }
+    .quiz-retry-btn:hover { color: var(--foreground); border-color: var(--muted); }
+    .quiz-score { font-size: 13px; font-weight: 600; color: var(--foreground); }
     .tag, .problem-chip, .cf-tag, .vl-tag, .vl-badge, .ip-badge, .ip-filter-btn {
       border: 1px solid var(--border) !important;
       background: var(--subtle) !important;

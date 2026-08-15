@@ -373,8 +373,8 @@
   // ── Build algorithm grid ──────────────────────────────────────
   function diffBadgeClass(d) {
     const dl = (d || "").toLowerCase();
-    if (dl.includes("beginner")) return "badge-beginner";
-    if (dl.includes("advanced")) return "badge-advanced";
+    if (dl.includes("beginner") || dl.includes("principiante")) return "badge-beginner";
+    if (dl.includes("advanced") || dl.includes("avanzado")) return "badge-advanced";
     return "badge-intermediate";
   }
 
@@ -442,6 +442,7 @@
       `<a class="viz-link" href="${ytSearchHref}" target="_blank" rel="noopener noreferrer">YouTube Search ↗</a>`,
     ].join("");
     const vizLabel = lang === 'es' ? '🎬 Visualízalo' : '🎬 Visualize It';
+    const diagramLabel = (t.modal && t.modal.visualDiagram) || 'Visual Diagram';
 
     detailPanel.innerHTML = `
       <div class="detail-card">
@@ -460,7 +461,7 @@
             <div class="modal-section-title">${t.modal.description}</div>
             <div class="modal-desc">${algo.description}</div>
           </div>
-          ${algo.asciiArt ? `<div class="modal-section"><div class="modal-section-title">Visual Diagram</div><pre class="ascii-art">${esc(algo.asciiArt)}</pre></div>` : ""}
+          ${algo.asciiArt ? `<div class="modal-section"><div class="modal-section-title">${diagramLabel}</div><pre class="ascii-art">${renderAsciiArt(algo.asciiArt)}</pre></div>` : ""}
           ${keyTechHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.keyTechniques}</div><div class="tag-list">${keyTechHTML}</div></div>` : ""}
           ${constraintsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.constraints}</div><div class="tag-list">${constraintsHTML}</div></div>` : ""}
           ${benefitsHTML ? `<div class="modal-section"><div class="modal-section-title">${t.modal.whyLearn}</div><ul class="bullet-list">${benefitsHTML}</ul></div>` : ""}
@@ -682,6 +683,24 @@
   // ── Util ──────────────────────────────────────────────────────
   function esc(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  /**
+   * Escape an asciiArt diagram and tint its structural glyphs so the plain-text
+   * drawing reads as a chart: filled blocks = accent, box rules = muted,
+   * pass/fail markers = success/danger. Colouring is purely presentational —
+   * the underlying text is still copy-pasteable.
+   */
+  function renderAsciiArt(art) {
+    return esc(art)
+      .replace(/[█▓▒]+/g, (m) => `<span class="ascii-bar">${m}</span>`)
+      .replace(/░+/g, (m) => `<span class="ascii-track">${m}</span>`)
+      .replace(/[─│┌┐└┘├┤┬┴┼╭╮╰╯═║╔╗╚╝]+/g, (m) => `<span class="ascii-rule">${m}</span>`)
+      .replace(/(✓|✔|\bOK\b)/g, (m) => `<span class="ascii-ok">${m}</span>`)
+      .replace(/(✗|✘|\bTLE\b|\bMLE\b)/g, (m) => `<span class="ascii-bad">${m}</span>`)
+      // Caption lines (`Prefix Sum:`) act as diagram headings — skip rows that
+      // already contain markup from the tints above.
+      .replace(/^(?!.*<span)([^\n]*?:)[ \t]*$/gm, (_, line) => `<span class="ascii-head">${line}</span>`);
   }
 
   // ── Codeforces Problem Search ──────────────────────────────────

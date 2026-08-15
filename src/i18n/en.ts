@@ -128,6 +128,7 @@ export const en: Translations = {
 
   modal: {
     description: 'Description',
+    visualDiagram: 'Visual Diagram',
     keyTechniques: 'Key Techniques',
     constraints: 'Typical Constraints',
     whyLearn: 'Why Learn This',

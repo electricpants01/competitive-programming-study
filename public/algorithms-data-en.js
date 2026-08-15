@@ -8,18 +8,27 @@ const algorithmsData = {
     importance: "Essential",
     description:
       "Big-O notation describes how runtime or memory scales as input grows. Mastering complexity analysis is the foundation of all algorithm design decisions.",
-    asciiArt: `Growth rate comparison (smaller = faster):
+    asciiArt: `Operations at n = 100,000:
+ bar length ~ log10(operations)   ·   budget ~1e8 per second
 
- n = 10⁶      O(1)  O(log n) O(n)    O(n log n) O(n²)
- Operations:    1       20   10⁶       2×10⁷     10¹²
-                ✓        ✓     ✓           ✓        ✗
+ O(1)        █░░░░░░░░░░░░░░░░░░░░░░░  1             OK
+ O(log n)    ██░░░░░░░░░░░░░░░░░░░░░░  17            OK
+ O(n)        ██████████░░░░░░░░░░░░░░  1e5           OK
+ O(n log n)  ████████████░░░░░░░░░░░░  1.7e6         OK
+ O(n sqrt n) ███████████████░░░░░░░░░  3.2e7         OK, tight
+ O(n^2)      ████████████████████░░░░  1e10          TLE
+ O(2^n)      ████████████████████████  astronomical  TLE
 
- O(1) ────────────────────────────────── constant
- O(log n) ─────────────────────────╮    very fast
- O(n) ───────────────────────╮          linear
- O(n log n) ───────────╮               acceptable
- O(n²) ──────╮                          slow
- O(2ⁿ) ─╮                              avoid!`,
+Reading the target complexity off n:
+ the constraint tells you which algorithm is allowed
+
+ n <= 10      O(n!)              permutations, brute force
+ n <= 20      O(2^n)             bitmask DP, meet in the middle
+ n <= 500     O(n^3)             Floyd-Warshall, interval DP
+ n <= 5e3     O(n^2)             pair DP, 2D tables
+ n <= 1e6     O(n log n)         sorting, heaps, divide & conquer
+ n <= 1e7     O(n)               two pointers, prefix sums
+ n  > 1e9     O(log n), O(1)     binary search on answer, math`,
     keyTechniques: [
       "Big-O / Big-Θ / Big-Ω notation",
       "Amortized analysis",
