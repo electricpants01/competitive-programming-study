@@ -1,6 +1,6 @@
 # 03 — Design System
 
-> Tokens live as CSS custom properties on `:root` / `[data-theme="dark"]` in the guide and slides Astro pages. No third-party UI kit.
+> Inspired by [alg0.dev](https://www.alg0.dev/). Tokens live as CSS custom properties on `:root` (dark default) and `[data-theme="light"]`. No third-party UI kit. See ADR-0009.
 
 ---
 
@@ -10,49 +10,98 @@
 |---|---|
 | Framework | Astro (`.astro` templates) |
 | Client JS | Plain JS in `public/` |
-| Styling | CSS custom properties + global/scoped style blocks |
-| Icons | Inline SVG / emoji sparingly in content (prefer SVG in chrome) |
+| Styling | CSS custom properties + `<style is:global>` for JS-injected DOM |
+| Fonts | Self-hosted Geist Pixel Square + Geist Mono (`public/fonts/*.woff2`) |
+| Icons | Inline SVG |
 
 ---
 
-## Color tokens (guide)
+## Typography
 
-### Light
+```css
+--font-sans: "Geist Pixel Square", system-ui, -apple-system, sans-serif;
+--font-mono: "Geist Mono", ui-monospace, monospace;
+--font-heading: var(--font-sans);
+```
 
-| Token | Example | Usage |
+| Role | Font | Size guidance |
+|------|------|---------------|
+| UI / labels | Pixel Square | 11–13px; section labels uppercase + wide tracking |
+| Headings | Pixel Square | 16–20px, semibold, tight tracking |
+| Body | Pixel Square | 13–14px, relaxed line-height |
+| Code | Geist Mono | 12–13px |
+
+---
+
+## Color tokens
+
+### Dark (default `:root`)
+
+| Token | Value | Usage |
 |---|---|---|
-| `--color-primary` | `#2563eb` | Links, active states, primary actions |
-| `--color-primary-dark` | `#1d4ed8` | Hover on primary |
-| `--color-primary-light` | `#ebf1ff` | Soft highlight backgrounds |
-| `--bg-body` | `#eae9df` | Page background (warm paper) |
-| `--bg-surface` | `#ffffff` | Cards / panels |
-| `--bg-sidebar` | `#f5f4ed` | Sidebar |
-| `--bg-nav` | `#ffffff` | Top nav |
-| `--bg-code` | `#f0efe6` | Code blocks |
-| `--bg-hover` / `--bg-active` | `#dddcd2` / `#e4ecff` | Interactive rows |
-| `--text-primary` | `#1a1915` | Body text |
-| `--text-secondary` / `--text-muted` | `#64625a` / `#8f8d85` | Secondary copy |
-| `--border` | `#d4d3c9` | Dividers |
+| `--surface` | `#000` | Page / header / sidebar background |
+| `--foreground` | `#fff` | Primary text |
+| `--muted` | `#737373` | Secondary / placeholder |
+| `--muted-strong` | `#a3a3a3` | Hover text |
+| `--subtle` | `#ffffff0a` | Elevated panels |
+| `--subtle-strong` | `#ffffff14` | Borders, dividers |
+| `--subtle-hover` | `#ffffff14` | Row hover bg |
+| `--border` | `#ffffff14` | Hairline borders |
+| `--accent` | `#38bdf8` | Focus rings, sparse highlights |
+| `--action-bg` | `#fff` | Primary buttons |
+| `--action-fg` | `#000` | Primary button text |
+| `--danger` | `#f87171` | Errors |
+| `--success` | `#4ade80` | Solved / correct |
 
-### Dark (`[data-theme="dark"]`)
+### Light (`[data-theme="light"]`)
 
-Dark theme remaps surface/text/border tokens; primary stays blue-family with adjusted light highlight (`#1e3460`).
+Invert surface/foreground; borders/hovers use black alpha; `--action-bg:#171717`, `--action-fg:#fff`; `--accent:#0284c7`.
 
-### Layout tokens
+### Layout
 
 | Token | Value |
 |---|---|
-| `--sidebar-width` | `240px` |
-| `--nav-height` | `56px` |
-| `--radius-sm/md/lg` | `6px` / `10px` / `14px` |
-| `--transition` | `200ms ease` |
-| `--shadow-sm/md` | soft warm / elevated |
+| `--header-height` | `48px` |
+| `--sidebar-width` | `260px` |
+| `--radius-sm` | `6px` |
+| `--radius-md` | `10px` |
+| `--radius-lg` | `14px` |
+| `--transition` | `150ms ease` |
+
+Legacy aliases (optional during migration): `--bg-body` → `--surface`, `--text-primary` → `--foreground`, `--color-primary` → `--action-bg` (or `--accent` for links).
 
 ---
 
-## Slides presentation palette
+## App chrome
 
-Intro slides use a darker slate canvas (`#0f172a`-family gradients per slide type). Teaching HTML decks in `slides/<topic>/` follow the CP slides skill palettes (blue/purple/emerald/… per subtopic). See `features/cp-slide-decks/`.
+### Header (`.site-header`)
+
+- Height 48px, `border-bottom: 1px solid var(--border)`, `background: var(--surface)`
+- Left: sidebar toggle, inverted logo tile (white bg / black icon in dark), brand, optional breadcrumb
+- Right: search, EN/ES, theme toggle — icon buttons `1.75rem`, muted → hover foreground + subtle bg
+
+### Sidebar (`.site-sidebar`)
+
+- Accordion categories; summary row: 11px uppercase tracking, muted
+- Items: 13px, muted; hover lighter + subtle bg; active stronger fg + subtle-strong bg
+- Mobile: drawer + backdrop (`bg-black/60`)
+
+### Main (`.site-main` / `#main-content`)
+
+- `flex-1 overflow-auto`; hosts one active **view** at a time
+
+---
+
+## Views
+
+| `data-view` | Content |
+|-------------|---------|
+| `home` | Centered hero + short CTA + optional topic strip |
+| `topic` | Topic detail + quiz (from `algorithmsData`) |
+| `search` | CF Problem Search |
+| `videos` | Video Library |
+| `icpc-prelims` | ICPC prelims |
+| `icpc-regionals` | ICPC regionals |
 
 ---
 
@@ -60,28 +109,18 @@ Intro slides use a darker slate canvas (`#0f172a`-family gradients per slide typ
 
 | Pattern | Notes |
 |---|---|
-| Top nav | Brand, section links, EN/ES switcher, theme toggle |
-| Sidebar | Section labels + items; active item highlight |
-| Page sections | One visible `data-section` at a time |
-| Algo cards | Grid of topic cards → open detail |
-| Tag pills | `.cf-tag` / `.vl-tag` with `.selected` |
-| Problem / video cards | Row layout: meta left, actions right |
-| Pagination | Prev / numbered / Next buttons |
+| Primary button | White fill / black text (dark); invert in light |
+| Tag pills | Border `--border`; `.selected` → action fill |
+| Cards / panels | `background: var(--subtle)`; `border: 1px solid var(--border)`; radius-md |
+| Code blocks | Mono; dark elevated panel |
+| Pagination | Compact icon/text buttons |
 
-**Rule:** styles that target JS-injected nodes must be in `<style is:global>`.
-
----
-
-## Typography
-
-- Prefer system UI stacks already used in templates (`Segoe UI`, system-ui, sans-serif).
-- Code: monospace (`Consolas`, `Fira Code`, system mono).
-- Do not introduce Inter/Roboto as a new default without an ADR — preserve the existing warm paper aesthetic of the guide.
+**Rule:** styles for JS-injected nodes must be in `<style is:global>`.
 
 ---
 
 ## Motion
 
-- Guide: short CSS transitions on hover/active (`--transition`).
-- Slides presentation: JS-managed opacity/transform; staggered `item-animated` children.
-- Avoid CSS `transition` on `.slide` itself (conflicts with JS). See `features/slides-presentation/`.
+- Header/sidebar: 150ms color/background; active scale `.97` on press
+- View swaps: instant show/hide (no slide conflict with practice UIs)
+- Slides presentation: keep JS-managed transitions; chrome uses these tokens

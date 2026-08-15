@@ -2,10 +2,12 @@
 
 ## Activation
 
-Sidebar `icpc-regionals` (PRACTICE section, directly below `icpc-prelims`) →
-`setActiveSection('icpc-regionals')`.
-
+Sidebar `icpc-regionals` → `setView('icpc-regionals')`.  
 Deep-link: `?section=icpc-regionals` or `#icpc-regionals`.
+
+## Chrome
+
+Same black-canvas tokens as prelims (`.ip-*` / `.ir-*`).
 
 ## Layout
 

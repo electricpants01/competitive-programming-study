@@ -5,101 +5,62 @@
 ```
 Browser
   → Astro-generated static pages under /competitive-programming-study/[lang]/…
-  → loads public/*.js (algorithms-data, videos-data, guide-script, slides-script)
-  → optional: fetch Codeforces API (problemset.problems) from the browser
-  → optional: localStorage (CF favorites / solved)
+  → loads public/*.js (algorithms-data, videos-data, icpc-*-data, guide-script, slides-script)
+  → optional: fetch Codeforces API from the browser
+  → optional: localStorage (theme, visited, CF favorites / solved)
 
 Build-time / offline:
   scripts/scrape-videos.cjs + yt-dlp → public/videos-data-{en,es}.js
   slides/<topic>/generate-pngs.cjs + Puppeteer → PNG exports
-  scripts/sync-ai-configs.sh → .cursorrules, AGENTS.md, …
+  scripts/sync-ai-configs.sh → tool configs
 ```
 
-There is **no application backend**. Persistence is either static files in the repo or browser `localStorage`.
+No application backend. Persistence is static repo files or browser `localStorage`.
 
 ## Pages
 
 | Route | File | Role |
 |-------|------|------|
-| `/` | `src/pages/index.astro` | Redirect → `/{base}/en/slides` (must include BASE_URL) |
-| `/{lang}/guide` | `src/pages/[lang]/guide/index.astro` | Main learning guide (sections) |
+| `/` | `src/pages/index.astro` | Redirect → `/{base}/en/slides` |
+| `/{lang}/guide` | `src/pages/[lang]/guide/index.astro` | App shell: topic browser + practice |
 | `/{lang}/slides` | `src/pages/[lang]/slides/index.astro` | Intro slide presentation |
 
-`lang` ∈ `{en, es}` via `getStaticPaths()`.
+## Guide shell (alg0-inspired IA)
 
-### Guide page sections
+```
+.site-app (h-screen flex column)
+├── .site-header
+└── .site-body (flex)
+    ├── .site-sidebar (accordion)
+    └── #main-content
+        ├── [data-view="home"]
+        ├── [data-view="topic"]
+        ├── [data-view="search"]
+        ├── [data-view="videos"]
+        ├── [data-view="icpc-prelims"]
+        └── [data-view="icpc-regionals"]
+```
 
-Only one `<section class="page-section" data-section="…">` is visible at a time:
+View router in `guide-script.js` shows exactly one view. Sidebar topic IDs open `topic`; practice IDs map via `PRACTICE_ITEM_SECTIONS`.
 
-| `data-section` | Activated by |
-|----------------|--------------|
-| `overview` | nav / default |
-| `algorithms` | nav |
-| `roadmap` | nav |
-| `detail` | algorithm card click |
-| `tools` | nav |
-| `search` | sidebar `search-problems` |
-| `videos` | sidebar `watch-videos` |
+Deep links: `?section=search|videos|…`, `?topic=<id>`, or hash equivalents.
+
+Design system: [03-design-system.md](./03-design-system.md), ADR-0009.
 
 ## Runtime scripts (`public/`)
 
 | File | Role |
 |------|------|
-| `guide-script.js` | Sidebar, section switching, CF search, video library UI |
-| `slides-script.js` | Slide navigation, fullscreen, swipe, keyboard |
-| `algorithms-data-{lang}.js` | Topic content global `algorithmsData` + `sidebarSections` |
-| `videos-data-{lang}.js` | Video library global `videosData` (scraper output) |
+| `guide-script.js` | Shell router, sidebar, topic detail, CF/video/ICPC inits |
+| `slides-script.js` | Slide navigation |
+| `algorithms-data-{lang}.js` | Topics |
+| `videos-data-{lang}.js` | Video library |
+| `icpc-prelims-data.js` / `icpc-regionals-data.js` | Contest PDF indexes |
 
-Scripts are loaded with `is:inline` **and** a `BASE_URL` prefix. Translations are injected via `define:vars` into `window.__CP_T__` / `window.__CP_LANG__`.
+Scripts: `is:inline` + BASE_URL. Translations via `define:vars` → `window.__CP_T__` (JSON-safe templates + `fmt()`).
 
 ## Critical constraints
 
-### BASE_URL
-
-`astro.config.mjs` must keep:
-
-```js
-site: 'https://electricpants01.github.io',
-base: '/competitive-programming-study',
-output: 'static',
-```
-
-Every internal `href`, script `src`, and `Astro.redirect()` must account for `import.meta.env.BASE_URL`. See [11-deployment.md](./11-deployment.md) and ADR-0003.
-
-### Astro CSS scoping
-
-Scoped `<style>` does not apply to JS-created DOM. Use `<style is:global>` for sidebar items, algo cards, `.cf-*`, `.vl-*`, and slide animatable children. See ADR-0004.
-
-### i18n
-
-Custom TypeScript i18n (not Astro built-in). Explicit `Translations` interface — never `as const` on locale objects. See [08-i18n.md](./08-i18n.md) and ADR-0002.
-
-## Folder layout (intended)
-
-```
-src/
-  i18n/                 # types, en, es, utils
-  pages/
-    index.astro
-    [lang]/guide/
-    [lang]/slides/
-  components/           # reusable .astro (create as needed)
-  content/              # markdown learning content
-
-public/                 # static assets + client JS + data globals
-scripts/                # scrapers + AI sync
-slides/<topic>/         # HTML teaching decks + PNG pipeline
-AI/                     # agent rules / skills / personas
-spec/                   # this documentation
-```
-
-## Data flow summary
-
-| Concern | Source of truth | Consumer |
-|---------|-----------------|----------|
-| UI strings | `src/i18n/en.ts`, `es.ts` | Astro templates + `window.__CP_T__` |
-| Algorithm topics | `public/algorithms-data-{lang}.js` | `guide-script.js` |
-| Videos | scraper → `public/videos-data-{lang}.js` | `initVideoSearch()` |
-| CF problems | Codeforces HTTP API (runtime) | `initCfSearch()` |
-| Favorites / solved | `localStorage` | `initCfSearch()` |
-| Slide deck copy | `t.slides` in i18n | slides page + `slides-script.js` |
+- BASE_URL always on links/scripts/redirects (ADR-0003)
+- `<style is:global>` for JS-injected DOM (ADR-0004)
+- Explicit `Translations` interface (ADR-0002)

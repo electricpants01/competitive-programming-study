@@ -2,7 +2,11 @@
 
 ## Activation
 
-Sidebar `search-problems` (PRACTICE section) → `setActiveSection('search')`.
+Sidebar `search-problems` → `setView('search')` (main pane).
+
+## Chrome
+
+Black-canvas tokens ([03-design-system.md](../../03-design-system.md)): panels use `--subtle` / `--border`; primary Search button uses `--action-bg` / `--action-fg`; selected tags use action fill.
 
 ## Layout
 

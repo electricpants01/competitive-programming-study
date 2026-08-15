@@ -24,8 +24,19 @@ Then a modal lists Problems A–H ordered by estimated difficulty
 And every problem has an ASCII visual, insight, analysis, and complexity
 And no C++ source code is displayed
 
+## Scenario: Every prelims contest has an editorial
+Given the ACM ICPC Prelims section is open
+When I look at each contest card
+Then every card has an Editorial button
+And opening it shows difficulty-sorted problems without C++ source
+
+## Scenario: Brazil EN and PT share editorial
+Given both Brazil Sub-Regional EN and PT cards
+When I open either Editorial
+Then the same shared problem list is shown
+
 ## Scenario: Editorial button is conditional
-Given a contest has no `editorial` field
+Given a contest has no `editorial` field or missing registry entry
 When its card renders
 Then it has no Editorial button
 

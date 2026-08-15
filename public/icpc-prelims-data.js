@@ -2,6 +2,8 @@
  * ICPC Preliminary / Qualifier problem-set catalog.
  * PDFs live in public/icpc-prelims/ and are served with BASE_URL.
  * Do not invent entries without a matching file on disk.
+ * Editorial IDs map to window.__CP_ICPC_EDITORIALS__[id].
+ * C++ solutions live under solutions/ (not shipped to the browser).
  */
 const icpcPrelimsData = {
   regions: [
@@ -30,6 +32,7 @@ const icpcPrelimsData = {
       kind: 'preliminary',
       title: 'ICPC South Pacific Preliminary 2024 — Level A',
       file: '2024-south-pacific-prelim-level-a.pdf',
+      editorial: 'spp2024AEditorial',
       source: 'https://sppcontests.org/',
       notes: 'Harder preliminary track.',
     },
@@ -40,6 +43,7 @@ const icpcPrelimsData = {
       kind: 'preliminary',
       title: 'ICPC South Pacific Preliminary 2024 — Level B',
       file: '2024-south-pacific-prelim-level-b.pdf',
+      editorial: 'spp2024BEditorial',
       source: 'https://sppcontests.org/',
       notes: 'Easier preliminary track.',
     },
@@ -50,6 +54,7 @@ const icpcPrelimsData = {
       kind: 'qualifier',
       title: 'ICPC North America Qualifier 2024',
       file: '2024-naq.pdf',
+      editorial: 'naq2024Editorial',
       source: 'http://serjudging.vanb.org/wp-content/uploads/naq24.pdf',
       notes: 'NAQ — school-level qualifier before regionals.',
     },
@@ -60,6 +65,7 @@ const icpcPrelimsData = {
       kind: 'qualifier',
       title: 'ICPC North America Qualifier 2023',
       file: '2023-naq.pdf',
+      editorial: 'naq2023Editorial',
       source: 'http://serjudging.vanb.org/wp-content/uploads/naq23.pdf',
       notes: 'NAQ 2023 problem set.',
     },
@@ -70,6 +76,7 @@ const icpcPrelimsData = {
       kind: 'qualifier',
       title: 'ICPC North America Qualifier 2022–23',
       file: '2022-23-naq.pdf',
+      editorial: 'naq2022Editorial',
       source: 'https://na.icpc.global/wp-content/uploads/2023/02/NAQ-Problems.pdf',
       notes: 'Official NA ICPC NAQ archive PDF.',
     },
@@ -80,6 +87,7 @@ const icpcPrelimsData = {
       kind: 'preliminary',
       title: 'Maratona SBC Fase Zero 2025',
       file: '2025-fase-zero-br.pdf',
+      editorial: 'faseZero2025Editorial',
       source: 'https://codeforces.com/gym/105925',
       notes: 'Brazil Phase Zero — entry-level preliminary.',
     },
@@ -90,6 +98,7 @@ const icpcPrelimsData = {
       kind: 'subregional',
       title: 'Maratona SBC / LatAm Sub-Regional 2025 (EN)',
       file: '2025-brazil-subregional-en.pdf',
+      editorial: 'brazil2025SubregionalEditorial',
       source: 'https://maratona.sbc.org.br/subbr-2025/maratona_en.pdf',
       notes: 'Shared with Gran Premio Centroamérica / México / Bolivia.',
     },
@@ -100,8 +109,9 @@ const icpcPrelimsData = {
       kind: 'subregional',
       title: 'Maratona SBC Sub-Regional Brasil 2025 (PT)',
       file: '2025-brazil-subregional-pt.pdf',
+      editorial: 'brazil2025SubregionalEditorial',
       source: 'https://maratona.sbc.org.br/subbr-2025/maratona.pdf',
-      notes: 'Portuguese problem booklet.',
+      notes: 'Portuguese problem booklet (same problems as EN).',
     },
     {
       id: '2024-ntu-team-preli',
@@ -110,6 +120,7 @@ const icpcPrelimsData = {
       kind: 'preliminary',
       title: 'NTU ICPC Team Preliminary 2024',
       file: '2024-ntu-team-preli.pdf',
+      editorial: 'ntu2024Editorial',
       source: 'https://codeforces.com/gym/105292',
       notes: 'National Taiwan University team selection.',
     },
@@ -120,6 +131,7 @@ const icpcPrelimsData = {
       kind: 'qualifier',
       title: 'ICPC Asia Seoul Nationwide Internet Competition 2024',
       file: '2024-seoul-nationwide.pdf',
+      editorial: 'seoul2024NationwideEditorial',
       source: 'https://icpckorea.org/static/2024_problemset.pdf',
       notes: 'Korea nationwide internet round (pre-regional style).',
     },

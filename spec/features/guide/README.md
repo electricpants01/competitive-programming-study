@@ -2,25 +2,19 @@
 
 ## Summary
 
-The Guide is the main learning surface: top nav, sidebar roadmap, and multi-section content (overview, algorithms grid, roadmap, topic detail, tools, plus Practice sections for search and videos).
+The Guide is an alg0-inspired app shell: compact header, accordion sidebar topic browser, and a main workspace that shows home, topic detail, or practice tools.
 
 ## Goals
 
-- Navigate the CP curriculum via sidebar sections
-- Open topic detail panels from cards / sidebar items
-- Switch visible page sections without full page reloads
-- Host Practice features (`search`, `videos`, `icpc-prelims`, `icpc-regionals`) as sections opened from the first sidebar section
+- Browse curriculum from the sidebar
+- Open topic detail + quiz in the main pane
+- Reach CF search, videos, ICPC from PRACTICE
+- Dark-first chrome with light invert
 
 ## Non-goals
 
-- Editing topic content in the UI
-- Server-side progress tracking
-
-## User stories
-
-- As a learner, I want a sidebar map of topics so I can jump to what I am studying.
-- As a learner, I want topic detail (description, code, quiz, problems) in my language.
-- As a learner, I want dark/light theme and EN/ES switch without losing my place when possible.
+- Step-by-step algorithm canvases (alg0 visualizers)
+- In-UI topic editing
 
 ## Links
 
@@ -28,9 +22,3 @@ The Guide is the main learning surface: top nav, sidebar roadmap, and multi-sect
 - Data: `data.md`
 - Tickets: `tickets.md`
 - Acceptance: `acceptance-tests.md`
-
-## Key rules
-
-- Only one `data-section` visible at a time
-- `search-problems` / `watch-videos` / `icpc-prelims` / `icpc-regionals` call `setActiveSection` instead of opening algo detail
-- Sidebar labels from `t.sidebar.*`

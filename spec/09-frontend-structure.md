@@ -2,9 +2,10 @@
 
 ## Goals
 
-- Keep Astro pages thin; put interactivity in `public/*.js`.
-- Keep locale strings in `src/i18n/`.
-- Keep generated / large data out of the Astro bundle when possible (plain JS globals).
+- Thin Astro pages; interactivity in `public/*.js`
+- Locale strings in `src/i18n/`
+- Large data as plain JS globals under `public/`
+- Design tokens + fonts per [03-design-system.md](./03-design-system.md)
 
 ## Layout
 
@@ -13,51 +14,39 @@ src/
   i18n/
   pages/
     index.astro
-    [lang]/
-      guide/index.astro
-      slides/index.astro
-  components/          # shared .astro components
-  content/             # markdown (problems, tutorials)
+    [lang]/guide/index.astro    # app shell
+    [lang]/slides/index.astro
+  components/
+  content/
 
 public/
+  fonts/
+    GeistPixel-Square.woff2
+    GeistMono-Variable.woff2
   guide-script.js
   slides-script.js
-  algorithms-data-en.js
-  algorithms-data-es.js
-  videos-data-en.js
-  videos-data-es.js
+  algorithms-data-{en,es}.js
+  videos-data-{en,es}.js
   icpc-prelims-data.js
-  icpc-prelims/            # vendored ICPC prelim/qualifier PDFs
   icpc-regionals-data.js
-  icpc-regionals/          # vendored ICPC regional finals PDFs
+  icpc-prelims/  icpc-regionals/
   favicon.*
 ```
 
-## Conventions
+## Guide conventions
 
 | Concern | Convention |
 |---------|------------|
-| New page | Under `[lang]/` with `getStaticPaths`; always compute `base` |
-| New interactive UI | Scaffold HTML in Astro; logic in `guide-script.js` (or new `public/` script) |
+| Shell | `.site-app` / `.site-header` / `.site-sidebar` / `#main-content` |
+| Views | `[data-view]` children; one active |
 | Styles for JS DOM | `<style is:global>` |
-| Styles for static template only | scoped `<style>` OK |
-| Scripts from `public/` | `is:inline` + `${base}…` |
-| Server → client data | `define:vars` |
+| Scripts | `is:inline` + `${base}` |
+| Tokens | alg0 names (`--surface`, `--foreground`, …) |
 
-## Adding a guide section
+## Adding a practice view
 
-1. Add `<section class="page-section" data-section="…">` in guide `index.astro`.
-2. Wire activation in `guide-script.js` (nav or sidebar).
-3. Add i18n strings.
-4. Add global CSS for any JS-built nodes.
-5. Document under `spec/features/…`.
-
-## Adding a topic
-
-1. Edit both `algorithms-data-*.js`.
-2. Add sidebar entries in both files.
-3. Follow content checklist in [07-content-schema.md](./07-content-schema.md).
-
-## Feature isolation
-
-Prefer feature-prefixed CSS classes (`.cf-*`, `.vl-*`, `.ip-*`) and init functions (`initCfSearch`, `initVideoSearch`, `initIcpcPrelims`, `initIcpcRegionals`) so sections do not leak state.
+1. Add `[data-view="…"]` panel in guide Astro.
+2. Map sidebar id → view in `PRACTICE_ITEM_SECTIONS`.
+3. Init function in `guide-script.js`.
+4. Global CSS using design tokens.
+5. Spec under `spec/features/…`.

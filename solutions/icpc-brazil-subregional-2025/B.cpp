@@ -20,44 +20,7 @@ ll egcd(ll a, ll b, ll& x, ll& y) {
   return g;
 }
 
-// Merge x ≡ a (mod m) with x ≡ b (mod n).
-bool crtMerge(ll& a, ll& m, ll b, ll n) {
-  ll x, y;
-  ll g = egcd(m, n, x, y);
-  if ((a - b) % g != 0) return false;
-  ll n1 = n / g;
-  __int128 lcm = (__int128)(m / g) * n;
-  if (lcm > (__int128)LIMIT * 4 && lcm > m) {
-    // Keep merging mathematically; caller detects DEMAIS via size.
-  }
-  __int128 t = (__int128)((b - a) / g) * x;
-  t %= n1;
-  if (t < 0) t += n1;
-  __int128 res = (__int128)a + t * m;
-  ll mod = (ll)min(lcm, (__int128)LLONG_MAX);
-  if (lcm > LIMIT) {
-    res %= lcm;
-    if (res < 0) res += lcm;
-    a = (ll)res;
-    // Store modulus clipped marker using value > LIMIT
-    m = (lcm > LIMIT) ? LIMIT + 1 : (ll)lcm;
-    if (lcm > LIMIT) m = LIMIT + 1;
-    else m = (ll)lcm;
-    // For huge LCM, keep exact residue if it fits in ll; otherwise DEMAIS later.
-    if (res > LIMIT) {
-      a = (ll)res;  // may be large
-    } else {
-      a = (ll)res;
-    }
-    return true;
-  }
-  res %= lcm;
-  if (res < 0) res += lcm;
-  a = (ll)res;
-  m = (ll)lcm;
-  return true;
-}
-
+// Positions k where a[i] == b[(i+k) % L] for all i.
 vector<int> findRotationK(const vector<ll>& a, const vector<ll>& b) {
   int L = (int)a.size();
   vector<ll> text = b;
@@ -143,21 +106,20 @@ int main() {
       return 0;
     }
     __int128 lcm = (__int128)(modu / g) * m;
-    __int128 t = (__int128)((r - rem) / g) * x;
     ll m1 = m / g;
+    __int128 t = (__int128)((r - rem) / g) * x;
     t %= m1;
     if (t < 0) t += m1;
     __int128 next = (__int128)rem + t * modu;
+
     if (lcm > LIMIT) {
       next %= lcm;
       if (next < 0) next += lcm;
-      // Smallest non-negative solution is next; period > LIMIT.
       if (next > LIMIT) {
         cout << "DEMAIS\n";
         return 0;
       }
       rem = (ll)next;
-      // Verify rem against all congruences; if valid, rem is the unique answer ≤ LIMIT.
       for (auto [rr, mm] : congruences) {
         if ((rem - rr) % mm != 0) {
           cout << "DEMAIS\n";
@@ -167,6 +129,7 @@ int main() {
       cout << rem << '\n';
       return 0;
     }
+
     next %= lcm;
     if (next < 0) next += lcm;
     rem = (ll)next;

@@ -1,42 +1,35 @@
 # Guide — Acceptance Tests
 
-## Scenario: Open guide in English
-Given I visit `/{base}en/guide`
-When the page loads
-Then I see the sidebar and the overview section
-And the EN language control is active
+## Scenario: Dark default
+Given I visit `/{base}en/guide` with no `cp-theme` set
+Then `data-theme` is `dark`
+And the surface background is black
 
-## Scenario: Switch to Spanish
-Given I am on the English guide
-When I click ES
-Then the path is under `/es/guide`
-And sidebar labels are Spanish
+## Scenario: Home hero
+Given I open the guide
+Then the home view is visible with title and CTA
 
-## Scenario: Open a topic from the sidebar
-Given I am on the guide
+## Scenario: Open topic from sidebar
 When I click `binary-search`
-Then the detail section is visible
-And the topic title matches algorithms data for the current lang
+Then the topic view shows that topic’s detail and quiz
+And the sidebar item is active
 
-## Scenario: Open Practice → Search Problems
-Given I am on the guide
-When I click `search-problems` in the PRACTICE sidebar section
-Then the search section is visible
-And CF UI controls are shown
+## Scenario: Practice destinations
+When I click `search-problems` / `watch-videos` / `icpc-prelims` / `icpc-regionals`
+Then the matching practice view is visible
 
-## Scenario: Open Practice → Watch Videos
-Given I am on the guide
-When I click `watch-videos` in the PRACTICE sidebar section
-Then the videos section is visible
+## Scenario: Deep-link topic
+Given I visit `?topic=bfs`
+Then the topic view opens for BFS
 
-## Scenario: Deep-link to Practice section
-Given I visit `/{base}en/guide?section=videos`
-When the page loads
-Then the videos section is visible
-And the watch-videos sidebar item is active
+## Scenario: Deep-link section
+Given I visit `?section=videos`
+Then the videos view is visible
+
+## Scenario: Language switch
+When I switch EN ↔ ES
+Then path and chrome labels update; BASE_URL preserved
 
 ## Scenario: Theme toggle
-Given I am on the guide
-When I toggle dark mode
-Then `[data-theme="dark"]` styles apply
-And content remains readable
+When I toggle theme
+Then light invert tokens apply and persist in `cp-theme`

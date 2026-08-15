@@ -2,7 +2,11 @@
 
 ## Activation
 
-Sidebar `watch-videos` (PRACTICE section) → `setActiveSection('videos')`.
+Sidebar `watch-videos` → `setView('videos')`.
+
+## Chrome
+
+alg0 tokens: cards `--subtle` + hairline border; channel/tag pills match CF pills; open links use `--accent` or foreground hover.
 
 ## Layout
 

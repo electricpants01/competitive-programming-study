@@ -181,7 +181,6 @@ int main() {
     tadj[v].push_back(u);
   }
 
-  vector<char> mark(n + 1, 0);
   int stamp = 1;
   vector<int> seenStamp(n + 1, 0);
   for (int v = 1; v <= n; ++v) {

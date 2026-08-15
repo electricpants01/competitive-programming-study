@@ -13,7 +13,7 @@ Companion folder: `AI/` holds agent personas, skills, and rules that sync into t
 | [00](./00-overview.md) | Overview | Project purpose, users, key capabilities, tech summary |
 | [01](./01-architecture.md) | Architecture | Astro static site, pages, public scripts, data pipeline |
 | [02](./02-product-requirements.md) | Product Requirements | Learner journeys, functional / non-functional requirements |
-| [03](./03-design-system.md) | Design System | CSS tokens, light/dark theme, layout, component patterns |
+| [03](./03-design-system.md) | Design System | alg0-inspired tokens, fonts, app chrome (ADR-0009) |
 | [04](./04-data-contracts.md) | Data Contracts | Algorithms data, videos data, Codeforces API, localStorage |
 | [05](./05-testing-strategy.md) | Testing Strategy | Unit / integration / E2E philosophy and what to cover |
 | [06](./06-dev-workflow.md) | Dev Workflow | Branching, commits, PR process, local commands |
@@ -39,6 +39,7 @@ ADRs capture *why* a significant choice was made. They are never deleted — onl
 | [0006](./adr/0006-video-scraper-ytdlp.md) | yt-dlp scraper for video library metadata + transcripts | Accepted |
 | [0007](./adr/0007-localstorage-cf-favorites.md) | localStorage for CF favorites and solved state | Accepted |
 | [0008](./adr/0008-ai-config-sync.md) | AI-agnostic config in `AI/` with sync script | Accepted |
+| [0009](./adr/0009-alg0-inspired-design-system.md) | alg0-inspired dark-first design + sidebar IA | Accepted |
 
 ---
 

@@ -2,8 +2,12 @@
 
 ## Activation
 
-Sidebar `icpc-prelims` (PRACTICE section, first in sidebar) → `setActiveSection('icpc-prelims')`.  
+Sidebar `icpc-prelims` → `setView('icpc-prelims')`.  
 Deep-link: `?section=icpc-prelims` or `#icpc-prelims`.
+
+## Chrome
+
+Same black-canvas cards/filters as other practice views; year badge uses `--action-bg`/`--action-fg` or `--accent`.
 
 ## Layout
 

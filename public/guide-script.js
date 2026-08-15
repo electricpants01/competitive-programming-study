@@ -61,9 +61,10 @@
 
   // ── State ───────────────────────────────────────────────────
   const state = {
-    theme: localStorage.getItem("cp-theme") || "light",
-    activeSection: "overview",
-    sidebarCollapsed: false,
+    theme: localStorage.getItem("cp-theme") || "dark",
+    activeView: "home",
+    activeTopicId: null,
+    sidebarOpen: false,
     visitedItems: JSON.parse(localStorage.getItem("cp-visited") || "[]"),
   };
 
@@ -72,9 +73,17 @@
   const themeToggleBtn = document.getElementById("theme-toggle");
   const themeIcon = document.getElementById("theme-icon");
   const sidebarEl = document.getElementById("sidebar");
-  const mainEl = document.getElementById("main");
+  const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+  const mainEl = document.getElementById("main-content") || document.getElementById("main");
   const sidebarToggleBtn = document.getElementById("sidebar-toggle");
   const navLinks = document.querySelectorAll(".nav-link[data-section]");
+  const headerCrumb = document.getElementById("header-crumb");
+  const brandEl =
+    document.getElementById("brand-home") ||
+    document.getElementById("site-brand") ||
+    document.querySelector(".header-brand") ||
+    document.querySelector(".site-brand") ||
+    document.querySelector(".nav-brand");
   const searchInput = document.getElementById("search-input");
   const searchClearBtn = document.getElementById("search-clear");
   const searchOverlay = document.getElementById("search-overlay");
@@ -86,11 +95,31 @@
   const detailPanel = document.getElementById("detail-panel");
   const detailBackBtn = document.getElementById("detail-back");
 
+  const VALID_VIEWS = new Set([
+    "home", "topic", "search", "videos", "icpc-prelims", "icpc-regionals",
+  ]);
+
+  // Legacy data-section → view (during HTML migration)
+  const LEGACY_SECTION_TO_VIEW = {
+    overview: "home",
+    algorithms: "home",
+    roadmap: "home",
+    tools: "home",
+    detail: "topic",
+    search: "search",
+    videos: "videos",
+    "icpc-prelims": "icpc-prelims",
+    "icpc-regionals": "icpc-regionals",
+  };
+
+  const OVERVIEW_ITEMS = new Set(["introduction", "learning-path", "assessment"]);
+
   // ── Theme ────────────────────────────────────────────────────
   function applyTheme(theme) {
     state.theme = theme;
     html.setAttribute("data-theme", theme);
     localStorage.setItem("cp-theme", theme);
+    if (!themeIcon) return;
     themeIcon.innerHTML =
       theme === "dark"
         ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -105,22 +134,27 @@
            </svg>`;
   }
 
-  themeToggleBtn.addEventListener("click", () =>
-    applyTheme(state.theme === "dark" ? "light" : "dark")
-  );
-
-  // ── Sidebar collapse ─────────────────────────────────────────
-  function setSidebarCollapsed(collapsed) {
-    state.sidebarCollapsed = collapsed;
-    sidebarEl.classList.toggle("collapsed", collapsed);
-    mainEl.classList.toggle("sidebar-collapsed", collapsed);
-    const arrow = sidebarToggleBtn.querySelector("svg");
-    if (arrow) arrow.style.transform = collapsed ? "rotate(180deg)" : "rotate(0deg)";
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () =>
+      applyTheme(state.theme === "dark" ? "light" : "dark")
+    );
   }
 
-  sidebarToggleBtn.addEventListener("click", () =>
-    setSidebarCollapsed(!state.sidebarCollapsed)
-  );
+  // ── Sidebar open (mobile drawer) ─────────────────────────────
+  function setSidebarOpen(open) {
+    state.sidebarOpen = !!open;
+    if (sidebarEl) sidebarEl.classList.toggle("is-open", state.sidebarOpen);
+    if (sidebarBackdrop) sidebarBackdrop.classList.toggle("is-open", state.sidebarOpen);
+  }
+
+  if (sidebarToggleBtn) {
+    sidebarToggleBtn.addEventListener("click", () =>
+      setSidebarOpen(!state.sidebarOpen)
+    );
+  }
+  if (sidebarBackdrop) {
+    sidebarBackdrop.addEventListener("click", () => setSidebarOpen(false));
+  }
 
   // ── Sidebar sections definition ───────────────────────────────
   const sidebarSectionDefs = [
@@ -134,7 +168,7 @@
     { key: 'MATHEMATICS', items: ['modular-arithmetic', 'sieve', 'combinatorics'] },
   ];
 
-  // Sidebar item ids that map to a full page-section instead of an algo detail panel
+  // Sidebar item ids that map to a full view instead of a topic detail panel
   const PRACTICE_ITEM_SECTIONS = {
     'search-problems': 'search',
     'watch-videos': 'videos',
@@ -145,17 +179,18 @@
   // Items that display a "NEW" badge — remove an id once the feature is no longer new
   const NEW_ITEMS = new Set(['watch-videos', 'search-problems', 'icpc-prelims', 'icpc-regionals']);
 
-  // ── Build sidebar ─────────────────────────────────────────────
+  // ── Build sidebar (accordion) ─────────────────────────────────
   function buildSidebar() {
+    if (!sidebarNav) return;
     sidebarNav.innerHTML = "";
     sidebarSectionDefs.forEach((section) => {
-      const sectionEl = document.createElement("div");
-      sectionEl.className = "sidebar-section";
+      const details = document.createElement("details");
+      details.className = "site-sidebar-section";
+      details.open = true;
 
-      const labelEl = document.createElement("div");
-      labelEl.className = "sidebar-section-label";
-      labelEl.textContent = t.sidebar.sections[section.key] || section.key;
-      sectionEl.appendChild(labelEl);
+      const summary = document.createElement("summary");
+      summary.textContent = t.sidebar.sections[section.key] || section.key;
+      details.appendChild(summary);
 
       section.items.forEach((id) => {
         const itemLabel = t.sidebar.items[id] || id;
@@ -163,20 +198,21 @@
           ? '<span class="sidebar-new-badge">NEW</span>'
           : '';
         const btn = document.createElement("button");
-        btn.className = "sidebar-item";
+        btn.type = "button";
+        btn.className = "site-sidebar-item";
         btn.dataset.id = id;
         btn.innerHTML = `<span class="item-dot"></span>${itemLabel}${newBadge}`;
         btn.addEventListener("click", () => handleSidebarItemClick(id));
-        sectionEl.appendChild(btn);
+        details.appendChild(btn);
       });
 
-      sidebarNav.appendChild(sectionEl);
+      sidebarNav.appendChild(details);
     });
   }
 
   function updateActiveSidebarItem(id) {
-    document.querySelectorAll(".sidebar-item").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.id === id);
+    document.querySelectorAll(".site-sidebar-item, .sidebar-item").forEach((btn) => {
+      btn.classList.toggle("active", id != null && btn.dataset.id === id);
     });
   }
 
@@ -187,48 +223,132 @@
     }
     updateProgress();
     updateActiveSidebarItem(id);
+    setSidebarOpen(false);
 
     if (PRACTICE_ITEM_SECTIONS[id]) {
-      setActiveSection(PRACTICE_ITEM_SECTIONS[id]);
+      setView(PRACTICE_ITEM_SECTIONS[id]);
     } else if (typeof algorithmsData !== 'undefined' && algorithmsData[id]) {
-      showDetailPanel(id);
-    } else {
-      setActiveSection("overview");
+      showTopic(id);
+    } else if (OVERVIEW_ITEMS.has(id)) {
+      setView("home");
       const anchor = document.getElementById("overview-" + id);
-      if (anchor) anchor.scrollIntoView({ behavior: "smooth" });
+      if (anchor) {
+        requestAnimationFrame(() =>
+          anchor.scrollIntoView({ behavior: "smooth", block: "start" })
+        );
+      }
+    } else {
+      setView("home");
     }
   }
 
   // ── Progress ──────────────────────────────────────────────────
   function updateProgress() {
+    if (!progressFill && !progressLabel) return;
     const total = sidebarSectionDefs.reduce((acc, s) => acc + s.items.length, 0);
     const pct = total === 0 ? 0 : Math.round((state.visitedItems.length / total) * 100);
-    progressFill.style.width = pct + "%";
-    progressLabel.textContent = fmt(t.sidebar.progress, { pct });
+    if (progressFill) progressFill.style.width = pct + "%";
+    if (progressLabel && t.sidebar && t.sidebar.progress) {
+      progressLabel.textContent = fmt(t.sidebar.progress, { pct });
+    }
   }
 
-  // ── Section navigation ────────────────────────────────────────
-  function setActiveSection(section) {
-    state.activeSection = section;
-    document.querySelectorAll(".page-section").forEach((el) => {
-      el.classList.toggle("active", el.dataset.section === section);
+  // ── Breadcrumb ────────────────────────────────────────────────
+  function updateBreadcrumb(view, topicId) {
+    if (!headerCrumb) return;
+    if (view === "topic" && topicId && typeof algorithmsData !== "undefined" && algorithmsData[topicId]) {
+      headerCrumb.textContent = algorithmsData[topicId].title;
+      return;
+    }
+    const practiceId = Object.keys(PRACTICE_ITEM_SECTIONS).find(
+      (k) => PRACTICE_ITEM_SECTIONS[k] === view
+    );
+    if (practiceId && t.sidebar && t.sidebar.items && t.sidebar.items[practiceId]) {
+      headerCrumb.textContent = t.sidebar.items[practiceId];
+      return;
+    }
+    if (view === "home") {
+      headerCrumb.textContent = (t.nav && t.nav.overview) || "Home";
+      return;
+    }
+    headerCrumb.textContent = view;
+  }
+
+  // ── View navigation ───────────────────────────────────────────
+  function setView(view) {
+    if (!VALID_VIEWS.has(view)) view = "home";
+    state.activeView = view;
+    if (view !== "topic") state.activeTopicId = null;
+
+    // Toggle [data-view] panels (nested under #main-content is fine)
+    document.querySelectorAll("[data-view]").forEach((el) => {
+      el.classList.toggle("active", el.dataset.view === view);
     });
+
+    // Legacy .page-section[data-section] support during migration
+    const legacyPrimary = {
+      home: "overview",
+      topic: "detail",
+      search: "search",
+      videos: "videos",
+      "icpc-prelims": "icpc-prelims",
+      "icpc-regionals": "icpc-regionals",
+    };
+    const primarySection = legacyPrimary[view];
+    document.querySelectorAll(".page-section[data-section]").forEach((el) => {
+      // Only toggle sections that lack data-view (avoid double-fighting)
+      if (el.dataset.view) return;
+      el.classList.toggle("active", primarySection != null && el.dataset.section === primarySection);
+    });
+
+    if (navLinks && navLinks.length) {
+      navLinks.forEach((link) => {
+        const mapped = LEGACY_SECTION_TO_VIEW[link.dataset.section] || link.dataset.section;
+        link.classList.toggle("active", mapped === view);
+      });
+    }
+
+    updateBreadcrumb(view, state.activeTopicId);
+
+    if (mainEl && typeof mainEl.scrollTo === "function") {
+      mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  if (navLinks && navLinks.length) {
     navLinks.forEach((link) => {
-      link.classList.toggle("active", link.dataset.section === section);
+      link.addEventListener("click", () => {
+        const mapped = LEGACY_SECTION_TO_VIEW[link.dataset.section] || link.dataset.section;
+        setView(VALID_VIEWS.has(mapped) ? mapped : "home");
+      });
     });
   }
-
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => setActiveSection(link.dataset.section));
-  });
 
   document.querySelectorAll("[data-goto]").forEach((el) => {
-    el.addEventListener("click", () => setActiveSection(el.dataset.goto));
+    el.addEventListener("click", () => {
+      const raw = el.dataset.goto;
+      const mapped = LEGACY_SECTION_TO_VIEW[raw] || raw;
+      if (VALID_VIEWS.has(mapped)) setView(mapped);
+      else if (typeof algorithmsData !== "undefined" && algorithmsData[raw]) showTopic(raw);
+      else setView("home");
+    });
   });
 
-  // ── Back button from detail view ──────────────────────────────
+  if (brandEl) {
+    brandEl.addEventListener("click", (e) => {
+      // Stay on the guide page and show home view (SPA-style)
+      if (brandEl.tagName === "A") e.preventDefault();
+      updateActiveSidebarItem(null);
+      setView("home");
+    });
+  }
+
+  // ── Back button from topic view ───────────────────────────────
   if (detailBackBtn) {
-    detailBackBtn.addEventListener("click", () => setActiveSection("algorithms"));
+    detailBackBtn.addEventListener("click", () => {
+      updateActiveSidebarItem(null);
+      setView("home");
+    });
   }
 
   // ── Build algorithm grid ──────────────────────────────────────
@@ -260,22 +380,24 @@
             <span class="algo-meta-item">⚡ ${algo.importance}</span>
           </div>
         </div>`;
-      card.addEventListener("click", () => showDetailPanel(id));
+      card.addEventListener("click", () => showTopic(id));
       algoGrid.appendChild(card);
     });
   }
 
-  // ── Inline detail panel ───────────────────────────────────────
-  function showDetailPanel(id) {
+  // ── Topic detail panel (topic view) ───────────────────────────
+  function showTopic(id) {
     const algo = (typeof algorithmsData !== 'undefined') ? algorithmsData[id] : null;
-    if (!algo) return;
+    if (!algo || !detailPanel) return;
 
     if (!state.visitedItems.includes(id)) {
       state.visitedItems.push(id);
       localStorage.setItem("cp-visited", JSON.stringify(state.visitedItems));
       updateProgress();
     }
+    state.activeTopicId = id;
     updateActiveSidebarItem(id);
+    setSidebarOpen(false);
 
     const examplesHTML = (algo.examples || []).map((ex, i) => `
       <div class="code-example">
@@ -331,10 +453,13 @@
         </div>
       </div>`;
 
-    setActiveSection("detail");
+    setView("topic");
+    updateBreadcrumb("topic", id);
     attachQuizListeners(algo.quiz || []);
     detailPanel.scrollTop = 0;
-    mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    if (mainEl && typeof mainEl.scrollTo === "function") {
+      mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     detailPanel.querySelectorAll(".code-copy-btn").forEach((btn, i) => {
       btn.addEventListener("click", () => {
@@ -346,6 +471,11 @@
         });
       });
     });
+  }
+
+  /** @deprecated Prefer showTopic — kept as alias for any leftover callers */
+  function showDetailPanel(id) {
+    showTopic(id);
   }
 
   // ── Quiz ──────────────────────────────────────────────────────
@@ -477,6 +607,7 @@
   }
 
   function renderSearchResults(results, query) {
+    if (!searchResultsContainer || !searchOverlay) return;
     searchResultsContainer.innerHTML = "";
     if (!query.trim()) { searchOverlay.classList.remove("visible"); return; }
     searchOverlay.classList.add("visible");
@@ -498,25 +629,35 @@
   }
 
   function closeSearch() {
-    searchOverlay.classList.remove("visible");
-    searchInput.value = "";
-    searchClearBtn.classList.remove("visible");
+    if (searchOverlay) searchOverlay.classList.remove("visible");
+    if (searchInput) searchInput.value = "";
+    if (searchClearBtn) searchClearBtn.classList.remove("visible");
   }
 
   let debounce = null;
-  searchInput.addEventListener("input", (e) => {
-    const q = e.target.value;
-    searchClearBtn.classList.toggle("visible", q.length > 0);
-    clearTimeout(debounce);
-    debounce = setTimeout(() => renderSearchResults(runSearch(q), q), 180);
-  });
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const q = e.target.value;
+      if (searchClearBtn) searchClearBtn.classList.toggle("visible", q.length > 0);
+      clearTimeout(debounce);
+      debounce = setTimeout(() => renderSearchResults(runSearch(q), q), 180);
+    });
+  }
 
-  searchClearBtn.addEventListener("click", closeSearch);
-  searchOverlay.addEventListener("click", (e) => { if (e.target === searchOverlay) closeSearch(); });
+  if (searchClearBtn) searchClearBtn.addEventListener("click", closeSearch);
+  if (searchOverlay) {
+    searchOverlay.addEventListener("click", (e) => { if (e.target === searchOverlay) closeSearch(); });
+  }
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && searchOverlay.classList.contains("visible")) closeSearch();
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); searchInput.focus(); }
+    if (e.key === "Escape") {
+      if (searchOverlay && searchOverlay.classList.contains("visible")) closeSearch();
+      if (state.sidebarOpen) setSidebarOpen(false);
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "k" && searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
   });
 
   // ── Util ──────────────────────────────────────────────────────
@@ -834,7 +975,8 @@
     // Data is loaded by videos-data-{lang}.js → window.videosData
     const data = (typeof videosData !== 'undefined') ? videosData : null;
 
-    const sectionEl    = document.querySelector('.page-section[data-section="videos"]');
+    const sectionEl    = document.querySelector('[data-view="videos"]')
+      || document.querySelector('.page-section[data-section="videos"]');
     if (!sectionEl) return;
 
     // Populate static heading strings
@@ -1016,7 +1158,8 @@
   // ── ICPC Preliminaries library ────────────────────────────────
   function initIcpcPrelims() {
     const data = (typeof icpcPrelimsData !== 'undefined') ? icpcPrelimsData : null;
-    const sectionEl = document.querySelector('.page-section[data-section="icpc-prelims"]');
+    const sectionEl = document.querySelector('[data-view="icpc-prelims"]')
+      || document.querySelector('.page-section[data-section="icpc-prelims"]');
     if (!sectionEl) return;
 
     const ip = t.icpcPrelims || {};
@@ -1068,15 +1211,8 @@
     function getEditorial(editorialId) {
       if (!editorialId) return null;
       const registry = window.__CP_ICPC_EDITORIALS__;
-      if (registry && registry[editorialId]) return registry[editorialId];
-      // Legacy: bare global from older editorial scripts (const/var in classic scripts)
-      try {
-        // eslint-disable-next-line no-new-func
-        const value = Function(`"use strict"; return (typeof ${editorialId} !== "undefined") ? ${editorialId} : null;`)();
-        return value && Array.isArray(value.problems) ? value : null;
-      } catch (_) {
-        return null;
-      }
+      const editorial = registry && registry[editorialId];
+      return editorial && Array.isArray(editorial.problems) ? editorial : null;
     }
 
     function closeEditorial() {
@@ -1253,7 +1389,8 @@
   // ── ICPC Regionals library ────────────────────────────────────
   function initIcpcRegionals() {
     const data = (typeof icpcRegionalsData !== 'undefined') ? icpcRegionalsData : null;
-    const sectionEl = document.querySelector('.page-section[data-section="icpc-regionals"]');
+    const sectionEl = document.querySelector('[data-view="icpc-regionals"]')
+      || document.querySelector('.page-section[data-section="icpc-regionals"]');
     if (!sectionEl) return;
 
     const ir = t.icpcRegionals || {};
@@ -1367,27 +1504,74 @@
   buildAlgoGrid();
   updateProgress();
 
-  // Deep-link: ?section=search|videos|… or #search / #videos (spec G-3)
-  function applySectionFromUrl() {
+  const homeCta = document.getElementById("home-cta-browse");
+  if (homeCta) {
+    homeCta.addEventListener("click", () => {
+      const grid = document.getElementById("algo-grid");
+      if (grid) grid.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstTopic = document.querySelector(".site-sidebar-item[data-id]");
+      // Prefer focusing FUNDAMENTALS/ALGORITHMS: open first real topic if available
+      if (typeof algorithmsData !== "undefined") {
+        const firstId = Object.keys(algorithmsData)[0];
+        if (firstId) {
+          const btn = document.querySelector(`.site-sidebar-item[data-id="${firstId}"]`);
+          if (btn) btn.focus();
+        }
+      }
+    });
+  }
+
+  // Deep-link: ?topic=id | ?section=search|videos|… | #search / #videos
+  function applyUrl() {
     const params = new URLSearchParams(window.location.search);
-    const fromQuery = params.get('section');
-    const fromHash = (window.location.hash || '').replace(/^#/, '');
-    const target = fromQuery || fromHash;
-    const valid = new Set([
-      'overview', 'algorithms', 'roadmap', 'tools', 'search', 'videos', 'detail',
-      'icpc-prelims', 'icpc-regionals',
-    ]);
-    if (target && valid.has(target)) {
-      setActiveSection(target);
-      if (target === 'search') updateActiveSidebarItem('search-problems');
-      else if (target === 'videos') updateActiveSidebarItem('watch-videos');
-      else if (target === 'icpc-prelims') updateActiveSidebarItem('icpc-prelims');
-      else if (target === 'icpc-regionals') updateActiveSidebarItem('icpc-regionals');
+    const topicId = params.get("topic");
+    if (topicId && typeof algorithmsData !== "undefined" && algorithmsData[topicId]) {
+      showTopic(topicId);
       return;
     }
-    setActiveSection('overview');
+
+    const fromQuery = params.get("section");
+    const fromHash = (window.location.hash || "").replace(/^#/, "");
+    let target = fromQuery || fromHash;
+    if (!target) {
+      setView("home");
+      return;
+    }
+
+    // Hash may be overview-introduction etc.
+    if (target.startsWith("overview-")) {
+      const overviewId = target.slice("overview-".length);
+      setView("home");
+      if (OVERVIEW_ITEMS.has(overviewId)) updateActiveSidebarItem(overviewId);
+      const anchor = document.getElementById(target);
+      if (anchor) {
+        requestAnimationFrame(() =>
+          anchor.scrollIntoView({ behavior: "smooth", block: "start" })
+        );
+      }
+      return;
+    }
+
+    if (LEGACY_SECTION_TO_VIEW[target]) target = LEGACY_SECTION_TO_VIEW[target];
+
+    if (VALID_VIEWS.has(target) && target !== "topic") {
+      setView(target);
+      if (target === "search") updateActiveSidebarItem("search-problems");
+      else if (target === "videos") updateActiveSidebarItem("watch-videos");
+      else if (target === "icpc-prelims") updateActiveSidebarItem("icpc-prelims");
+      else if (target === "icpc-regionals") updateActiveSidebarItem("icpc-regionals");
+      return;
+    }
+
+    // section/hash is a topic id
+    if (typeof algorithmsData !== "undefined" && algorithmsData[target]) {
+      showTopic(target);
+      return;
+    }
+
+    setView("home");
   }
-  applySectionFromUrl();
+  applyUrl();
 
   initCfSearch();
   initVideoSearch();

@@ -19,12 +19,18 @@
 | `kind` | `preliminary` \| `qualifier` \| `subregional` \| `regional` |
 | `file` | Filename under `public/icpc-prelims/` |
 | `source` | Upstream URL (attribution / refresh) |
-| `editorial` | Optional global editorial data ID; omitted when no editorial exists |
+| `editorial` | Key in `window.__CP_ICPC_EDITORIALS__` |
 
-## Dhaka 2025 editorial data
+## Editorial data
 
-`public/icpc-prelims/editorials/2025-dhaka-online-preli.js` defines
-`dhaka2025Editorial`. Its problems are ordered by estimated difficulty and contain:
+Each contest loads a script under `public/icpc-prelims/editorials/` that registers:
+
+```js
+window.__CP_ICPC_EDITORIALS__ = window.__CP_ICPC_EDITORIALS__ || {};
+window.__CP_ICPC_EDITORIALS__.<editorialId> = { contestId, title, difficultyNote, problems: [...] };
+```
+
+Problems are ordered easiest → hardest and contain:
 
 ```js
 {
@@ -33,8 +39,20 @@
 }
 ```
 
-The browser does not receive solution code. C++17 implementations are kept separately in
-`solutions/icpc-dhaka-2025-online-preliminary/`.
+**No solution code is shipped to the browser.** C++17 implementations live under `solutions/icpc-*/`.
+
+| Contest | Editorial ID | Solutions folder |
+|---------|--------------|------------------|
+| Dhaka Online Preli 2025 | `dhaka2025Editorial` | `solutions/icpc-dhaka-2025-online-preliminary/` |
+| Fase Zero 2025 | `faseZero2025Editorial` | `solutions/icpc-fase-zero-2025/` |
+| Brazil Subregional 2025 (EN+PT) | `brazil2025SubregionalEditorial` | `solutions/icpc-brazil-subregional-2025/` |
+| NAQ 2024 | `naq2024Editorial` | `solutions/icpc-naq-2024/` |
+| NAQ 2023 | `naq2023Editorial` | `solutions/icpc-naq-2023/` |
+| NAQ 2022–23 | `naq2022Editorial` | `solutions/icpc-naq-2022-23/` |
+| South Pacific 2024 A | `spp2024AEditorial` | `solutions/icpc-south-pacific-2024-level-a/` |
+| South Pacific 2024 B | `spp2024BEditorial` | `solutions/icpc-south-pacific-2024-level-b/` |
+| Seoul Nationwide 2024 | `seoul2024NationwideEditorial` | `solutions/icpc-seoul-nationwide-2024/` |
+| NTU Team Preli 2024 | `ntu2024Editorial` | `solutions/icpc-ntu-team-preli-2024/` |
 
 ## PDF storage
 
@@ -53,3 +71,4 @@ Includes catalog labels plus `editorial`, `closeEditorial`, `difficulty`, `keyIn
 ## Degradation
 
 If `icpcPrelimsData` missing → show `noResults`, no throw.
+If an editorial ID is missing from the registry → hide the Editorial button for that contest.

@@ -9,19 +9,26 @@
 ## Layout
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│ Top nav: brand | Overview Algorithms Roadmap Tools | EN/ES │
-├──────────┬─────────────────────────────────────────────────┤
-│ Sidebar  │  Active page-section                            │
-│ sections │  (overview | algorithms | roadmap | detail |    │
-│ + items  │   tools | search | videos)                      │
-│          │                                                 │
-└──────────┴─────────────────────────────────────────────────┘
+┌─ header (48px): [≡] [logo] Brand · crumb …… [search] EN|ES [theme] ─┐
+├─ sidebar (260px) ─┬─ main (#main-content) ─────────────────────────┤
+│ CATEGORY          │  active data-view                              │
+│  · item           │  home | topic | search | videos | icpc-*       │
+│  · item active    │                                                │
+└───────────────────┴────────────────────────────────────────────────┘
 ```
+
+## Header
+
+- Sidebar toggle (mobile drawer + desktop collapse optional)
+- Logo tile (inverted): white square / black mark in dark theme
+- Brand link → home view
+- Breadcrumb shows current topic or practice label
+- Search opens overlay over algorithms
+- Lang switcher + theme toggle
 
 ## Sidebar
 
-Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels. PRACTICE is first (above OVERVIEW).
+Accordion sections (order):
 
 | Key | Items |
 |-----|-------|
@@ -31,33 +38,29 @@ Built from `sidebarSectionDefs` in `guide-script.js` + i18n labels. PRACTICE is 
 | GRAPH_THEORY | bfs, dfs, dijkstra, union-find |
 | DYNAMIC_PROGRAMMING | dp-1d, dp-2d, knapsack, bitmask-dp |
 | TREES_ADVANCED | segment-tree, fenwick-tree, trie |
-| PRACTICE (first) | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 | MATHEMATICS | modular-arithmetic, sieve, combinatorics |
+| PRACTICE | search-problems, watch-videos, icpc-prelims, icpc-regionals |
 
-Active item gets highlight (`.active` / equivalent).
+PRACTICE last. Accordion summaries uppercase 11px tracking.
 
-## Sections behaviour
+## Views
 
-| Section | Content |
-|---------|---------|
-| overview | Intro / assessment entry |
-| algorithms | Topic cards grid |
-| roadmap | Learning path visualization |
-| detail | Full topic panel from `algorithmsData[id]` |
-| tools | Tooling recommendations |
-| search | CF Problem Search UI |
-| videos | Video Library UI |
-| icpc-prelims | ACM ICPC Preliminaries PDF library |
-| icpc-regionals | ACM ICPC Regionals PDF library |
+| View | Trigger |
+|------|---------|
+| `home` | Load / brand click |
+| `topic` | Sidebar topic id or `?topic=` |
+| `search` | `search-problems` |
+| `videos` | `watch-videos` |
+| `icpc-prelims` / `icpc-regionals` | matching sidebar ids |
 
-## Topic detail
+## Home
 
-Shows title, meta (difficulty, time, importance), description, ASCII art, techniques, examples (code), best practices, problems, quiz.
+Centered hero: title, one sentence, primary CTA focusing sidebar / first topic. Optional compact topic strip.
+
+## Topic workspace
+
+Full main-pane detail: meta, description, techniques, examples (mono), practices, problems, quiz. Back control returns to home (or previous).
 
 ## Theme
 
-Toggle sets `data-theme="dark"` on a root element; tokens swap via CSS.
-
-## CSS note
-
-Sidebar items and algo cards created/manipulated by JS → styles in `<style is:global>`.
+Default `data-theme="dark"`. Toggle persists `cp-theme`.

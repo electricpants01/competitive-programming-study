@@ -1,5 +1,9 @@
 # Slides Presentation — UI
 
+## Chrome
+
+Uses the same design tokens as the Guide (ADR-0009): black surface header, Pixel/Mono fonts, white primary controls. Slide content gradients may remain dramatic dark; borders/buttons align with alg0.
+
 ## Route
 
 ```
