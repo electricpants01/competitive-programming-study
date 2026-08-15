@@ -20,7 +20,7 @@ Binary PDFs are stored in **`public/icpc-prelims/`** so Astro / GitHub Pages can
 | `2024-naq.pdf` | NAQ 2024 | qualifier | [serjudging](http://serjudging.vanb.org/wp-content/uploads/naq24.pdf) |
 | `2023-naq.pdf` | NAQ 2023 | qualifier | [serjudging](http://serjudging.vanb.org/wp-content/uploads/naq23.pdf) |
 | `2022-23-naq.pdf` | NAQ 2022–23 | qualifier | [na.icpc.global](https://na.icpc.global/wp-content/uploads/2023/02/NAQ-Problems.pdf) |
-| `2025-fase-zero-br.pdf` | Maratona SBC Fase Zero 2025 (EN) | preliminary | [scorelatam](https://scorelatam.naquadah.com.br/fzero-2025/contest.en.pdf) / [CF gym](https://codeforces.com/gym/105925) |
+| `2025-fase-zero-br.pdf` | Maratona SBC Fase Zero 2025 (EN) | preliminary | [CF gym](https://codeforces.com/gym/105925) |
 | `2025-brazil-subregional-en.pdf` | Sub-Regional 2025 (EN) | subregional | [maratona.sbc.org.br](https://maratona.sbc.org.br/subbr-2025/maratona_en.pdf) |
 | `2025-brazil-subregional-pt.pdf` | Sub-Regional Brasil 2025 (PT) | subregional | [maratona.sbc.org.br](https://maratona.sbc.org.br/subbr-2025/maratona.pdf) |
 | `2024-ntu-team-preli.pdf` | NTU Team Preliminary 2024 | preliminary | [CF gym](https://codeforces.com/gym/105292) |

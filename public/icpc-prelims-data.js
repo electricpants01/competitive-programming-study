@@ -188,8 +188,8 @@ const icpcPrelimsData = {
       title: 'Maratona SBC Fase Zero 2025',
       file: '2025-fase-zero-br.pdf',
       editorial: 'faseZero2025Editorial',
-      source: 'https://scorelatam.naquadah.com.br/fzero-2025/contest.en.pdf',
-      notes: 'Brazil Phase Zero — English problem set (same as CF gym 105925).',
+      source: 'https://codeforces.com/gym/105925',
+      notes: 'Brazil Phase Zero — English problem set.',
     },
     {
       id: '2025-brazil-subregional-en',
